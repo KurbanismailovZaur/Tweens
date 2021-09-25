@@ -9,6 +9,7 @@ using Coroutines.Extensions;
 using Object = UnityEngine.Object;
 using Coroutine = Coroutines.Coroutine;
 using Tweens.Tweaks;
+using Tweens;
 
 namespace Tweens
 {
@@ -17,15 +18,15 @@ namespace Tweens
 		[SerializeField]
 		private Transform _target;
 
-		[SerializeField]
-		[Range(0f, 1f)]
-		private float _interpolation;
-
-		private FloatTweak _floatTweak = new FloatTweak();
-
-		void Update()
+		IEnumerator Start()
 		{
-			_floatTweak.Apply(0f, 5f, _interpolation, x => _target.SetPositionX(x), Formula.BounceIn);
-		}
+			var tween = new Tween<float, FloatTweak>(0f, 2f, _target.SetPositionX, 1f, Formula.CircOut, 2, LoopType.Reset, Direction.Backward).PlayBackward();
+
+			yield return new WaitForSeconds(1.25f);
+            tween.PlayForward();
+            yield return new WaitForSeconds(0.75f);
+            yield return tween.PlayBackward().WaitForComplete();
+            print(1);
+        }
 	}
 }
