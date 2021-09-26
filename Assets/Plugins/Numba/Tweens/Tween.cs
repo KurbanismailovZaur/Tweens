@@ -62,6 +62,14 @@ namespace Tweens
         }
         #endregion
 
+        protected override void RecalculateDuration()
+        {
+            base.RecalculateDuration();
+
+            PlayedTime = Mathf.Clamp(PlayedTime, 0f, Duration);
+            RecalculatePlayTimes();
+        }
+
         private FormulaBase InvertIfRequiredAndGetFormula(Direction direction) => direction == Direction.Forward ? Formula : Tweens.Formula.Invertion.WithFormula(Formula);
 
         protected override void PerformCompletely(int loop, float loopedNormalizedTime, Direction direction)

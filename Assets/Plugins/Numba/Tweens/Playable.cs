@@ -71,7 +71,7 @@ namespace Tweens
         #endregion
 
         #region Repeat
-        Playable.IRepeater<Playable> GetRepeater();
+        Playable.IRepeater<Playable> GetRepeater(Direction direction);
 
         Playable.IRepeater<Playable> Repeat();
 
@@ -94,9 +94,11 @@ namespace Tweens
 
             bool IsPlaying { get; }
 
-            IRepeater<T> Play();
+            IRepeater<T> PlayForward();
 
             IRepeater<T> PlayBackward();
+
+            IRepeater<T> Play();
 
             IRepeater<T> Stop();
 
@@ -142,22 +144,31 @@ namespace Tweens
 
             public bool IsPlaying { get; private set; }
 
+            public Direction Direction { get; private set; }
+
             private int _stateCode;
 
-            public Repeater(T playable) : this(CoroutinesOwner.Instance.gameObject, playable) { }
+            public Repeater(T playable, Direction direction = Direction.Forward) : this(CoroutinesOwner.Instance.gameObject, playable, direction) { }
 
-            public Repeater(GameObject owner, T playable)
+            public Repeater(GameObject owner, T playable, Direction direction = Direction.Forward)
             {
                 _playingCoroutine = Coroutine.Create(owner, PlayRoutine());
+
                 Target = playable;
+                Direction = direction;
             }
 
-            public IRepeater<T> Play() => Play(Direction.Forward);
+            public IRepeater<T> PlayForward() => Play(Direction.Forward);
 
             public IRepeater<T> PlayBackward() => Play(Direction.Backward);
 
+            public IRepeater<T> Play() => Play(Direction);
+
+
             private IRepeater<T> Play(Direction direction)
             {
+                Direction = direction;
+
                 if (IsPlaying)
                 {
                     if (Target.Direction == direction)
@@ -171,7 +182,7 @@ namespace Tweens
                     _stateCode++;
                 }
 
-                Target.Play(true, direction);
+                Target.Play(true, Direction);
                 return this;
             }
 
@@ -180,7 +191,7 @@ namespace Tweens
                 while (true)
                 {
                     yield return Target.WaitForComplete();
-                    Target.Play(true, Target.Direction);
+                    Target.Play(true, Direction);
                 }
             }
 
@@ -219,7 +230,7 @@ namespace Tweens
                     throw new ArgumentException($"{Type} \"{Name}\": Loop duration can't be less than 0 ({value} passed)");
 
                 _loopDuration = value;
-                RecalculateDurationAndPlayedTime();
+                RecalculateDuration();
             }
         }
 
@@ -244,23 +255,13 @@ namespace Tweens
                     throw new ArgumentException($"{Type} \"{Name}\": Loops count can't be less than 1 ({value} passed)");
 
                 _loopsCount = value;
-                RecalculateDurationAndPlayedTime();
+                RecalculateDuration();
             }
         }
 
         public LoopType LoopType { get; set; }
 
-        private float _playedTime;
-
-        public float PlayedTime
-        {
-            get => _playedTime;
-            private set
-            {
-                _playedTime = value;
-                RecalculatePlayTimes();
-            }
-        }
+        public float PlayedTime { get; protected set; }
 
         private State _state;
 
@@ -315,20 +316,14 @@ namespace Tweens
             LoopType = loopType;
 
             Direction = direction;
-            _playedTime = Direction == Direction.Forward ? 0f : Duration;
+            PlayedTime = Direction == Direction.Forward ? 0f : Duration;
 
             _playingCoroutine = Coroutine.Create(owner, PlayRoutine());
         }
 
-        private void RecalculateDurationAndPlayedTime()
-        {
-            Duration = LoopDuration * LoopsCount;
+        protected virtual void RecalculateDuration() => Duration = LoopDuration * LoopsCount;
 
-            //TODO: for what?
-            PlayedTime = Mathf.Clamp(PlayedTime, 0f, Duration);
-        }
-
-        private void RecalculatePlayTimes()
+        protected void RecalculatePlayTimes()
         {
             _startTime = Direction == Direction.Forward ? Time.time - PlayedTime : Time.time - (Duration - PlayedTime);
             _endTime = _startTime + Duration;
@@ -545,6 +540,8 @@ namespace Tweens
 
         public Playable PlayBackward(bool resetIfCompleted = true) => Play(resetIfCompleted, Direction.Backward);
 
+        public Playable Play(bool resetIfCompleted = true) => Play(resetIfCompleted, Direction);
+
         private Playable Play(bool resetIfCompleted, Direction direction)
         {
             if (IsPlaying && Direction == direction)
@@ -552,11 +549,6 @@ namespace Tweens
 
             Direction = direction;
 
-            return Play(resetIfCompleted);
-        }
-
-        public Playable Play(bool resetIfCompleted = true)
-        {
             if (IsCompleted)
             {
                 if (!resetIfCompleted)
@@ -569,13 +561,13 @@ namespace Tweens
 
             if (!IsPlaying)
             {
+                State = State.Playing;
+                _playingCoroutine.Run();
+
                 // It is needed to listen coroutine reseted event,
                 // because someone can turn off or destroy owner object.
                 // In this case Playable need correct handling of self state.
                 _playingCoroutine.Reseted += CoroutineResetObserver;
-
-                State = State.Playing;
-                _playingCoroutine.Run();
             }
 
             return this;
@@ -634,7 +626,7 @@ namespace Tweens
             if (resetCoroutine)
                 _playingCoroutine.Reset();
 
-            _playedTime = Direction == Direction.Forward ? 0f : Duration;
+            PlayedTime = Direction == Direction.Forward ? 0f : Duration;
             State = State.Reseted;
 
             return this;
@@ -642,13 +634,13 @@ namespace Tweens
         #endregion
 
         #region Repeat
-        protected abstract IRepeater<Playable> CreateRepeater();
+        protected abstract IRepeater<Playable> CreateRepeater(Direction direction = Direction.Forward);
 
-        public IRepeater<Playable> GetRepeater() => CreateRepeater();
+        public IRepeater<Playable> GetRepeater(Direction direction = Direction.Forward) => CreateRepeater(direction);
 
-        public IRepeater<Playable> Repeat() => GetRepeater().Play();
+        public IRepeater<Playable> Repeat() => GetRepeater(Direction.Forward).PlayForward();
 
-        public IRepeater<Playable> RepeatBackward() => GetRepeater().PlayBackward();
+        public IRepeater<Playable> RepeatBackward() => GetRepeater(Direction.Backward).PlayBackward();
         #endregion
 
         #region Awaiters
@@ -794,7 +786,7 @@ namespace Tweens
         #endregion
 
         #region Repeat
-        new Playable.IRepeater<T> GetRepeater();
+        new Playable.IRepeater<T> GetRepeater(Direction direction);
 
         new Playable.IRepeater<T> Repeat();
 
@@ -1009,7 +1001,7 @@ namespace Tweens
         }
         #endregion
 
-        protected override IRepeater<Playable> CreateRepeater() => new Repeater<T>((T)(Playable)this);
+        protected override IRepeater<Playable> CreateRepeater(Direction direction = Direction.Forward) => new Repeater<T>((T)(Playable)this, direction);
 
         #region Overlaps
         #region Rewinds
@@ -1041,11 +1033,11 @@ namespace Tweens
         #endregion
 
         #region Repeat
-        public new IRepeater<T> GetRepeater() => new Repeater<T>((T)(Playable)this);
+        public new IRepeater<T> GetRepeater(Direction direction = Direction.Forward) => (IRepeater<T>)CreateRepeater(direction);
 
-        public new IRepeater<T> Repeat() => GetRepeater().Play();
+        public new IRepeater<T> Repeat() => GetRepeater(Direction.Forward).PlayForward();
 
-        public new IRepeater<T> RepeatBackward() => GetRepeater().PlayBackward();
+        public new IRepeater<T> RepeatBackward() => GetRepeater(Direction.Backward).PlayBackward();
         #endregion
         #endregion
     }
