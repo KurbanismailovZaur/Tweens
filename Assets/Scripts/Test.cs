@@ -38,7 +38,7 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            var tween = new Tween<float, FloatTweak>(0f, 2f, _target.SetPositionX, 0f, Formula.CircOut, 2, LoopType.Reset);
+            var tween = new Tween<float, FloatTweak>(0f, 2f, _target.SetPositionX, 0f, Formula.CircOut, 2, LoopType.Reset, Direction.Forward);
 
             var sequence = new Sequence("MySeq", Formula.Linear, 2, LoopType.Reset);
             sequence.Append(tween);

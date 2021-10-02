@@ -13,7 +13,7 @@ namespace Tweens
 {
     internal class Callback : Playable<Callback>
     {
-        public Callback(GameObject owner) : base(owner, null, 0f, null, 1, LoopType.Reset) { }
+        public Callback(GameObject owner) : base(owner, null, 0f, null, 1, LoopType.Reset, Direction.Forward) { }
 
         public override Type Type => Type.Callback;
 

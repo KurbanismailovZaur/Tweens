@@ -331,13 +331,14 @@ namespace Tweens
         private float _endTime;
         #endregion
 
-        protected Playable(GameObject owner, string name, float loopDuration, FormulaBase formula, int loopsCount, LoopType loopType)
+        protected Playable(GameObject owner, string name, float loopDuration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             Name = name;
             LoopDuration = loopDuration;
             Formula = formula ?? Tweens.Formula.Linear;
             LoopsCount = loopsCount;
             LoopType = loopType;
+            Direction = direction;
 
             _playingCoroutine = Coroutine.Create(owner, PlayRoutine());
         }
@@ -958,7 +959,7 @@ namespace Tweens
         public event Action<T> Completed;
         #endregion
 
-        protected Playable(GameObject owner, string name, float loopDuration, FormulaBase formula, int loopsCount, LoopType loopType) : base(owner, name, loopDuration, formula, loopsCount, loopType) { }
+        protected Playable(GameObject owner, string name, float loopDuration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction) : base(owner, name, loopDuration, formula, loopsCount, loopType, direction) { }
 
         #region Phase calls
         protected override void CallPhaseStarting(Direction direction) => PhaseStarting?.Invoke((T)(Playable)this, direction);

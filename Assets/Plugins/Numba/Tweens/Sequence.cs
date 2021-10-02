@@ -41,13 +41,13 @@ namespace Tweens
         private static int _nextIndex;
 
         #region Constructors
-        public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset) : this((string)null, formula, loopsCount, loopType) { }
+        public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this((string)null, formula, loopsCount, loopType, direction) { }
 
-        public Sequence(string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset) : this(null, name, formula, loopsCount, loopType) { }
+        public Sequence(string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this(null, name, formula, loopsCount, loopType, direction) { }
 
-        public Sequence(GameObject owner, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset) : this(owner, null, formula, loopsCount, loopType) { }
+        public Sequence(GameObject owner, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this(owner, null, formula, loopsCount, loopType, direction) { }
 
-        public Sequence(GameObject owner, string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset) : base(owner, name, 0f, formula, loopsCount, loopType) { }
+        public Sequence(GameObject owner, string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : base(owner, name, 0f, formula, loopsCount, loopType, direction) { }
         #endregion
 
         private int GetNextIndex() => _nextIndex++;

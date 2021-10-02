@@ -13,7 +13,7 @@ namespace Tweens
 {
     internal class Dummy : Playable<Dummy>
     {
-        public Dummy(GameObject owner, float duration) : base(owner, null, duration, null, 1, LoopType.Reset) { }
+        public Dummy(GameObject owner, float duration) : base(owner, null, duration, null, 1, LoopType.Reset, Direction.Forward) { }
 
         public override Type Type => Type.Dummy;
 
