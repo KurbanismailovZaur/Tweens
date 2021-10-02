@@ -20,7 +20,7 @@ namespace Tweens.Scenes.Tests.Reset
         private IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
-            var tween = new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.Linear, 2, LoopType.Continue, Direction.Forward).Play();
+            var tween = new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.Linear, 2, LoopType.Continue).Play();
             Coroutine.Run(Routines.Delay(1.5f, () => tween.Reset().Play()));
         }
     }

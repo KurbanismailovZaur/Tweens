@@ -20,7 +20,7 @@ namespace Tweens.Scenes.Tests.LoopTypeContinueBackwardWaitForComplete
         private IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
-            var tween =  new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.CircOut, 2, LoopType.Continue, Direction.Backward).Play();
+            var tween =  new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.CircOut, 2, LoopType.Continue).SkipToEnd().PlayBackward();
             yield return tween.WaitForComplete();
             print("Awaited");
         }

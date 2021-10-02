@@ -37,17 +37,19 @@ namespace Tweens
 
         bool IsCompleted { get; }
 
-        Direction Direction { get; }
+        Direction Direction { get; set; }
         #endregion
 
+        IPlayable SetDirection(Direction direction);
+
         #region Rewinds
-        Playable RewindTo(float time);
+        Playable RewindTo(float time, bool emitEvents);
 
 
-        Playable RewindToStart();
+        Playable RewindToStart(bool emitEvents);
 
 
-        Playable RewindToEnd();
+        Playable RewindToEnd(bool emitEvents);
         #endregion
 
         #region Skips
@@ -71,7 +73,7 @@ namespace Tweens
         #endregion
 
         #region Repeat
-        Playable.IRepeater<Playable> GetRepeater(Direction direction);
+        Playable.IRepeater<Playable> GetRepeater();
 
         Playable.IRepeater<Playable> Repeat();
 
@@ -93,6 +95,10 @@ namespace Tweens
             T Target { get; }
 
             bool IsPlaying { get; }
+
+            Direction Direction { get; set; }
+
+            IRepeater<T> SetDirection(Direction direction);
 
             IRepeater<T> PlayForward();
 
@@ -144,18 +150,23 @@ namespace Tweens
 
             public bool IsPlaying { get; private set; }
 
-            public Direction Direction { get; private set; }
+            public Direction Direction { get; set; }
 
             private int _stateCode;
 
-            public Repeater(T playable, Direction direction = Direction.Forward) : this(CoroutinesOwner.Instance.gameObject, playable, direction) { }
+            public Repeater(T playable) : this(CoroutinesOwner.Instance.gameObject, playable) { }
 
-            public Repeater(GameObject owner, T playable, Direction direction = Direction.Forward)
+            public Repeater(GameObject owner, T playable)
             {
                 _playingCoroutine = Coroutine.Create(owner, PlayRoutine());
 
                 Target = playable;
+            }
+
+            public IRepeater<T> SetDirection(Direction direction)
+            {
                 Direction = direction;
+                return this;
             }
 
             public IRepeater<T> PlayForward() => Play(Direction.Forward);
@@ -296,7 +307,20 @@ namespace Tweens
         // TODO: need fix later
         public bool IsPlayingByParent => IsPlaying;
 
-        public Direction Direction { get; private set; }
+        protected Direction _direction;
+
+        public Direction Direction
+        {
+            get => _direction;
+            set
+            {
+                if (_direction == value)
+                    return;
+
+                _direction = value;
+                RecalculatePlayTimes();
+            }
+        }
         #endregion
 
         #region Routines
@@ -307,7 +331,7 @@ namespace Tweens
         private float _endTime;
         #endregion
 
-        protected Playable(GameObject owner, string name, float loopDuration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        protected Playable(GameObject owner, string name, float loopDuration, FormulaBase formula, int loopsCount, LoopType loopType)
         {
             Name = name;
             LoopDuration = loopDuration;
@@ -315,18 +339,27 @@ namespace Tweens
             LoopsCount = loopsCount;
             LoopType = loopType;
 
-            Direction = direction;
-            PlayedTime = Direction == Direction.Forward ? 0f : Duration;
-
             _playingCoroutine = Coroutine.Create(owner, PlayRoutine());
         }
 
-        protected virtual void RecalculateDuration() => Duration = LoopDuration * LoopsCount;
+        protected void RecalculateDuration()
+        {
+            Duration = LoopDuration * LoopsCount;
+            PlayedTime = Mathf.Clamp(PlayedTime, 0f, Duration);
+            
+            RecalculatePlayTimes();
+        }
 
         protected void RecalculatePlayTimes()
         {
             _startTime = Direction == Direction.Forward ? Time.time - PlayedTime : Time.time - (Duration - PlayedTime);
             _endTime = _startTime + Duration;
+        }
+
+        public IPlayable SetDirection(Direction direction)
+        {
+            Direction = direction;
+            return this;
         }
 
         #region Performs
@@ -393,7 +426,56 @@ namespace Tweens
         protected abstract void CallCompleted();
         #endregion
 
-        private void CallDurationableEvents(float startTime, float endTime, Direction direction)
+        protected virtual void BeforeLoopStartingPerform() { }
+
+        #region Rewinds
+        private void RewindZeroDurationWithEvents(Direction direction)
+        {
+            // Started event
+            CallPhaseStarting(direction);
+            PerformCompletely(0, 0f, direction);
+            CallPhaseStarted(direction);
+
+            // Phase events
+            for (int i = 0; i < _loopsCount; i++)
+            {
+                CallPhaseLoopStarting(i, direction);
+                BeforeLoopStartingPerform();
+                PerformCompletely(i, 0f, direction);
+                CallPhaseLoopStarted(i, direction);
+
+                CallPhaseLoopCompleting(i, direction);
+                PerformCompletely(i, 1f, direction);
+                CallPhaseLoopCompleted(i, direction);
+            }
+
+            // Completed event
+            CallPhaseCompleting(direction);
+            PerformCompletely(_loopsCount - 1, 1f, direction);
+            CallPhaseCompleted(direction);
+        }
+
+        private void RewindZeroDurationWithoutEvents(Direction direction)
+        {
+            // Start event
+            PerformCompletely(0, 0f, direction);
+
+            // Phase events
+            for (int i = 0; i < _loopsCount; i++)
+            {
+                BeforeLoopStartingPerform();
+
+                // Loop start events
+                PerformCompletely(i, 0f, direction);
+                // Loop complete events
+                PerformCompletely(i, 1f, direction);
+            }
+
+            // Complete events
+            PerformCompletely(_loopsCount - 1, 1f, direction);
+        }
+
+        private void RewindWithEvents(float startTime, float endTime, Direction direction)
         {
             // Global started phase
             if (startTime == 0f)
@@ -410,6 +492,7 @@ namespace Tweens
             if (startTime == playedLoop * LoopDuration)
             {
                 CallPhaseLoopStarting(playedLoop, direction);
+                BeforeLoopStartingPerform();
                 Perform(playedLoop, 0f, direction);
                 CallPhaseLoopStarted(playedLoop, direction);
             }
@@ -468,8 +551,55 @@ namespace Tweens
             }
         }
 
-        #region Rewinds
-        public Playable RewindTo(float time)
+        private void RewindWithoutEvents(float startTime, float endTime, Direction direction)
+        {
+            // Global started phase
+            if (startTime == 0f)
+                Perform(0, 0f, direction);
+
+            var playedLoop = (int)(startTime / _loopDuration);
+            var timeLoop = (int)(endTime / LoopDuration);
+
+            // Loop started phase
+            if (startTime == playedLoop * LoopDuration)
+            {
+                BeforeLoopStartingPerform();
+                Perform(playedLoop, 0f, direction);
+            }
+
+            // Intermediate phase
+            for (int i = playedLoop + 1; i <= timeLoop - 1; i++)
+            {
+                var (loopIndex, loopedTime) = LoopTime(LoopDuration * i);
+
+                Perform(loopIndex, loopedTime, direction);
+                Perform(loopIndex + 1, 0f, direction);
+            }
+
+            // Loop completed phase.
+            if (endTime == timeLoop * LoopDuration)
+                Perform(timeLoop - 1, LoopDuration, direction);
+            else // Global and loop update phases.
+            {
+                // Last intermediate loop phase.
+                if (timeLoop - playedLoop > 0)
+                {
+                    Perform(timeLoop - 1, LoopDuration, direction);
+                    Perform(timeLoop, 0f, direction);
+                }
+
+                // Update phase.
+                var loopedTime = LoopOnlyTime(endTime);
+
+                Perform(timeLoop, loopedTime, direction);
+            }
+
+            // Global complete phase.
+            if (endTime == Duration)
+                Perform(timeLoop - 1, LoopDuration, direction);
+        }
+
+        public Playable RewindTo(float time, bool emitEvents = true)
         {
             if (_loopDuration == 0f)
             {
@@ -478,27 +608,10 @@ namespace Tweens
 
                 var direction = time > 0f ? Direction.Forward : Direction.Backward;
 
-                // Started event
-                CallPhaseStarting(direction);
-                PerformCompletely(0, 0f, direction);
-                CallPhaseStarted(direction);
-
-                // Phase events
-                for (int i = 0; i < _loopsCount; i++)
-                {
-                    CallPhaseLoopStarting(i, direction);
-                    PerformCompletely(i, 0f, direction);
-                    CallPhaseLoopStarted(i, direction);
-
-                    CallPhaseLoopCompleting(i, direction);
-                    PerformCompletely(i, 1f, direction);
-                    CallPhaseLoopCompleted(i, direction);
-                }
-
-                // Completed event
-                CallPhaseCompleting(direction);
-                PerformCompletely(_loopsCount - 1, 1f, direction);
-                CallPhaseCompleted(direction);
+                if (emitEvents)
+                    RewindZeroDurationWithEvents(direction);
+                else
+                    RewindZeroDurationWithoutEvents(direction);
             }
             else
             {
@@ -508,9 +621,19 @@ namespace Tweens
                     return this;
 
                 if (time > PlayedTime)
-                    CallDurationableEvents(PlayedTime, time, Direction.Forward);
+                {
+                    if (emitEvents)
+                        RewindWithEvents(PlayedTime, time, Direction.Forward);
+                    else
+                        RewindWithoutEvents(PlayedTime, time, Direction.Forward);
+                }
                 else
-                    CallDurationableEvents(Duration - PlayedTime, Duration - time, Direction.Backward);
+                {
+                    if (emitEvents)
+                        RewindWithEvents(Duration - PlayedTime, Duration - time, Direction.Backward);
+                    else
+                        RewindWithoutEvents(Duration - PlayedTime, Duration - time, Direction.Backward);
+                }
 
                 PlayedTime = time;
             }
@@ -518,9 +641,9 @@ namespace Tweens
             return this;
         }
 
-        public Playable RewindToStart() => RewindTo(0f);
+        public Playable RewindToStart(bool emitEvents = true) => RewindTo(0f, emitEvents);
 
-        public Playable RewindToEnd() => RewindTo(Duration);
+        public Playable RewindToEnd(bool emitEvents = true) => RewindTo(Duration, emitEvents);
         #endregion
 
         #region Skips
@@ -634,13 +757,13 @@ namespace Tweens
         #endregion
 
         #region Repeat
-        protected abstract IRepeater<Playable> CreateRepeater(Direction direction = Direction.Forward);
+        protected abstract IRepeater<Playable> CreateRepeater();
 
-        public IRepeater<Playable> GetRepeater(Direction direction = Direction.Forward) => CreateRepeater(direction);
+        public IRepeater<Playable> GetRepeater() => CreateRepeater();
 
-        public IRepeater<Playable> Repeat() => GetRepeater(Direction.Forward).PlayForward();
+        public IRepeater<Playable> Repeat() => GetRepeater().PlayForward();
 
-        public IRepeater<Playable> RepeatBackward() => GetRepeater(Direction.Backward).PlayBackward();
+        public IRepeater<Playable> RepeatBackward() => GetRepeater().PlayBackward();
         #endregion
 
         #region Awaiters
@@ -756,13 +879,15 @@ namespace Tweens
         public T OnCompleted(Action<T> action);
         #endregion
 
+        new T SetDirection(Direction direction);
+
         #region Rewinds
-        new T RewindTo(float time);
+        new T RewindTo(float time, bool emitEvents);
 
 
-        new T RewindToStart();
+        new T RewindToStart(bool emitEvents);
 
-        new T RewindToEnd();
+        new T RewindToEnd(bool emitEvents);
         #endregion
 
         #region Skips
@@ -786,7 +911,7 @@ namespace Tweens
         #endregion
 
         #region Repeat
-        new Playable.IRepeater<T> GetRepeater(Direction direction);
+        new Playable.IRepeater<T> GetRepeater();
 
         new Playable.IRepeater<T> Repeat();
 
@@ -833,7 +958,7 @@ namespace Tweens
         public event Action<T> Completed;
         #endregion
 
-        protected Playable(GameObject owner, string name, float loopDuration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction) : base(owner, name, loopDuration, formula, loopsCount, loopType, direction) { }
+        protected Playable(GameObject owner, string name, float loopDuration, FormulaBase formula, int loopsCount, LoopType loopType) : base(owner, name, loopDuration, formula, loopsCount, loopType) { }
 
         #region Phase calls
         protected override void CallPhaseStarting(Direction direction) => PhaseStarting?.Invoke((T)(Playable)this, direction);
@@ -1001,15 +1126,18 @@ namespace Tweens
         }
         #endregion
 
-        protected override IRepeater<Playable> CreateRepeater(Direction direction = Direction.Forward) => new Repeater<T>((T)(Playable)this, direction);
+        public new T SetDirection(Direction direction) => (T)base.SetDirection(direction);
+
+
+        protected override IRepeater<Playable> CreateRepeater() => new Repeater<T>((T)(Playable)this);
 
         #region Overlaps
         #region Rewinds
-        public new T RewindTo(float time) => (T)base.RewindTo(time);
+        public new T RewindTo(float time, bool emitEvents = true) => (T)base.RewindTo(time, emitEvents);
 
-        public new T RewindToStart() => (T)base.RewindToStart();
+        public new T RewindToStart(bool emitEvents = true) => (T)base.RewindToStart(emitEvents);
 
-        public new T RewindToEnd() => (T)base.RewindToEnd();
+        public new T RewindToEnd(bool emitEvents = true) => (T)base.RewindToEnd(emitEvents);
         #endregion
 
         #region Skips
@@ -1033,11 +1161,11 @@ namespace Tweens
         #endregion
 
         #region Repeat
-        public new IRepeater<T> GetRepeater(Direction direction = Direction.Forward) => (IRepeater<T>)CreateRepeater(direction);
+        public new IRepeater<T> GetRepeater() => (IRepeater<T>)CreateRepeater();
 
-        public new IRepeater<T> Repeat() => GetRepeater(Direction.Forward).PlayForward();
+        public new IRepeater<T> Repeat() => GetRepeater().PlayForward();
 
-        public new IRepeater<T> RepeatBackward() => GetRepeater(Direction.Backward).PlayBackward();
+        public new IRepeater<T> RepeatBackward() => GetRepeater().PlayBackward();
         #endregion
         #endregion
     }

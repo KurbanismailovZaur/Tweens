@@ -20,7 +20,7 @@ namespace Tweens.Scenes.Tests.Skip
         private IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
-            var tween = new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.Linear, 2, LoopType.Continue, Direction.Forward);
+            var tween = new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.Linear, 2, LoopType.Continue);
             tween.SkipTo(1.5f).Play();
         }
     }

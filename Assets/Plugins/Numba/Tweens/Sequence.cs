@@ -23,6 +23,8 @@ namespace Tweens
 
             public float EndTime => StartTime + Playable.Duration;
 
+            public int Index { get; internal set; }
+
             internal Element(float time, IPlayable<Playable> playable)
             {
                 StartTime = time;
@@ -36,15 +38,19 @@ namespace Tweens
 
         public ReadOnlyCollection<Element> Elements => _elements.AsReadOnly();
 
+        private static int _nextIndex;
+
         #region Constructors
-        public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this((string)null, formula, loopsCount, loopType, direction) { }
+        public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset) : this((string)null, formula, loopsCount, loopType) { }
 
-        public Sequence(string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this(null, name, formula, loopsCount, loopType, direction) { }
+        public Sequence(string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset) : this(null, name, formula, loopsCount, loopType) { }
 
-        public Sequence(GameObject owner, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this(owner, null, formula, loopsCount, loopType, direction) { }
+        public Sequence(GameObject owner, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset) : this(owner, null, formula, loopsCount, loopType) { }
 
-        public Sequence(GameObject owner, string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : base(owner, name, 0f, formula, loopsCount, loopType, direction) { }
+        public Sequence(GameObject owner, string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset) : base(owner, name, 0f, formula, loopsCount, loopType) { }
         #endregion
+
+        private int GetNextIndex() => _nextIndex++;
 
         public bool CheckCyclicReference(Sequence other)
         {
@@ -95,6 +101,8 @@ namespace Tweens
                 throw new ArgumentException($"{Type} \"{Name}\": Cyclic references in sequences are not allowed (sequence \"{sequence.Name}\" already contains sequence \"{Name}\")");
 
             var element = new Element(Mathf.Max(time, 0f), playable);
+            element.Index = GetNextIndex();
+
             _elements.Add(element);
 
             if (element.EndTime > LoopDuration)
@@ -276,12 +284,28 @@ namespace Tweens
         }
         #endregion
 
-        protected override void Perform(int loop, float loopedTime, Direction direction)
+        protected override void BeforeLoopStartingPerform()
         {
             
         }
 
         protected override void PerformCompletely(int loop, float loopedNormalizedTime, Direction direction)
+        {
+            if (LoopType == LoopType.Reset)
+            {
+
+            }
+            else if (LoopType == LoopType.Continue)
+            {
+
+            }
+            else if (LoopType == LoopType.Mirror)
+            {
+
+            }
+        }
+
+        protected override void Perform(int loop, float loopedTime, Direction direction)
         {
             
         }

@@ -20,7 +20,7 @@ namespace Tweens.Scenes.Tests.LoopCount1
         private IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
-            new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.CircOut, 1, LoopType.Reset, Direction.Forward).Play();
+            new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.CircOut, 1, LoopType.Reset).Play();
         }
     }
 }
