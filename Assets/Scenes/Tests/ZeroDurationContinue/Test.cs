@@ -9,12 +9,11 @@ using Coroutines.Extensions;
 using Object = UnityEngine.Object;
 using Coroutine = Coroutines.Coroutine;
 using Tweens.Tweaks;
-using Tweens;
 
-namespace Tweens
+namespace Tweens.Scenes.Tests.ZeroDurationContinue
 {
-    public class Test : MonoBehaviour
-    {
+	public class Test : MonoBehaviour
+	{
         [SerializeField]
         private Transform _target;
 
@@ -34,23 +33,14 @@ namespace Tweens
             playable.OnPhaseCompleted((p, dir) => print($"[{p.Name}] Phase completed in {dir} direction"));
         }
 
-        IEnumerator Start()
+        private IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
-
-            var tween = new Tween<float, FloatTweak>(0f, 2f, _target.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            
+            var tween = new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 0f, Formula.Linear, 2, LoopType.Continue);
             SubscribeOnAllEvents(tween);
+            
             tween.Play();
-
-            yield return tween.WaitForComplete();
-            Debug.Break();
-            tween.PlayBackward();
-
-            //var sequence = new Sequence("MySeq", Formula.Linear, 2, LoopType.Reset);
-            //sequence.Append(tween);
-
-            //SubscribeOnAllEvents(sequence);
-            //sequence.Play();
         }
     }
 }

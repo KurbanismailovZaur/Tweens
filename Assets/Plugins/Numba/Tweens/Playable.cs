@@ -347,7 +347,7 @@ namespace Tweens
         {
             Duration = LoopDuration * LoopsCount;
             PlayedTime = Mathf.Clamp(PlayedTime, 0f, Duration);
-            
+
             RecalculatePlayTimes();
         }
 
@@ -505,7 +505,7 @@ namespace Tweens
 
                 CallPhaseLoopCompleting(loopIndex, direction);
                 Perform(loopIndex, loopedTime, direction);
-                CallPhaseLoopCompleting(loopIndex, direction);
+                CallPhaseLoopCompleted(loopIndex, direction);
 
                 CallPhaseLoopStarting(loopIndex + 1, direction);
                 Perform(loopIndex + 1, 0f, direction);
@@ -517,7 +517,7 @@ namespace Tweens
             {
                 CallPhaseLoopCompleting(timeLoop - 1, direction);
                 Perform(timeLoop - 1, LoopDuration, direction);
-                CallPhaseLoopCompleting(timeLoop - 1, direction);
+                CallPhaseLoopCompleted(timeLoop - 1, direction);
             }
             else // Global and loop update phases.
             {
@@ -526,7 +526,7 @@ namespace Tweens
                 {
                     CallPhaseLoopCompleting(timeLoop - 1, direction);
                     Perform(timeLoop - 1, LoopDuration, direction);
-                    CallPhaseLoopCompleting(timeLoop - 1, direction);
+                    CallPhaseLoopCompleted(timeLoop - 1, direction);
 
                     CallPhaseLoopStarting(timeLoop, direction);
                     Perform(timeLoop, 0f, direction);
@@ -648,11 +648,20 @@ namespace Tweens
         #endregion
 
         #region Skips
-        public Playable SkipTo(float time)
+
+        /// <summary>
+        /// This method is needed to allow overriding in the final descendant. 
+        /// Clamp and sets the passed time to the PlayedTime property.
+        /// </summary>
+        /// <param name="time">Time until which events will be skipped</param>
+        /// <returns>This object.</returns>
+        protected virtual Playable SkipTimeTo(float time)
         {
             PlayedTime = Mathf.Clamp(time, 0f, Duration);
             return this;
         }
+
+        public Playable SkipTo(float time) => SkipTimeTo(time);
 
         public Playable SkipToStart() => SkipTo(0f);
 
@@ -1128,7 +1137,6 @@ namespace Tweens
         #endregion
 
         public new T SetDirection(Direction direction) => (T)base.SetDirection(direction);
-
 
         protected override IRepeater<Playable> CreateRepeater() => new Repeater<T>((T)(Playable)this);
 

@@ -38,7 +38,7 @@ namespace Tweens
 
         public ReadOnlyCollection<Element> Elements => _elements.AsReadOnly();
 
-        private static int _nextIndex;
+        private int _nextIndex;
 
         #region Constructors
         public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this((string)null, formula, loopsCount, loopType, direction) { }
@@ -100,8 +100,7 @@ namespace Tweens
             if (playable is Sequence sequence && CheckCyclicReference(sequence))
                 throw new ArgumentException($"{Type} \"{Name}\": Cyclic references in sequences are not allowed (sequence \"{sequence.Name}\" already contains sequence \"{Name}\")");
 
-            var element = new Element(Mathf.Max(time, 0f), playable);
-            element.Index = GetNextIndex();
+            var element = new Element(Mathf.Max(time, 0f), playable) { Index = GetNextIndex() };
 
             _elements.Add(element);
 
@@ -286,11 +285,26 @@ namespace Tweens
 
         protected override void BeforeLoopStartingPerform()
         {
+
+        }
+
+        protected override Playable SkipTimeTo(float time)
+        {
+            // if loop duration is zero, then played time will also always be zero,
+            // so there is no point in assigning to it.
+            if (LoopDuration == 0f)
+                return this;
+
+            // TODO: Call SkipTo on all elements in [PlayedTime..time] interval.
             
+
+            return base.SkipTimeTo(time);
         }
 
         protected override void PerformCompletely(int loop, float loopedNormalizedTime, Direction direction)
         {
+            // TODO: Call RewindTo on all elements with respect to direction.
+
             if (LoopType == LoopType.Reset)
             {
 
@@ -307,7 +321,20 @@ namespace Tweens
 
         protected override void Perform(int loop, float loopedTime, Direction direction)
         {
-            
+            // TODO: Call RewindTo on all elements in [PlayedTime..time] interval with respect to direction.
+
+            if (LoopType == LoopType.Reset)
+            {
+
+            }
+            else if (LoopType == LoopType.Continue)
+            {
+
+            }
+            else if (LoopType == LoopType.Mirror)
+            {
+
+            }
         }
     }
 }
