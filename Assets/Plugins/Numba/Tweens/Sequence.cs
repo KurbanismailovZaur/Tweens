@@ -301,25 +301,21 @@ namespace Tweens
             else
             {
                 for (int i = 0; i < _elements.Count; i++)
-                {
-                    if (direction == Direction.Forward)
-                        _elements[i].Playable.SkipToStart();
-                    else
-                        _elements[i].Playable.SkipToEnd();
-                }
+                    _elements[i].Playable.SkipTo(direction == Direction.Forward ? 0f : Duration);
             }
         }
 
         private void FillBufferWithElementsOnInterval(float start, float end, Direction direction)
         {
-            static bool CompareZeroForward(Element element, float start, float end) => element.StartTime < end && element.EndTime >= start;
+            // second expression in end of two methods below is for playables with zero duration and chich placed at end of loop.
+            bool CompareZeroForward(Element element, float start, float end) => (element.StartTime < end && element.EndTime >= start) || (end == LoopDuration && element.StartTime == end);
 
-            static bool CompareZeroBackward(Element element, float start, float end) => element.EndTime > end && element.StartTime <= start;
+            bool CompareZeroBackward(Element element, float start, float end) => (element.EndTime > end && element.StartTime <= start) || (end == 0 && element.StartTime == 0);
 
-            static bool CompareForward(Element element, float start, float end) => element.StartTime < end && element.EndTime > start;
+            bool CompareForward(Element element, float start, float end) => element.StartTime < end && element.EndTime > start;
 
-            static bool CompareBackward(Element element, float start, float end) => element.EndTime > end && element.StartTime < start;
-
+            bool CompareBackward(Element element, float start, float end) => element.EndTime > end && element.StartTime < start;
+            
             for (int i = 0; i < _elements.Count; i++)
             {
                 var element = _elements[i];
@@ -403,7 +399,8 @@ namespace Tweens
                 (loopedPlayedTime, loopedTime) = (LoopDuration - loopedPlayedTime, LoopDuration - loopedTime);
 
             FillBufferWithElementsOnInterval(loopedPlayedTime, loopedTime, direction);
-            
+            Debug.Log($"{Name}: {_buffer.Count}");
+
             for (int i = 0; i < _buffer.Count; i++)
                 _elements[i].Playable.SkipTo(loopedTime - _elements[i].StartTime);
 
