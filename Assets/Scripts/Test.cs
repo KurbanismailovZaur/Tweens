@@ -38,10 +38,56 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            var tween = new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.Linear, 2, LoopType.Reset, Direction.Forward);
-            SubscribeOnAllEvents(tween);
-            tween.RewindToEnd();
-            tween.RewindToStart();
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, v => { }, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+
+            var nseq = new Sequence("nseq", Formula.Linear, 1, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
+            nseq.Append(tween);
+
+            var seq = new Sequence("seq", Formula.Linear, 2, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
+            seq.Append(nseq);
+            //seq.Append(tween);
+
+            seq.SkipTo(0.5f);
+            print(seq.PlayedTime);
+            print(nseq.PlayedTime);
+            print(tween.PlayedTime);
+            print("");
+
+            seq.SkipTo(1.5f);
+            print(seq.PlayedTime);
+            print(nseq.PlayedTime);
+            print(tween.PlayedTime);
+            print("");
+
+            seq.SkipTo(2f);
+            print(seq.PlayedTime);
+            print(nseq.PlayedTime);
+            print(tween.PlayedTime);
+            print("");
+
+            seq.SkipTo(1.5f);
+            print(seq.PlayedTime);
+            print(nseq.PlayedTime);
+            print(tween.PlayedTime);
+            print("");
+
+            seq.SkipTo(1f);
+            print(seq.PlayedTime);
+            print(nseq.PlayedTime);
+            print(tween.PlayedTime);
+            print("");
+
+            seq.SkipTo(0.25f);
+            print(seq.PlayedTime);
+            print(nseq.PlayedTime);
+            print(tween.PlayedTime);
+            print("");
+
+            seq.SkipTo(0f);
+            print(seq.PlayedTime);
+            print(nseq.PlayedTime);
+            print(tween.PlayedTime);
+            print("");
         }
     }
 }

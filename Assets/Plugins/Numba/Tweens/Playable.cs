@@ -421,7 +421,7 @@ namespace Tweens
         protected abstract void CallCompleted();
         #endregion
 
-        protected virtual void BeforeLoopStarting() { }
+        protected virtual void BeforeLoopStarting(Direction direction) { }
 
         #region Rewinds
         public Playable RewindToStart(bool emitEvents = true) => RewindTo(0f, emitEvents);
@@ -473,6 +473,7 @@ namespace Tweens
         private void RewindZeroDurationWithEvents(Direction direction)
         {
             // Started event
+            BeforeLoopStarting(direction);
             CallPhaseStarting(direction);
             RewindZeroHandler(0, 0f, direction);
             CallPhaseStarted(direction);
@@ -480,7 +481,7 @@ namespace Tweens
             // Phase events
             for (int i = 0; i < _loopsCount; i++)
             {
-                BeforeLoopStarting();
+                BeforeLoopStarting(direction);
                 CallPhaseLoopStarting(i, direction);
                 RewindZeroHandler(i, 0f, direction);
                 CallPhaseLoopStarted(i, direction);
@@ -499,15 +500,16 @@ namespace Tweens
         private void RewindZeroDurationWithoutEvents(Direction direction)
         {
             // Start event
+            BeforeLoopStarting(direction);
             RewindZeroHandler(0, 0f, direction);
 
             // Phase events
             for (int i = 0; i < _loopsCount; i++)
             {
-                BeforeLoopStarting();
-
                 // Loop start events
+                BeforeLoopStarting(direction);
                 RewindZeroHandler(i, 0f, direction);
+                
                 // Loop complete events
                 RewindZeroHandler(i, 1f, direction);
             }
@@ -521,7 +523,7 @@ namespace Tweens
             // Global started phase
             if (startTime == 0f)
             {
-                BeforeLoopStarting();
+                BeforeLoopStarting(direction);
                 CallPhaseStarting(direction);
                 RewindHandler(0, 0f, direction);
                 CallPhaseStarted(direction);
@@ -536,7 +538,7 @@ namespace Tweens
                 // If all elements already handled in global start phase,
                 // than we don't need handle elements.
                 if (startTime != 0f)
-                    BeforeLoopStarting();
+                    BeforeLoopStarting(direction);
 
                 CallPhaseLoopStarting(playedLoop, direction);
                 RewindHandler(playedLoop, 0f, direction);
@@ -552,7 +554,7 @@ namespace Tweens
                 RewindHandler(loopIndex, loopedTime, direction);
                 CallPhaseLoopCompleted(loopIndex, direction);
 
-                BeforeLoopStarting();
+                BeforeLoopStarting(direction);
                 CallPhaseLoopStarting(loopIndex + 1, direction);
                 RewindHandler(loopIndex + 1, 0f, direction);
                 CallPhaseLoopStarted(loopIndex + 1, direction);
@@ -575,7 +577,7 @@ namespace Tweens
                     RewindHandler(timeLoop - 1, _loopDuration, direction);
                     CallPhaseLoopCompleted(timeLoop - 1, direction);
 
-                    BeforeLoopStarting();
+                    BeforeLoopStarting(direction);
                     CallPhaseLoopStarting(timeLoop, direction);
                     RewindHandler(timeLoop, 0f, direction);
                     CallPhaseLoopStarted(timeLoop, direction);
@@ -605,7 +607,7 @@ namespace Tweens
             // Global started phase
             if (startTime == 0f)
             {
-                BeforeLoopStarting();
+                BeforeLoopStarting(direction);
                 RewindHandler(0, 0f, direction);
             }
 
@@ -618,7 +620,7 @@ namespace Tweens
                 // If all elements already handled in global start phase,
                 // than we don't need handle elements.
                 if (startTime != 0f)
-                    BeforeLoopStarting();
+                    BeforeLoopStarting(direction);
 
                 RewindHandler(playedLoop, 0f, direction);
             }
@@ -630,7 +632,7 @@ namespace Tweens
 
                 RewindHandler(loopIndex, loopedTime, direction);
 
-                BeforeLoopStarting();
+                BeforeLoopStarting(direction);
                 RewindHandler(loopIndex + 1, 0f, direction);
             }
 
@@ -644,7 +646,7 @@ namespace Tweens
                 {
                     RewindHandler(timeLoop - 1, _loopDuration, direction);
 
-                    BeforeLoopStarting();
+                    BeforeLoopStarting(direction);
                     RewindHandler(timeLoop, 0f, direction);
                 }
 

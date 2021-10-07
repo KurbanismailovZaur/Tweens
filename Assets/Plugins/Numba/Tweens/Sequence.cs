@@ -290,9 +290,9 @@ namespace Tweens
         }
         #endregion
 
-        protected override void BeforeLoopStarting() => BeforeLoopStarting(LoopResetBehaviour);
+        protected override void BeforeLoopStarting(Direction direction) => BeforeLoopStarting(direction, LoopResetBehaviour);
 
-        private void BeforeLoopStarting(LoopResetBehaviour loopResetBehaviour)
+        private void BeforeLoopStarting(Direction direction, LoopResetBehaviour loopResetBehaviour)
         {
             if (loopResetBehaviour == LoopResetBehaviour.Rewind)
             {
@@ -300,7 +300,13 @@ namespace Tweens
             }
             else
             {
-
+                for (int i = 0; i < _elements.Count; i++)
+                {
+                    if (direction == Direction.Forward)
+                        _elements[i].Playable.SkipToStart();
+                    else
+                        _elements[i].Playable.SkipToEnd();
+                }
             }
         }
 
@@ -310,17 +316,28 @@ namespace Tweens
 
             static bool CompareZeroBackward(Element element, float start, float end) => element.EndTime > end && element.StartTime <= start;
 
-            static bool CompareNonZeroForward(Element element, float start, float end) => element.StartTime < end && element.EndTime > start;
+            static bool CompareForward(Element element, float start, float end) => element.StartTime < end && element.EndTime > start;
 
-            static bool CompareNonZeroBackward(Element element, float start, float end) => element.EndTime > end && element.StartTime < start;
+            static bool CompareBackward(Element element, float start, float end) => element.EndTime > end && element.StartTime < start;
 
             for (int i = 0; i < _elements.Count; i++)
             {
                 var element = _elements[i];
 
-                //    _buffer.Add(element);
-                //else if (element.Playable.Duration == 0f && CompareNonZero(element, s, sr, e, er))
-                //    _buffer.Add(element);
+                if (element.Playable.Duration == 0f)
+                {
+                    if (direction == Direction.Forward && CompareZeroForward(element, start, end))
+                        _buffer.Add(element);
+                    else if (direction == Direction.Backward && CompareZeroBackward(element, start, end))
+                        _buffer.Add(element);
+                }
+                else
+                {
+                    if (direction == Direction.Forward && CompareForward(element, start, end))
+                        _buffer.Add(element);
+                    else if (direction == Direction.Backward && CompareBackward(element, start, end))
+                        _buffer.Add(element);
+                }
             }
         }
 
@@ -340,7 +357,7 @@ namespace Tweens
             // Loop started phase
             if (startTime == playedLoop * LoopDuration)
             {
-                BeforeLoopStarting(LoopResetBehaviour.Skip);
+                BeforeLoopStarting(direction, LoopResetBehaviour.Skip);
                 loopedPlayedTime = 0f;
             }
 
@@ -350,14 +367,14 @@ namespace Tweens
                 var loopedTime = LoopTime(LoopDuration * i);
                 SkipHandler(loopedPlayedTime, loopedTime, direction);
 
-                BeforeLoopStarting(LoopResetBehaviour.Skip);
+                BeforeLoopStarting(direction, LoopResetBehaviour.Skip);
                 loopedPlayedTime = 0f;
             }
 
             // Loop completed phase.
             if (endTime == timeLoop * LoopDuration)
                 SkipHandler(loopedPlayedTime, LoopDuration, direction);
-            else // Global and loop update phases.
+            else // Loop update phases.
             {
                 // Last intermediate loop phase. For example, when we start from
                 // middle looped position and ended on other middle looped position.
@@ -365,7 +382,7 @@ namespace Tweens
                 {
                     SkipHandler(loopedPlayedTime, LoopDuration, direction);
 
-                    BeforeLoopStarting(LoopResetBehaviour.Skip);
+                    BeforeLoopStarting(direction, LoopResetBehaviour.Skip);
                     loopedPlayedTime = 0f;
                 }
 
@@ -380,17 +397,15 @@ namespace Tweens
             return this;
         }
 
-        private void SkipHandler(float playedLoopedTime, float loopedTime, Direction direction)
+        private void SkipHandler(float loopedPlayedTime, float loopedTime, Direction direction)
         {
-            FillBufferWithElementsOnInterval(playedLoopedTime, loopedTime, direction);
+            if (direction == Direction.Backward)
+                (loopedPlayedTime, loopedTime) = (LoopDuration - loopedPlayedTime, LoopDuration - loopedTime);
 
-            // TODO: Call SkipTo on all elements (except - zero duration) in [PlayedTime..time] interval.
+            FillBufferWithElementsOnInterval(loopedPlayedTime, loopedTime, direction);
+            
             for (int i = 0; i < _buffer.Count; i++)
-            {
-                var element = _buffer[i];
-
-
-            }
+                _elements[i].Playable.SkipTo(loopedTime - _elements[i].StartTime);
 
             _buffer.Clear();
         }
