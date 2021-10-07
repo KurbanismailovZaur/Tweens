@@ -38,19 +38,10 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            var tween = new Tween<float, FloatTweak>(0f, 2f, _target.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            var tween = new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.Linear, 2, LoopType.Reset, Direction.Forward);
             SubscribeOnAllEvents(tween);
-            tween.Play();
-
-            yield return tween.WaitForComplete();
-            Debug.Break();
-            tween.PlayBackward();
-
-            //var sequence = new Sequence("MySeq", Formula.Linear, 2, LoopType.Reset);
-            //sequence.Append(tween);
-
-            //SubscribeOnAllEvents(sequence);
-            //sequence.Play();
+            tween.RewindToEnd();
+            tween.RewindToStart();
         }
     }
 }

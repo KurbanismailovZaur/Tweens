@@ -34,20 +34,27 @@ namespace Tweens
 
         public override Type Type => Type.Sequence;
 
+        public LoopResetBehaviour LoopResetBehaviour { get; set; }
+
         private readonly List<Element> _elements = new List<Element>();
 
         public ReadOnlyCollection<Element> Elements => _elements.AsReadOnly();
 
         private int _nextIndex;
 
+        private List<Element> _buffer = new List<Element>();
+
         #region Constructors
-        public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this((string)null, formula, loopsCount, loopType, direction) { }
+        public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : this((string)null, formula, loopsCount, loopType, direction, loopResetBehaviour) { }
 
-        public Sequence(string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this(null, name, formula, loopsCount, loopType, direction) { }
+        public Sequence(string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : this(null, name, formula, loopsCount, loopType, direction, loopResetBehaviour) { }
 
-        public Sequence(GameObject owner, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this(owner, null, formula, loopsCount, loopType, direction) { }
+        public Sequence(GameObject owner, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : this(owner, null, formula, loopsCount, loopType, direction, loopResetBehaviour) { }
 
-        public Sequence(GameObject owner, string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : base(owner, name, 0f, formula, loopsCount, loopType, direction) { }
+        public Sequence(GameObject owner, string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : base(owner, name, 0f, formula, loopsCount, loopType, direction)
+        {
+            LoopResetBehaviour = loopResetBehaviour;
+        }
         #endregion
 
         private int GetNextIndex() => _nextIndex++;
@@ -283,25 +290,112 @@ namespace Tweens
         }
         #endregion
 
-        protected override void BeforeLoopStartingPerform()
-        {
+        protected override void BeforeLoopStarting() => BeforeLoopStarting(LoopResetBehaviour);
 
+        private void BeforeLoopStarting(LoopResetBehaviour loopResetBehaviour)
+        {
+            if (loopResetBehaviour == LoopResetBehaviour.Rewind)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void FillBufferWithElementsOnInterval(float start, float end, Direction direction)
+        {
+            static bool CompareZeroForward(Element element, float start, float end) => element.StartTime < end && element.EndTime >= start;
+
+            static bool CompareZeroBackward(Element element, float start, float end) => element.EndTime > end && element.StartTime <= start;
+
+            static bool CompareNonZeroForward(Element element, float start, float end) => element.StartTime < end && element.EndTime > start;
+
+            static bool CompareNonZeroBackward(Element element, float start, float end) => element.EndTime > end && element.StartTime < start;
+
+            for (int i = 0; i < _elements.Count; i++)
+            {
+                var element = _elements[i];
+
+                //    _buffer.Add(element);
+                //else if (element.Playable.Duration == 0f && CompareNonZero(element, s, sr, e, er))
+                //    _buffer.Add(element);
+            }
         }
 
         protected override Playable SkipTimeTo(float time)
         {
             // if loop duration is zero, then played time will also always be zero,
             // so there is no point in assigning to it.
-            if (LoopDuration == 0f)
+            if (time == PlayedTime || LoopDuration == 0f)
                 return this;
 
-            // TODO: Call SkipTo on all elements in [PlayedTime..time] interval.
-            
+            var (startTime, endTime, direction) = time > PlayedTime ? (PlayedTime, time, Direction.Forward) : (Duration - PlayedTime, Duration - time, Direction.Backward);
+            var loopedPlayedTime = LoopTime(PlayedTime);
 
-            return base.SkipTimeTo(time);
+            var playedLoop = (int)(startTime / LoopDuration);
+            var timeLoop = (int)(endTime / LoopDuration);
+
+            // Loop started phase
+            if (startTime == playedLoop * LoopDuration)
+            {
+                BeforeLoopStarting(LoopResetBehaviour.Skip);
+                loopedPlayedTime = 0f;
+            }
+
+            // Intermediate phase
+            for (int i = playedLoop + 1; i <= timeLoop - 1; i++)
+            {
+                var loopedTime = LoopTime(LoopDuration * i);
+                SkipHandler(loopedPlayedTime, loopedTime, direction);
+
+                BeforeLoopStarting(LoopResetBehaviour.Skip);
+                loopedPlayedTime = 0f;
+            }
+
+            // Loop completed phase.
+            if (endTime == timeLoop * LoopDuration)
+                SkipHandler(loopedPlayedTime, LoopDuration, direction);
+            else // Global and loop update phases.
+            {
+                // Last intermediate loop phase. For example, when we start from
+                // middle looped position and ended on other middle looped position.
+                if (timeLoop - playedLoop > 0)
+                {
+                    SkipHandler(loopedPlayedTime, LoopDuration, direction);
+
+                    BeforeLoopStarting(LoopResetBehaviour.Skip);
+                    loopedPlayedTime = 0f;
+                }
+
+                // Update phase.
+                var loopedTime = LoopTime(endTime);
+
+                SkipHandler(loopedPlayedTime, loopedTime, direction);
+                loopedPlayedTime = loopedTime;
+            }
+
+            PlayedTime = Mathf.Clamp(time, 0f, Duration);
+            return this;
         }
 
-        protected override void PerformCompletely(int loop, float loopedNormalizedTime, Direction direction)
+        private void SkipHandler(float playedLoopedTime, float loopedTime, Direction direction)
+        {
+            FillBufferWithElementsOnInterval(playedLoopedTime, loopedTime, direction);
+
+            // TODO: Call SkipTo on all elements (except - zero duration) in [PlayedTime..time] interval.
+            for (int i = 0; i < _buffer.Count; i++)
+            {
+                var element = _buffer[i];
+
+
+            }
+
+            _buffer.Clear();
+        }
+
+        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction)
         {
             // TODO: Call RewindTo on all elements with respect to direction.
 
@@ -319,7 +413,7 @@ namespace Tweens
             }
         }
 
-        protected override void Perform(int loop, float loopedTime, Direction direction)
+        protected override void RewindHandler(int loop, float loopedTime, Direction direction)
         {
             // TODO: Call RewindTo on all elements in [PlayedTime..time] interval with respect to direction.
 
