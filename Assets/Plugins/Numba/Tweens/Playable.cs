@@ -526,6 +526,7 @@ namespace Tweens
                 BeforeLoopStarting(direction);
                 CallPhaseStarting(direction);
                 RewindHandler(0, 0f, direction);
+                PlayedTime = 0f;
                 CallPhaseStarted(direction);
             }
 
@@ -542,6 +543,7 @@ namespace Tweens
 
                 CallPhaseLoopStarting(playedLoop, direction);
                 RewindHandler(playedLoop, 0f, direction);
+                PlayedTime = 0f;
                 CallPhaseLoopStarted(playedLoop, direction);
             }
 
@@ -552,6 +554,7 @@ namespace Tweens
 
                 CallPhaseLoopCompleting(loopIndex, direction);
                 RewindHandler(loopIndex, loopedTime, direction);
+                PlayedTime = loopedTime;
                 CallPhaseLoopCompleted(loopIndex, direction);
 
                 BeforeLoopStarting(direction);

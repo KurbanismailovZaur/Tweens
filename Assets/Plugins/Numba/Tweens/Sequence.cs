@@ -23,12 +23,13 @@ namespace Tweens
 
             public float EndTime => StartTime + Playable.Duration;
 
-            public int Index { get; internal set; }
+            public int Priority { get; internal set; }
 
-            internal Element(float time, IPlayable<Playable> playable)
+            internal Element(float time, IPlayable<Playable> playable, int index)
             {
                 StartTime = time;
                 Playable = playable;
+                Priority = index;
             }
         }
 
@@ -40,9 +41,11 @@ namespace Tweens
 
         public ReadOnlyCollection<Element> Elements => _elements.AsReadOnly();
 
-        private int _nextIndex;
+        private int _nextPriority;
 
-        private List<Element> _buffer = new List<Element>();
+        private readonly List<Element> _elementsBuffer = new List<Element>();
+
+        private readonly List<int> _eventsBuffer = new List<int>();
 
         #region Constructors
         public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : this((string)null, formula, loopsCount, loopType, direction, loopResetBehaviour) { }
@@ -57,7 +60,7 @@ namespace Tweens
         }
         #endregion
 
-        private int GetNextIndex() => _nextIndex++;
+        private int GetNextPriority() => _nextPriority++;
 
         public bool CheckCyclicReference(Sequence other)
         {
@@ -76,7 +79,8 @@ namespace Tweens
             return false;
         }
 
-        #region Adding
+        #region Elements
+        #region Add
         public Element Prepend(IPlayable<Playable> playable)
         {
             var leftmost = GetLeftmostElement();
@@ -107,7 +111,7 @@ namespace Tweens
             if (playable is Sequence sequence && CheckCyclicReference(sequence))
                 throw new ArgumentException($"{Type} \"{Name}\": Cyclic references in sequences are not allowed (sequence \"{sequence.Name}\" already contains sequence \"{Name}\")");
 
-            var element = new Element(Mathf.Max(time, 0f), playable) { Index = GetNextIndex() };
+            var element = new Element(Mathf.Max(time, 0f), playable, GetNextPriority());
 
             _elements.Add(element);
 
@@ -118,7 +122,7 @@ namespace Tweens
         }
         #endregion
 
-        #region Elements getters
+        #region Get
         public Element GetLeftmostElement()
         {
             if (_elements.Count == 0)
@@ -289,7 +293,15 @@ namespace Tweens
             return removed;
         }
         #endregion
+        #endregion
 
+        public Sequence SetLoopResetBehaviour(LoopResetBehaviour loopResetBehaviour)
+        {
+            LoopResetBehaviour = loopResetBehaviour;
+            return this;
+        }
+
+        #region Before loop starting
         protected override void BeforeLoopStarting(Direction direction) => BeforeLoopStarting(direction, LoopResetBehaviour);
 
         private void BeforeLoopStarting(Direction direction, LoopResetBehaviour loopResetBehaviour)
@@ -304,10 +316,11 @@ namespace Tweens
                     _elements[i].Playable.SkipTo(direction == Direction.Forward ? 0f : Duration);
             }
         }
+        #endregion
 
         private void FillBufferWithElementsOnInterval(float start, float end, Direction direction)
         {
-            // second expression in end of two methods below is for playables with zero duration and chich placed at end of loop.
+            // second expression in end of two methods below is for playables with zero duration and which placed at end of loop.
             bool CompareZeroForward(Element element, float start, float end) => (element.StartTime < end && element.EndTime >= start) || (end == LoopDuration && element.StartTime == end);
 
             bool CompareZeroBackward(Element element, float start, float end) => (element.EndTime > end && element.StartTime <= start) || (end == 0 && element.StartTime == 0);
@@ -315,28 +328,35 @@ namespace Tweens
             bool CompareForward(Element element, float start, float end) => element.StartTime < end && element.EndTime > start;
 
             bool CompareBackward(Element element, float start, float end) => element.EndTime > end && element.StartTime < start;
-            
-            for (int i = 0; i < _elements.Count; i++)
-            {
-                var element = _elements[i];
 
-                if (element.Playable.Duration == 0f)
+
+            if (direction == Direction.Forward)
+            {
+                for (int i = 0; i < _elements.Count; i++)
                 {
-                    if (direction == Direction.Forward && CompareZeroForward(element, start, end))
-                        _buffer.Add(element);
-                    else if (direction == Direction.Backward && CompareZeroBackward(element, start, end))
-                        _buffer.Add(element);
+                    var element = _elements[i];
+
+                    if (element.Playable.Duration == 0f && CompareZeroForward(element, start, end))
+                        _elementsBuffer.Add(element);
+                    else if (element.Playable.Duration != 0f && CompareForward(element, start, end))
+                        _elementsBuffer.Add(element);
                 }
-                else
+            }
+            else
+            {
+                for (int i = 0; i < _elements.Count; i++)
                 {
-                    if (direction == Direction.Forward && CompareForward(element, start, end))
-                        _buffer.Add(element);
-                    else if (direction == Direction.Backward && CompareBackward(element, start, end))
-                        _buffer.Add(element);
+                    var element = _elements[i];
+
+                    if (element.Playable.Duration == 0f && CompareZeroBackward(element, start, end))
+                        _elementsBuffer.Add(element);
+                    else if (element.Playable.Duration != 0f && CompareBackward(element, start, end))
+                        _elementsBuffer.Add(element);
                 }
             }
         }
 
+        #region Skip
         protected override Playable SkipTimeTo(float time)
         {
             // if loop duration is zero, then played time will also always be zero,
@@ -399,14 +419,29 @@ namespace Tweens
                 (loopedPlayedTime, loopedTime) = (LoopDuration - loopedPlayedTime, LoopDuration - loopedTime);
 
             FillBufferWithElementsOnInterval(loopedPlayedTime, loopedTime, direction);
-            Debug.Log($"{Name}: {_buffer.Count}");
 
-            for (int i = 0; i < _buffer.Count; i++)
+            for (int i = 0; i < _elementsBuffer.Count; i++)
                 _elements[i].Playable.SkipTo(loopedTime - _elements[i].StartTime);
 
-            _buffer.Clear();
+            _elementsBuffer.Clear();
+        }
+        #endregion
+
+        private void FillEventsBuffer(float start, float end, Direction direction)
+        {
+            for (int i = 0; i < _elementsBuffer.Count; i++)
+            {
+                FillBufferWithElementsOnInterval(start, end, direction);
+
+                var element = _elementsBuffer[i];
+
+
+
+                _elementsBuffer.Clear();
+            }
         }
 
+        #region Rewind
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction)
         {
             // TODO: Call RewindTo on all elements with respect to direction.
@@ -427,20 +462,24 @@ namespace Tweens
 
         protected override void RewindHandler(int loop, float loopedTime, Direction direction)
         {
-            // TODO: Call RewindTo on all elements in [PlayedTime..time] interval with respect to direction.
+            // TODO: what about backward direction?
 
-            if (LoopType == LoopType.Reset)
-            {
 
-            }
-            else if (LoopType == LoopType.Continue)
-            {
 
-            }
-            else if (LoopType == LoopType.Mirror)
-            {
+            var nextPlayedTime = loop * LoopDuration + loopedTime;
 
-            }
+            // If we jump to the same position, than we don't need handle this situation.
+            if (nextPlayedTime == PlayedTime)
+                return;
+
+            var loopedPlayedTime = PlayedTime % LoopDuration;
+            
+            FillEventsBuffer(loopedPlayedTime, nextPlayedTime, direction);
+
+
+            _eventsBuffer.Clear();
+            PlayedTime = nextPlayedTime;
         }
+        #endregion
     }
 }
