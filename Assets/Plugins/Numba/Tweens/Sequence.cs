@@ -33,6 +33,54 @@ namespace Tweens
             }
         }
 
+        private abstract class PhaseEvent
+        {
+            protected Playable Playable { get; private set; }
+
+            protected Direction Direction { get; private set; }
+
+            public PhaseEvent(Playable playable, Direction direction)
+            {
+                Playable = playable;
+                Direction = direction;
+            }
+
+            public abstract void Call();
+        }
+
+        private class PhaseStartEvent : PhaseEvent
+        {
+            public PhaseStartEvent(Playable playable, Direction direction) : base(playable, direction) { }
+
+            public override void Call() => Playable.CallRewindPhaseStartEvent(Direction);
+        }
+
+        private class PhaseLoopStartEvent : PhaseEvent
+        {
+            private float _startTime;
+
+            private int _playedLoop;
+
+            public PhaseLoopStartEvent(Playable playable, float startTime, int playedLoop, Direction direction) : base(playable, direction)
+            {
+                _startTime = startTime;
+                _playedLoop = playedLoop;
+            }
+
+            public override void Call() => Playable.CallRewindPhaseLoopStartEvent(_startTime, _playedLoop, Direction);
+        }
+
+        private class ChronoLine
+        {
+            public float Time { get; set; }
+
+            private List<PhaseEvent> _events = new List<PhaseEvent>();
+
+            public ChronoLine(float time) => Time = time;
+
+            public void AddEvent(PhaseEvent phaseEvent) => _events.Add(phaseEvent);
+        }
+
         public override Type Type => Type.Sequence;
 
         public LoopResetBehaviour LoopResetBehaviour { get; set; }
@@ -45,7 +93,7 @@ namespace Tweens
 
         private readonly List<Element> _elementsBuffer = new List<Element>();
 
-        private readonly List<int> _eventsBuffer = new List<int>();
+        private readonly List<ChronoLine> _eventsChain = new List<ChronoLine>();
 
         #region Constructors
         public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : this((string)null, formula, loopsCount, loopType, direction, loopResetBehaviour) { }
@@ -302,7 +350,7 @@ namespace Tweens
         }
 
         #region Before loop starting
-        protected override void BeforeLoopStarting(Direction direction) => BeforeLoopStarting(direction, LoopResetBehaviour);
+        protected override void BeforeStarting(Direction direction) => BeforeLoopStarting(direction, LoopResetBehaviour);
 
         private void BeforeLoopStarting(Direction direction, LoopResetBehaviour loopResetBehaviour)
         {
@@ -427,6 +475,34 @@ namespace Tweens
         }
         #endregion
 
+        public Sequence GeneratePhasesEventsChain()
+        {
+            for (int i = 0; i < _elements.Count; i++)
+            {
+                var element = _elements[i];
+
+                if (element.Playable.Duration == 0f)
+                {
+
+                }
+                else
+                {
+                    for (int j = 0; j <= element.Playable.LoopsCount; j++)
+                    {
+                        var phaseTime = element.StartTime + element.Playable.LoopDuration * j;
+
+                        // Global start phase.
+                        if (j == 0)
+                        {
+                            _eventsChain.Add(new ChronoLine(phaseTime));
+                        }
+                    }
+                }
+            }
+
+            return this;
+        }
+
         private void FillEventsBuffer(float start, float end, Direction direction)
         {
             for (int i = 0; i < _elementsBuffer.Count; i++)
@@ -440,6 +516,8 @@ namespace Tweens
                 _elementsBuffer.Clear();
             }
         }
+
+
 
         #region Rewind
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction)
@@ -473,11 +551,9 @@ namespace Tweens
                 return;
 
             var loopedPlayedTime = PlayedTime % LoopDuration;
-            
+
             FillEventsBuffer(loopedPlayedTime, nextPlayedTime, direction);
 
-
-            _eventsBuffer.Clear();
             PlayedTime = nextPlayedTime;
         }
         #endregion

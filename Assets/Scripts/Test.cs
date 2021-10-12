@@ -38,30 +38,10 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            var tween1 = new Tween<float, FloatTweak>("tween", 0f, 1f, v => { }, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
-            var tween2 = new Tween<float, FloatTweak>("tween", 0f, 1f, v => { }, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
-            var tween3 = new Tween<float, FloatTweak>("tween", 0f, 1f, v => { }, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
-
-            var nseq = new Sequence("nseq", Formula.Linear, 1, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
-            nseq.Insert(0f, tween1);
-            nseq.Insert(0.5f, tween2);
-            nseq.Insert(1f, tween3);
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, v => { }, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
 
             var seq = new Sequence("seq", Formula.Linear, 2, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
-            seq.Append(nseq);
-            //seq.Append(tween);
-
-            seq.SkipTo(1f);
-            print(seq.PlayedTime);
-            print(nseq.PlayedTime);
-            print(tween1.PlayedTime);
-            print("");
-
-            seq.SkipTo(0f);
-            print(seq.PlayedTime);
-            print(nseq.PlayedTime);
-            print(tween1.PlayedTime);
-            print("");
+            seq.Append(tween);
         }
     }
 }
