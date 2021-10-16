@@ -16,7 +16,10 @@ namespace Tweens
     public class Test : MonoBehaviour
     {
         [SerializeField]
-        private Transform _target;
+        private Transform _target0;
+
+        [SerializeField]
+        private Transform _target1;
 
         private void SubscribeOnAllEvents(IPlayable<Playable> playable)
         {
@@ -38,10 +41,29 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, v => { }, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            var tween1 = new Tween<float, FloatTweak>("tween1", 0f, 1f, _target1.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            //var tween2 = new Tween<float, FloatTweak>("tween2", 0f, 1f, x => {}, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            //var tween3 = new Tween<float, FloatTweak>("tween3", 0f, 1f, x => {}, 3f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            //var tween4 = new Tween<float, FloatTweak>("tween4", 0f, 1f, x => {}, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            //var tween5 = new Tween<float, FloatTweak>("tween5", 0f, 1f, x => {}, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            //var tween6 = new Tween<float, FloatTweak>("tween6", 0f, 1f, x => {}, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            //var tween7 = new Tween<float, FloatTweak>("tween7", 0f, 1f, x => {}, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            //var tween8 = new Tween<float, FloatTweak>("tween8", 0f, 1f, x => {}, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
 
             var seq = new Sequence("seq", Formula.Linear, 2, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
-            seq.Append(tween);
+            seq.Insert(0f, tween0);
+            seq.Insert(1f, tween1);
+            //seq.Insert(0.5f, tween2);
+            //seq.Insert(3.5f, tween3);
+            //seq.Insert(3.5f, tween4);
+            //seq.Insert(5f, tween5);
+            //seq.Insert(6.5f, tween6);
+            //seq.Insert(7f, tween7);
+            //seq.Insert(6.5f, tween8);
+
+            seq.GenerateChronolines();
+            seq.Play();
         }
     }
 }
