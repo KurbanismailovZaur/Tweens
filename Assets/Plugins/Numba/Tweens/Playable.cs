@@ -434,7 +434,7 @@ namespace Tweens
 
         #region Phase partial handlers
         #region Zero duration
-        internal void HandlePhaseStartEventZero(Direction direction)
+        internal void HandlePhaseStartZeroed(Direction direction)
         {
             BeforeStarting(direction);
             CallPhaseStarting(direction);
@@ -442,21 +442,21 @@ namespace Tweens
             CallPhaseStarted(direction);
         }
 
-        internal void HandlePhaseFirstLoopStartEventZero(Direction direction)
+        internal void HandlePhaseFirstLoopStartZeroed(Direction direction)
         {
             CallPhaseLoopStarting(0, direction);
             RewindZeroHandler(0, 0f, direction);
             CallPhaseLoopStarted(0, direction);
         }
 
-        internal void HandlePhaseLoopCompleteEventZero(int loop, Direction direction)
+        internal void HandlePhaseLoopCompleteZeroed(int loop, Direction direction)
         {
             CallPhaseLoopCompleting(loop, direction);
             RewindZeroHandler(loop, 1f, direction);
             CallPhaseLoopCompleted(loop, direction);
         }
 
-        internal void HandlePhaseLoopStartEventZero(int loop, Direction direction)
+        internal void HandlePhaseLoopStartZeroed(int loop, Direction direction)
         {
             BeforeStarting(direction);
             CallPhaseLoopStarting(loop, direction);
@@ -464,7 +464,7 @@ namespace Tweens
             CallPhaseLoopStarted(loop, direction);
         }
 
-        internal void HandlePhaseCompleteEventZero(Direction direction)
+        internal void HandlePhaseCompleteZeroed(Direction direction)
         {
             CallPhaseCompleting(direction);
             RewindZeroHandler(_loopsCount - 1, 1f, direction);
@@ -473,7 +473,7 @@ namespace Tweens
         #endregion
 
         #region Non zero duration
-        internal void HandlePhaseStartEvent(Direction direction)
+        internal void HandlePhaseStart(Direction direction)
         {
             BeforeStarting(direction);
             CallPhaseStarting(direction);
@@ -481,22 +481,26 @@ namespace Tweens
             CallPhaseStarted(direction);
         }
 
-        internal void HandlePhaseFirstLoopStartEvent(Direction direction)
+        internal void HandlePhaseFirstLoopStart(Direction direction)
         {
             CallPhaseLoopStarting(0, direction);
             RewindHandler(0, 0f, direction);
             CallPhaseLoopStarted(0, direction);
         }
 
-        internal void HandlePhaseLoopCompleteEvent(int loop, Direction direction)
+        internal void HandlePhaseLoopComplete(int loop, Direction direction)
         {
             CallPhaseLoopCompleting(loop, direction);
             RewindHandler(loop, _loopDuration, direction);
+            
             PlayedTime = loop * _loopDuration + _loopDuration;
+            if (direction == Direction.Backward)
+                PlayedTime = Duration - PlayedTime;
+
             CallPhaseLoopCompleted(loop, direction);
         }
 
-        internal void HandlePhaseLoopStartEvent(int loop, Direction direction)
+        internal void HandlePhaseLoopStart(int loop, Direction direction)
         {
             BeforeStarting(direction);
             CallPhaseLoopStarting(loop, direction);
@@ -504,17 +508,17 @@ namespace Tweens
             CallPhaseLoopStarted(loop, direction);
         }
 
-        internal void HandlePhaseLoopUpdateEvent(float endTime, int loop, float loopedTime, Direction direction)
+        internal void HandlePhaseLoopUpdate(float endTime, int loop, float loopedTime, Direction direction)
         {
             CallPhaseUpdating(endTime, direction);
             CallPhaseLoopUpdating(loop, loopedTime, direction);
             RewindHandler(loop, loopedTime, direction);
-            PlayedTime = endTime;
+            PlayedTime = direction == Direction.Forward ? endTime : Duration - endTime;
             CallPhaseLoopUpdated(loop, loopedTime, direction);
             CallPhaseUpdated(endTime, direction);
         }
 
-        internal void HandlePhaseCompleteEvent(Direction direction)
+        internal void HandlePhaseComplete(Direction direction)
         {
             CallPhaseCompleting(direction);
             RewindHandler(_loopsCount - 1, _loopDuration, direction);
@@ -571,21 +575,21 @@ namespace Tweens
         private void RewindZeroDurationWithEvents(Direction direction)
         {
             // Started events.
-            HandlePhaseStartEventZero(direction);
-            HandlePhaseFirstLoopStartEventZero(direction);
+            HandlePhaseStartZeroed(direction);
+            HandlePhaseFirstLoopStartZeroed(direction);
             
             // Intermediate events
             for (int i = 1; i < _loopsCount; i++)
             {
-                HandlePhaseLoopCompleteEventZero(i - 1, direction);
-                HandlePhaseLoopStartEventZero(i, direction);
+                HandlePhaseLoopCompleteZeroed(i - 1, direction);
+                HandlePhaseLoopStartZeroed(i, direction);
             }
 
             // Loop completed event.
-            HandlePhaseLoopCompleteEventZero(_loopsCount - 1, direction);
+            HandlePhaseLoopCompleteZeroed(_loopsCount - 1, direction);
 
             // Completed event
-            HandlePhaseCompleteEventZero(direction);
+            HandlePhaseCompleteZeroed(direction);
         }
 
         private void RewindZeroDurationWithoutEvents(Direction direction)
@@ -617,7 +621,7 @@ namespace Tweens
         {
             // Global started phase
             if (startTime == 0f)
-                HandlePhaseStartEvent(direction);
+                HandlePhaseStart(direction);
 
             var playedLoop = (int)(startTime / _loopDuration);
             var timeLoop = (int)(endTime / _loopDuration);
@@ -628,9 +632,9 @@ namespace Tweens
                 // If all elements already handled in global start phase (BeforeStarting method was called previously),
                 // than we don't need handle elements.
                 if (startTime == 0f)
-                    HandlePhaseFirstLoopStartEvent(direction);
+                    HandlePhaseFirstLoopStart(direction);
                 else
-                    HandlePhaseLoopStartEvent(playedLoop, direction);
+                    HandlePhaseLoopStart(playedLoop, direction);
             }
 
             // Intermediate phase.
@@ -638,31 +642,32 @@ namespace Tweens
             {
                 var loopIndex = LoopIndex(LoopDuration * i);
 
-                HandlePhaseLoopCompleteEvent(loopIndex, direction);
-                HandlePhaseLoopStartEvent(loopIndex + 1, direction);
+                HandlePhaseLoopComplete(loopIndex, direction);
+                HandlePhaseLoopStart(loopIndex + 1, direction);
             }
 
             // Loop completed phase.
             if (endTime == timeLoop * _loopDuration)
-                HandlePhaseLoopCompleteEvent(timeLoop - 1, direction);
+                HandlePhaseLoopComplete(timeLoop - 1, direction);
             else // Global and loop update phases.
             {
                 // Last intermediate loop phase. For example, when we start from
                 // middle looped position and ended on other middle looped position.
                 if (timeLoop - playedLoop > 0)
                 {
-                    HandlePhaseLoopCompleteEvent(timeLoop - 1, direction);
-                    HandlePhaseLoopStartEvent(timeLoop, direction);
+                    HandlePhaseLoopComplete(timeLoop - 1, direction);
+                    HandlePhaseLoopStart(timeLoop, direction);
                 }
 
                 // Update phase.
                 var loopedTime = LoopTime(endTime);
-                HandlePhaseLoopUpdateEvent(endTime, timeLoop, loopedTime, direction);
+
+                HandlePhaseLoopUpdate(endTime, timeLoop, loopedTime, direction);
             }
 
             // Global complete phase.
             if (endTime == Duration)
-                HandlePhaseCompleteEvent(direction);
+                HandlePhaseComplete(direction);
         }
 
         private void RewindWithoutEvents(float startTime, float endTime, Direction direction)

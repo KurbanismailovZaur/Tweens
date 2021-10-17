@@ -40,9 +40,9 @@ namespace Tweens
         IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
-
-            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
-            var tween1 = new Tween<float, FloatTweak>("tween1", 0f, 1f, _target1.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            
+            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 2, LoopType.Continue, Direction.Backward);
+            //var tween1 = new Tween<float, FloatTweak>("tween1", 0f, 1f, _target1.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
             //var tween2 = new Tween<float, FloatTweak>("tween2", 0f, 1f, x => {}, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
             //var tween3 = new Tween<float, FloatTweak>("tween3", 0f, 1f, x => {}, 3f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
             //var tween4 = new Tween<float, FloatTweak>("tween4", 0f, 1f, x => {}, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
@@ -51,9 +51,9 @@ namespace Tweens
             //var tween7 = new Tween<float, FloatTweak>("tween7", 0f, 1f, x => {}, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
             //var tween8 = new Tween<float, FloatTweak>("tween8", 0f, 1f, x => {}, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
 
-            var seq = new Sequence("seq", Formula.Linear, 2, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
+            var seq = new Sequence("seq", Formula.Linear, 2, LoopType.Reset, Direction.Backward, LoopResetBehaviour.Rewind);
             seq.Insert(0f, tween0);
-            seq.Insert(1f, tween1);
+            //seq.Insert(1f, tween1);
             //seq.Insert(0.5f, tween2);
             //seq.Insert(3.5f, tween3);
             //seq.Insert(3.5f, tween4);
@@ -63,7 +63,12 @@ namespace Tweens
             //seq.Insert(6.5f, tween8);
 
             seq.GenerateChronolines();
-            seq.Play();
+            //seq.Play();
+            seq.SkipToEnd().PlayBackward();
+            //seq.SkipToEnd().RewindTo(0.75f);
+            //seq.RewindTo(0.5f);
+            //seq.RewindTo(0.25f);
+            //seq.RewindTo(0f);
         }
     }
 }
