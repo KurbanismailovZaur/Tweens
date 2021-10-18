@@ -471,7 +471,14 @@ namespace Tweens
             if (loopResetBehaviour == LoopResetBehaviour.Rewind)
             {
                 for (int i = 0; i < _elements.Count; i++)
-                    _elements[i].Playable.RewindTo(direction == Direction.Forward ? 0f : Duration, false);
+                {
+                    var element = _elements[i];
+
+                    if (element.Playable.Duration == 0f)
+                        element.Playable.RewindTo(direction == Direction.Forward ? -1f : 1f, false);
+                    else
+                        element.Playable.RewindTo(direction == Direction.Forward ? 0f : Duration, false);
+                }
             }
             else
             {
@@ -739,25 +746,12 @@ namespace Tweens
         #region Rewind
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction)
         {
-            // TODO: Call RewindTo on all elements with respect to direction.
 
-            if (LoopType == LoopType.Reset)
-            {
-
-            }
-            else if (LoopType == LoopType.Continue)
-            {
-
-            }
-            else if (LoopType == LoopType.Mirror)
-            {
-
-            }
         }
 
         protected override void RewindHandler(int loop, float loopedTime, Direction direction)
         {
-            void ForwardHandler()
+            if (direction == Direction.Forward)
             {
                 var nextPlayedTime = loop * LoopDuration + loopedTime;
 
@@ -802,8 +796,7 @@ namespace Tweens
                 if (lastChronoline == null || lastChronoline.Time != loopedTime)
                     GenerateChronoline(loopedTime).Chains.Forward.CallAllEvents(Direction.Forward);
             }
-
-            void BackwardHandler()
+            else
             {
                 var nextPlayedTime = Duration - (loop * LoopDuration + loopedTime);
 
@@ -849,11 +842,6 @@ namespace Tweens
                 if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
                     GenerateChronoline(LoopDuration - loopedTime).Chains.Backward.CallAllEvents(Direction.Backward);
             }
-
-            if (direction == Direction.Forward)
-                ForwardHandler();
-            else
-                BackwardHandler();
         }
         #endregion
     }
