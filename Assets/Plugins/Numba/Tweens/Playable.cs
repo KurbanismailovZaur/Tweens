@@ -521,7 +521,7 @@ namespace Tweens
         {
             CallPhaseLoopCompleting(loop, direction);
             RewindHandler(loop, _loopDuration, direction);
-            
+
             PlayedTime = loop * _loopDuration + _loopDuration;
             if (direction == Direction.Backward)
                 PlayedTime = Duration - PlayedTime;
@@ -596,9 +596,9 @@ namespace Tweens
         #endregion
 
         #region Rewinds
-        public Playable RewindToStart(bool emitEvents = true) => RewindTo(0f, emitEvents);
+        public Playable RewindToStart(bool emitEvents = true) => Duration == 0f ? RewindTo(-1f, emitEvents) : RewindTo(0f, emitEvents);
 
-        public Playable RewindToEnd(bool emitEvents = true) => RewindTo(Duration, emitEvents);
+        public Playable RewindToEnd(bool emitEvents = true) => Duration == 0f ? RewindTo(1f, emitEvents) : RewindTo(Duration, emitEvents);
 
         public Playable RewindTo(float time, bool emitEvents = true)
         {
@@ -645,7 +645,7 @@ namespace Tweens
             // Started events.
             HandlePhaseStartZeroed(direction);
             HandlePhaseFirstLoopStartZeroed(direction);
-            
+
             // Intermediate events
             for (int i = 1; i < _loopsCount; i++)
             {

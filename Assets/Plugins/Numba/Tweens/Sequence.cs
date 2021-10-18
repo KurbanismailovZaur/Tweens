@@ -152,6 +152,8 @@ namespace Tweens
 
                 private readonly List<Phase> _events = new List<Phase>();
 
+                public int EventsCount => _events.Count;
+
                 public void AppendEvent(Phase phaseEvent) => _events.Add(phaseEvent);
 
                 public void InsertEvent(int index, Phase phaseEvent) => _events.Insert(index, phaseEvent);
@@ -186,6 +188,12 @@ namespace Tweens
                     Forward.AppendEvent(phaseEvent);
                     Backward.AppendEvent(phaseEvent);
                 }
+
+                public void InsertEvent(int index, Phase phaseEvent)
+                {
+                    Forward.InsertEvent(index, phaseEvent);
+                    Backward.InsertEvent(index, phaseEvent);
+                }
             }
 
             public float Time { get; set; }
@@ -208,6 +216,10 @@ namespace Tweens
         private readonly List<Element> _elementsBuffer = new List<Element>();
 
         private readonly List<ChronoLine> _chronolines = new List<ChronoLine>();
+
+        // Needed for handling zeroed loops.
+        // Used for understanding in which direction zeroed sequence was played.
+        private float _lastLoopedNormalizedTime;
 
         #region Constructors
         public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : this((string)null, formula, loopsCount, loopType, direction, loopResetBehaviour) { }
@@ -686,6 +698,9 @@ namespace Tweens
 
             for (int i = 0; i < maxLoopsCount; i++)
             {
+                // It is not matter which chain we will use, forward or backward, both have same events count.
+                var insertIndex = chronoline.Chains.Forward.EventsCount;
+
                 for (int j = 0; j < _elementsBuffer.Count; j++)
                 {
                     var element = _elementsBuffer[j];
@@ -694,15 +709,15 @@ namespace Tweens
                     if (i == element.Playable.LoopsCount - 1)
                     {
                         // Complete phase.
-                        chronoline.Chains.AppendEvent(new PhaseLoopCompleteZeroed((Playable)element.Playable, element.Playable.LoopsCount - 1));
-                        chronoline.Chains.AppendEvent(new PhaseCompleteZeroed((Playable)element.Playable));
+                        chronoline.Chains.InsertEvent(insertIndex++, new PhaseLoopCompleteZeroed((Playable)element.Playable, element.Playable.LoopsCount - 1));
+                        chronoline.Chains.InsertEvent(insertIndex++, new PhaseCompleteZeroed((Playable)element.Playable));
 
                         _elementsBuffer.Remove(element);
                         --j;
                     }
                     else // Intermediate phase.
                     {
-                        chronoline.Chains.AppendEvent(new PhaseLoopCompleteZeroed((Playable)element.Playable, i));
+                        chronoline.Chains.InsertEvent(insertIndex++, new PhaseLoopCompleteZeroed((Playable)element.Playable, i));
                         chronoline.Chains.AppendEvent(new PhaseLoopStartZeroed((Playable)element.Playable, i + 1));
                     }
                 }
@@ -746,7 +761,18 @@ namespace Tweens
         #region Rewind
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction)
         {
+            if (_lastLoopedNormalizedTime != 0f || loopedNormalizedTime != 1f)
+            {
+                _lastLoopedNormalizedTime = loopedNormalizedTime;
+                return;
+            }
 
+            if (direction == Direction.Forward)
+                _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward);
+            else
+                _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward);
+
+            _lastLoopedNormalizedTime = loopedNormalizedTime;
         }
 
         protected override void RewindHandler(int loop, float loopedTime, Direction direction)
