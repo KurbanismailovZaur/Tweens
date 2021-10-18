@@ -811,25 +811,26 @@ namespace Tweens
                 if (nextPlayedTime == PlayedTime)
                     return;
 
-                var loopedPlayedTime = LoopDuration - PlayedTime % LoopDuration;
+                var loopedPlayedTime = LoopDuration - LoopTime(PlayedTime);
                 ChronoLine lastChronoline = null;
 
                 for (int i = _chronolines.Count - 1; i >= 0; i--)
                 {
                     var chronoline = _chronolines[i];
+                    var backwardChronolineTime = LoopDuration - chronoline.Time;
 
                     // If chronoline stay back from start time, than we just skip it.
-                    if (chronoline.Time > loopedPlayedTime)
+                    if (backwardChronolineTime < loopedPlayedTime)
                         continue;
 
                     // If chronoline start in front if end time, than we need stop cycle.
-                    if (chronoline.Time < loopedTime)
+                    if (backwardChronolineTime > loopedTime)
                         break;
 
                     // If chronoline stay at start time, than we need handle only post events.
-                    if (chronoline.Time == loopedPlayedTime)
+                    if (backwardChronolineTime == loopedPlayedTime)
                         chronoline.Chains.Backward.CallPostEvents(Direction.Backward);
-                    else if (chronoline.Time == loopedTime)
+                    else if (backwardChronolineTime == loopedTime)
                     {
                         // If chronoline stay at end of loop, than we need call all events.
                         if (loopedTime == LoopDuration)
@@ -845,7 +846,7 @@ namespace Tweens
 
                 // If last handled chronoline not stay at end of interval, than it means,
                 // that we need handle one extra chronoline for update phase.
-                if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
                     GenerateChronoline(LoopDuration - loopedTime).Chains.Backward.CallAllEvents(Direction.Backward);
             }
 
