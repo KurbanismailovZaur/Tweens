@@ -21,12 +21,6 @@ namespace Tweens.Scenes.Tests.Sequences.PlayForwardAndBackward4ElementsSequence
         [SerializeField]
         private Transform _target1;
 
-        [SerializeField]
-        private Transform _target2;
-
-        [SerializeField]
-        private Transform _target3;
-
         private void SubscribeOnAllEvents(IPlayable<Playable> playable)
         {
             playable.OnPhaseStarting((p, dir) => print($"[{p.Name}] Phase starting in {dir} direction"));
@@ -57,18 +51,20 @@ namespace Tweens.Scenes.Tests.Sequences.PlayForwardAndBackward4ElementsSequence
             SubscribeOnAllEvents(subseq);
 
             subseq.Append(tween1);
+            subseq.GenerateChronolines();
 
             var seq = new Sequence("seq", Formula.Linear, 1, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
-            SubscribeOnAllEvents(seq.GenerateChronolines());
+            SubscribeOnAllEvents(seq);
 
             seq.Insert(0f, tween0);
             seq.Insert(0.5f, subseq);
             
-            seq.GenerateChronolines().RewindToEnd();
+            yield return seq.GenerateChronolines().Play().WaitForComplete();
 
             yield return new WaitForSeconds(1f);
 
-            seq.RewindToStart();
+            seq.PlayBackward();
+
         }
     }
 }

@@ -19,26 +19,26 @@ namespace Tweens
         {
             public float StartTime { get; internal set; }
 
-            public IPlayable<Playable> Playable { get; internal set; }
+            public Playable Playable { get; internal set; }
 
             public float EndTime => StartTime + Playable.Duration;
 
-            public int Priority { get; internal set; }
+            public int Order { get; internal set; }
 
-            internal Element(float time, IPlayable<Playable> playable, int index)
+            internal Element(float time, Playable playable, int order)
             {
                 StartTime = time;
                 Playable = playable;
-                Priority = index;
+                Order = order;
             }
         }
 
         #region Phases
         private abstract class Phase
         {
-            protected Playable _playable;
+            protected Element _element;
 
-            protected Phase(Playable playable) => _playable = playable;
+            protected Phase(Element element) => _element = element;
 
             abstract public void Call(Direction direction);
         }
@@ -46,75 +46,75 @@ namespace Tweens
         #region Zedo duration
         private class PhaseStartZeroed : Phase
         {
-            public PhaseStartZeroed(Playable playable) : base(playable) { }
+            public PhaseStartZeroed(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _playable.HandlePhaseStartZeroed(direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseStartZeroed(direction);
         }
 
         private class PhaseFirstLoopStartZeroed : Phase
         {
-            public PhaseFirstLoopStartZeroed(Playable playable) : base(playable) { }
+            public PhaseFirstLoopStartZeroed(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _playable.HandlePhaseFirstLoopStartZeroed(direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseFirstLoopStartZeroed(direction);
         }
 
         private class PhaseLoopCompleteZeroed : Phase
         {
             private int _loop;
 
-            public PhaseLoopCompleteZeroed(Playable playable, int loop) : base(playable) => _loop = loop;
+            public PhaseLoopCompleteZeroed(Element element, int loop) : base(element) => _loop = loop;
 
-            public override void Call(Direction direction) => _playable.HandlePhaseLoopCompleteZeroed(_loop, direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseLoopCompleteZeroed(_loop, direction);
         }
 
         private class PhaseLoopStartZeroed : Phase
         {
             private int _loop;
 
-            public PhaseLoopStartZeroed(Playable playable, int loop) : base(playable) => _loop = loop;
+            public PhaseLoopStartZeroed(Element element, int loop) : base(element) => _loop = loop;
 
-            public override void Call(Direction direction) => _playable.HandlePhaseLoopStartZeroed(_loop, direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseLoopStartZeroed(_loop, direction);
         }
 
         private class PhaseCompleteZeroed : Phase
         {
-            public PhaseCompleteZeroed(Playable playable) : base(playable) { }
+            public PhaseCompleteZeroed(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _playable.HandlePhaseCompleteZeroed(direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseCompleteZeroed(direction);
         }
         #endregion
 
         #region Non zero duration
         private class PhaseStart : Phase
         {
-            public PhaseStart(Playable playable) : base(playable) { }
+            public PhaseStart(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _playable.HandlePhaseStart(direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseStart(direction);
         }
 
         private class PhaseFirstLoopStart : Phase
         {
-            public PhaseFirstLoopStart(Playable playable) : base(playable) { }
+            public PhaseFirstLoopStart(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _playable.HandlePhaseFirstLoopStart(direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseFirstLoopStart(direction);
         }
 
         private class PhaseLoopComplete : Phase
         {
             private int _loop;
 
-            public PhaseLoopComplete(Playable playable, int loop) : base(playable) => _loop = loop;
+            public PhaseLoopComplete(Element element, int loop) : base(element) => _loop = loop;
 
-            public override void Call(Direction direction) => _playable.HandlePhaseLoopComplete(_loop, direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseLoopComplete(_loop, direction);
         }
 
         private class PhaseLoopStart : Phase
         {
             private int _loop;
 
-            public PhaseLoopStart(Playable playable, int loop) : base(playable) => _loop = loop;
+            public PhaseLoopStart(Element element, int loop) : base(element) => _loop = loop;
 
-            public override void Call(Direction direction) => _playable.HandlePhaseLoopStart(_loop, direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseLoopStart(_loop, direction);
         }
 
         private class PhaseLoopUpdate : Phase
@@ -125,82 +125,91 @@ namespace Tweens
 
             private float _loopedTime;
 
-            public PhaseLoopUpdate(Playable playable, float endTime, int loop, float loopedTime) : base(playable)
+            public PhaseLoopUpdate(Element element, float endTime, int loop, float loopedTime) : base(element)
             {
                 _endTime = endTime;
                 _loop = loop;
                 _loopedTime = loopedTime;
             }
 
-            public override void Call(Direction direction) => _playable.HandlePhaseLoopUpdate(_endTime, _loop, _loopedTime, direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseLoopUpdate(_endTime, _loop, _loopedTime, direction);
         }
 
         private class PhaseComplete : Phase
         {
-            public PhaseComplete(Playable playable) : base(playable) { }
+            public PhaseComplete(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _playable.HandlePhaseComplete(direction);
+            public override void Call(Direction direction) => _element.Playable.HandlePhaseComplete(direction);
         }
         #endregion
         #endregion
 
-        private class ChronoLine
+        private class Chronoline
         {
-            public class Chain
+            internal class Chain
             {
-                public int PrePostPoint { get; set; }
+                internal int PrePostPoint { get; set; }
 
                 private readonly List<Phase> _events = new List<Phase>();
 
-                public int EventsCount => _events.Count;
+                internal int EventsCount => _events.Count;
 
-                public void AppendEvent(Phase phaseEvent) => _events.Add(phaseEvent);
+                internal void AppendEvent(Phase phaseEvent) => _events.Add(phaseEvent);
 
-                public void InsertEvent(int index, Phase phaseEvent) => _events.Insert(index, phaseEvent);
+                internal void InsertEvent(int index, Phase phaseEvent) => _events.Insert(index, phaseEvent);
 
-                public void CallPreEvents(Direction direction)
+                internal void CallPreEvents(Direction direction)
                 {
                     for (int i = 0; i < PrePostPoint; i++)
                         _events[i].Call(direction);
                 }
 
-                public void CallPostEvents(Direction direction)
+                internal void CallPostEvents(Direction direction)
                 {
                     for (int i = PrePostPoint; i < _events.Count; i++)
                         _events[i].Call(direction);
                 }
 
-                public void CallAllEvents(Direction direction)
+                internal void CallAllEvents(Direction direction)
                 {
                     for (int i = 0; i < _events.Count; i++)
                         _events[i].Call(direction);
                 }
             }
 
-            public class ChainsData
+            internal class ChainsData
             {
-                public Chain Forward { get; set; } = new Chain();
+                internal Chain Forward { get; set; } = new Chain();
 
-                public Chain Backward { get; set; } = new Chain();
+                internal Chain Backward { get; set; } = new Chain();
 
-                public void AppendEvent(Phase phaseEvent)
+                internal void AppendEvent(Phase phaseEvent)
                 {
                     Forward.AppendEvent(phaseEvent);
                     Backward.AppendEvent(phaseEvent);
                 }
 
-                public void InsertEvent(int index, Phase phaseEvent)
+                internal void InsertEvent(int index, Phase phaseEvent)
                 {
                     Forward.InsertEvent(index, phaseEvent);
                     Backward.InsertEvent(index, phaseEvent);
                 }
             }
 
-            public float Time { get; set; }
+            internal float Time { get; set; }
 
-            public ChainsData Chains { get; set; } = new ChainsData();
+            internal ChainsData Chains { get; set; } = new ChainsData();
 
-            public ChronoLine(float time) => Time = time;
+            internal Chronoline(float time) => Time = time;
+        }
+
+        // Used for detecting intersection type between chronoline and element.
+        private enum IntersectionType
+        {
+            Start,
+            Update,
+            Loop,
+            Complete
         }
 
         public override Type Type => Type.Sequence;
@@ -211,15 +220,21 @@ namespace Tweens
 
         public ReadOnlyCollection<Element> Elements => _elements.AsReadOnly();
 
-        private int _nextPriority;
+        private int _nextOrder;
 
         private readonly List<Element> _elementsBuffer = new List<Element>();
 
-        private readonly List<ChronoLine> _chronolines = new List<ChronoLine>();
+        private readonly List<Chronoline> _chronolines = new List<Chronoline>();
 
         // Needed for handling zeroed loops.
         // Used for understanding in which direction zeroed sequence was played.
         private float _lastLoopedNormalizedTime;
+
+        #region Played time calculators (used in injectings methods)
+        private static Func<Chronoline, Element, float> _forwardPlayedTimeCalcualtor = (chronoline, element) => chronoline.Time - element.StartTime; 
+
+        private static Func<Chronoline, Element, float> _backwardPlayedTimeCalcualtor = (chronoline, element) => element.EndTime - chronoline.Time; 
+        #endregion
 
         #region Constructors
         public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : this((string)null, formula, loopsCount, loopType, direction, loopResetBehaviour) { }
@@ -233,8 +248,6 @@ namespace Tweens
             LoopResetBehaviour = loopResetBehaviour;
         }
         #endregion
-
-        private int GetNextPriority() => _nextPriority++;
 
         public bool CheckCyclicReference(Sequence other)
         {
@@ -255,7 +268,7 @@ namespace Tweens
 
         #region Elements
         #region Add
-        public Element Prepend(IPlayable<Playable> playable)
+        public Element Prepend(Playable playable)
         {
             var leftmost = GetLeftmostElement();
 
@@ -275,9 +288,11 @@ namespace Tweens
                 return Insert(startTime, playable);
         }
 
-        public Element Append(IPlayable<Playable> playable) => Insert(LoopDuration, playable);
+        public Element Append(Playable playable) => Insert(LoopDuration, playable);
 
-        public Element Insert(float time, IPlayable<Playable> playable)
+        public Element Insert(float time, Playable playable) => Insert(_nextOrder++, time, playable);
+
+        public Element Insert(int order, float time, Playable playable)
         {
             if (playable == this)
                 throw new ArgumentException($"{Type} \"{Name}\": Sequence can't contain itself");
@@ -285,12 +300,19 @@ namespace Tweens
             if (playable is Sequence sequence && CheckCyclicReference(sequence))
                 throw new ArgumentException($"{Type} \"{Name}\": Cyclic references in sequences are not allowed (sequence \"{sequence.Name}\" already contains sequence \"{Name}\")");
 
-            var element = new Element(Mathf.Max(time, 0f), playable, GetNextPriority());
+            order = Mathf.Clamp(order, 0, _elements.Count);
 
-            _elements.Add(element);
+            var element = new Element(Mathf.Max(time, 0f), playable, order);
+
+            _elements.Insert(order, element);
+
+            for (int i = order + 1; i < _elements.Count; i++)
+                ++_elements[i].Order;
 
             if (element.EndTime > LoopDuration)
                 LoopDuration = element.EndTime;
+
+            InjectPhaseEventsForElement(element);
 
             return element;
         }
@@ -620,23 +642,21 @@ namespace Tweens
             return false;
         }
 
-        private void AddChronoline(ChronoLine chronoline)
+        private void AddChronoline(Chronoline chronoline)
         {
-            for (int i = 0; i < _chronolines.Count; i++)
+            var index = 0;
+            for (; index < _chronolines.Count; index++)
             {
-                if (chronoline.Time < _chronolines[i].Time)
-                {
-                    _chronolines.Insert(i, chronoline);
-                    return;
-                }
+                if (_chronolines[index].Time < chronoline.Time)
+                    continue;
             }
 
-            _chronolines.Add(chronoline);
+            _chronolines.Insert(index, chronoline);
         }
 
-        private ChronoLine GenerateChronoline(float time)
+        private Chronoline GenerateChronoline(float time)
         {
-            var chronoline = new ChronoLine(time);
+            var chronoline = new Chronoline(time);
 
             for (int i = 0; i < _elements.Count; i++)
             {
@@ -648,8 +668,8 @@ namespace Tweens
                 if (element.Playable.Duration == 0f)
                 {
                     // For zero duration playables we call all phases events at once.
-                    chronoline.Chains.AppendEvent(new PhaseStartZeroed((Playable)element.Playable));
-                    chronoline.Chains.AppendEvent(new PhaseFirstLoopStartZeroed((Playable)element.Playable));
+                    chronoline.Chains.AppendEvent(new PhaseStartZeroed(element));
+                    chronoline.Chains.AppendEvent(new PhaseFirstLoopStartZeroed(element));
 
                     // Remember this element for handling its loop events later
                     _elementsBuffer.Add(element);
@@ -658,32 +678,32 @@ namespace Tweens
                 {
                     // This function receive played time and chain, and than can detect and automatically
                     // add event in desired position in chain events list.
-                    void DetectEvent(float playedTime, ChronoLine.Chain chain)
+                    void GenerateEvents(float playedTime, Chronoline.Chain chain)
                     {
                         // Start phase.
                         if (playedTime == 0f)
                         {
-                            chain.AppendEvent(new PhaseStart((Playable)element.Playable));
-                            chain.AppendEvent(new PhaseFirstLoopStart((Playable)element.Playable));
+                            chain.AppendEvent(new PhaseStart(element));
+                            chain.AppendEvent(new PhaseFirstLoopStart(element));
                         }
                         else if (playedTime % element.Playable.LoopDuration == 0f && playedTime != element.Playable.Duration) // Intermediate loop phase (end not included).
                         {
                             var loop = (int)(playedTime / element.Playable.LoopDuration);
-                            chain.InsertEvent(chain.PrePostPoint++, new PhaseLoopComplete((Playable)element.Playable, loop - 1));
-                            chain.AppendEvent(new PhaseLoopStart((Playable)element.Playable, loop));
+                            chain.InsertEvent(chain.PrePostPoint++, new PhaseLoopComplete(element, loop - 1));
+                            chain.AppendEvent(new PhaseLoopStart(element, loop));
                         }
                         else if (playedTime == element.Playable.Duration) // Complete phase
                         {
-                            chain.InsertEvent(chain.PrePostPoint++, new PhaseLoopComplete((Playable)element.Playable, element.Playable.LoopsCount - 1));
-                            chain.InsertEvent(chain.PrePostPoint++, new PhaseComplete((Playable)element.Playable));
+                            chain.InsertEvent(chain.PrePostPoint++, new PhaseLoopComplete(element, element.Playable.LoopsCount - 1));
+                            chain.InsertEvent(chain.PrePostPoint++, new PhaseComplete(element));
                         }
                         else // Update phase (for elements on which chrono-line hitted not at phase times)
-                            chain.InsertEvent(chain.PrePostPoint++, new PhaseLoopUpdate((Playable)element.Playable, playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration));
+                            chain.InsertEvent(chain.PrePostPoint++, new PhaseLoopUpdate(element, playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration));
                     }
 
-                    // Detect forward and backward events.
-                    DetectEvent(chronoline.Time - element.StartTime, chronoline.Chains.Forward);
-                    DetectEvent(element.EndTime - chronoline.Time, chronoline.Chains.Backward);
+                    // Generate forward and backward events.
+                    GenerateEvents(chronoline.Time - element.StartTime, chronoline.Chains.Forward);
+                    GenerateEvents(element.EndTime - chronoline.Time, chronoline.Chains.Backward);
                 }
             }
 
@@ -709,16 +729,16 @@ namespace Tweens
                     if (i == element.Playable.LoopsCount - 1)
                     {
                         // Complete phase.
-                        chronoline.Chains.InsertEvent(insertIndex++, new PhaseLoopCompleteZeroed((Playable)element.Playable, element.Playable.LoopsCount - 1));
-                        chronoline.Chains.InsertEvent(insertIndex++, new PhaseCompleteZeroed((Playable)element.Playable));
+                        chronoline.Chains.InsertEvent(insertIndex++, new PhaseLoopCompleteZeroed(element, element.Playable.LoopsCount - 1));
+                        chronoline.Chains.InsertEvent(insertIndex++, new PhaseCompleteZeroed(element));
 
                         _elementsBuffer.Remove(element);
                         --j;
                     }
                     else // Intermediate phase.
                     {
-                        chronoline.Chains.InsertEvent(insertIndex++, new PhaseLoopCompleteZeroed((Playable)element.Playable, i));
-                        chronoline.Chains.AppendEvent(new PhaseLoopStartZeroed((Playable)element.Playable, i + 1));
+                        chronoline.Chains.InsertEvent(insertIndex++, new PhaseLoopCompleteZeroed(element, i));
+                        chronoline.Chains.AppendEvent(new PhaseLoopStartZeroed(element, i + 1));
                     }
                 }
             }
@@ -758,6 +778,264 @@ namespace Tweens
             return this;
         }
 
+        private IntersectionType GetIntersectionType(Element element, float playedTime)
+        {
+            if (playedTime == 0f)
+                return IntersectionType.Start;
+            else if (playedTime == element.Playable.Duration)
+                return IntersectionType.Complete;
+            else if (playedTime % element.Playable.LoopDuration == 0f)
+                return IntersectionType.Loop;
+            else
+                return IntersectionType.Update;
+        }
+
+        private void InjectPhaseEventsForElement(Element element)
+        {
+            // Handle old chronolines on element [start -> end] and [end -> start] intervals.
+            for (int i = 0; i < _chronolines.Count; i++)
+            {
+                var chronoline = _chronolines[i];
+
+                if (chronoline.Time < element.StartTime)
+                    continue;
+
+                if (chronoline.Time > element.EndTime)
+                    break;
+
+                void InjectEvents(float playedTime, Func<Chronoline, Element, float> playedTimeCalculator, Chronoline.Chain chain)
+                {
+                    bool ElementNotIntersectsOrSelf(Chronoline chronoline, int index, out Element oldElement)
+                    {
+                        oldElement = _elements[index];
+
+                        if (chronoline.Time < oldElement.StartTime || chronoline.Time > oldElement.EndTime || oldElement == element)
+                            return true;
+
+                        return false;
+                    }
+
+                    if (element.Playable.Duration == 0f)
+                    {
+                        var insertIndex = 0;
+
+                        // Cycle for all elements handle first phase loops start events.
+                        for (int j = 0; j < _elements.Count; j++)
+                        {
+                            var oldElement = _elements[j];
+
+                            if (chronoline.Time < oldElement.StartTime || chronoline.Time > oldElement.EndTime)
+                                continue;
+
+                            if (oldElement == element)
+                            {
+                                chain.InsertEvent(insertIndex++, new PhaseStart(element));
+                                chain.InsertEvent(insertIndex++, new PhaseFirstLoopStart(element));
+
+                                // Save new element to zeroed buffer for handling it within others zeroed elements.
+                                _elementsBuffer.Add(oldElement);
+
+                                continue;
+                            }
+
+                            var intersectionType = GetIntersectionType(oldElement, playedTimeCalculator(chronoline, oldElement));
+
+                            if (intersectionType == IntersectionType.Start)
+                                insertIndex += 2;
+                            if (intersectionType == IntersectionType.Loop)
+                                ++insertIndex;
+
+                            // Remember zeroed element for handle it later.
+                            if (oldElement.Playable.Duration == 0f)
+                                _elementsBuffer.Add(oldElement);
+                        }
+
+                        // Cycle for new element loops count (for adding phase loop events to chain).
+                        for (int j = 0; j < element.Playable.LoopsCount; j++)
+                        {
+                            // Used for calculating loop start phase event position for newly added element.
+                            var startPhaseShift = 0;
+
+                            // Cycle for zeroed elements (for correcting insert index and placing new element phase loop events).
+                            for (int k = 0; k < _elementsBuffer.Count; k++)
+                            {
+                                var zeroedElement = _elementsBuffer[k];
+
+                                // For current element we need add its phase events to chain.
+                                if (zeroedElement == element)
+                                {
+                                    chain.InsertEvent(insertIndex++, new PhaseLoopComplete(element, j));
+
+                                    if (j == element.Playable.LoopsCount - 1)
+                                    {
+                                        chain.InsertEvent(insertIndex, new PhaseComplete(element));
+                                        goto END;
+                                    }
+
+                                    continue;
+                                }
+
+                                // If zeroed element not at phase complete event, than need add 1 event (LoopComplete).
+                                if (j < zeroedElement.Playable.LoopsCount - 1)
+                                {
+                                    ++insertIndex;
+
+                                    // We need remember that loop start phase event on element placed before current
+                                    // emit before current element's start phase event too.
+                                    if (zeroedElement.Order < element.Order)
+                                        ++startPhaseShift;
+                                }
+                                else
+                                {
+                                    insertIndex += 2;
+                                    _elementsBuffer.RemoveAt(k--);
+                                }
+                            }
+
+                            insertIndex += startPhaseShift;
+                            chain.InsertEvent(insertIndex++, new PhaseLoopStart(element, j + 1));
+
+                            var startsEventsLeft = _elementsBuffer.Count - 1 - _elementsBuffer.IndexOf(element);
+                            insertIndex += startsEventsLeft;
+                        }
+
+                    END:
+                        _elementsBuffer.Clear();
+                    }
+                    else
+                    {
+                        if (playedTime == 0f) // Start phase.
+                        {
+                            var insertIndex = 0;
+
+                            // Cycle for elements which placed before current.
+                            for (int j = 0; j < element.Order; j++)
+                            {
+                                if (ElementNotIntersectsOrSelf(chronoline, j, out Element oldElement))
+                                    continue;
+
+                                var intersectionType = GetIntersectionType(oldElement, playedTimeCalculator(chronoline, oldElement));
+
+                                if (intersectionType == IntersectionType.Start)
+                                    insertIndex += 2;
+                                if (intersectionType == IntersectionType.Loop)
+                                    ++insertIndex;
+                            }
+
+                            chain.InsertEvent(insertIndex++, new PhaseStart(element));
+                            chain.InsertEvent(insertIndex, new PhaseFirstLoopStart(element));
+
+                            chain.PrePostPoint += 2;
+                        }
+                        else
+                        {
+                            if (playedTime % element.Playable.LoopDuration == 0f && playedTime != element.Playable.Duration) // Intermediate phase.
+                            {
+                                var preInsertIndex = 0;
+                                var postInsertIndex = 0;
+
+                                for (int j = 0; j < element.Order; j++)
+                                {
+                                    if (ElementNotIntersectsOrSelf(chronoline, j, out Element oldElement))
+                                        continue;
+
+                                    if (element.Playable.Duration == 0f)
+                                        postInsertIndex += 2;
+                                    else
+                                    {
+                                        var intersectionType = GetIntersectionType(oldElement, playedTimeCalculator(chronoline, oldElement));
+
+                                        if (intersectionType == IntersectionType.Start)
+                                            postInsertIndex += 2;
+                                        else if (intersectionType == IntersectionType.Update)
+                                            ++preInsertIndex;
+                                        else if (intersectionType == IntersectionType.Loop)
+                                        {
+                                            ++postInsertIndex;
+                                            ++preInsertIndex;
+                                        }
+                                        else if (intersectionType == IntersectionType.Complete)
+                                            preInsertIndex += 2;
+                                    }
+                                }
+
+                                var loop = (int)(playedTime / element.Playable.LoopDuration);
+
+                                chain.InsertEvent(preInsertIndex, new PhaseLoopComplete(element, loop - 1));
+                                ++chain.PrePostPoint;
+
+                                chain.InsertEvent(chain.PrePostPoint + postInsertIndex, new PhaseLoopStart(element, loop));
+
+                            }
+                            else // Update and complete phases.
+                            {
+                                var insertIndex = 0;
+
+                                // Cycle for elements which placed before current.
+                                for (int j = 0; j < element.Order; j++)
+                                {
+                                    if (ElementNotIntersectsOrSelf(chronoline, j, out Element oldElement))
+                                        continue;
+
+                                    var intersectionType = GetIntersectionType(oldElement, playedTimeCalculator(chronoline, oldElement));
+
+                                    if (intersectionType == IntersectionType.Update || intersectionType == IntersectionType.Loop)
+                                        ++insertIndex;
+                                    else if (intersectionType == IntersectionType.Complete)
+                                        insertIndex += 2;
+                                }
+
+                                if (playedTime == element.Playable.Duration) // Complete phase
+                                {
+                                    chain.InsertEvent(insertIndex++, new PhaseLoopComplete(element, element.Playable.LoopsCount - 1));
+                                    chain.InsertEvent(insertIndex, new PhaseComplete(element));
+
+                                    chain.PrePostPoint += 2;
+                                }
+                                else // Update phase
+                                {
+                                    chain.InsertEvent(insertIndex, new PhaseLoopUpdate(element, playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration));
+                                    ++chain.PrePostPoint;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                InjectEvents(chronoline.Time - element.StartTime, _forwardPlayedTimeCalcualtor, chronoline.Chains.Forward);
+                InjectEvents(element.EndTime - chronoline.Time, _backwardPlayedTimeCalcualtor, chronoline.Chains.Backward);
+            }
+
+            // Handle new chronolines.
+            if (element.Playable.Duration == 0f)
+            {
+                // Handle all phase events at once.
+                if (!ChronolineExist(element.StartTime))
+                    AddChronoline(GenerateChronoline(element.StartTime));
+            }
+            else
+            {
+                // Handle start chronoline.
+                if (!ChronolineExist(element.StartTime))
+                    AddChronoline(GenerateChronoline(element.StartTime));
+
+                // Handle intermediate new chronolines (loop lines).
+                for (int j = 0; j <= element.Playable.LoopsCount; j++)
+                {
+                    var phaseTime = element.StartTime + element.Playable.LoopDuration * j;
+
+                    if (ChronolineExist(phaseTime))
+                        continue;
+
+                    AddChronoline(GenerateChronoline(phaseTime));
+                }
+
+                // Handle end chronoline.
+                if (!ChronolineExist(element.EndTime))
+                    AddChronoline(GenerateChronoline(element.EndTime));
+            }
+        }
+
         #region Rewind
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction)
         {
@@ -786,7 +1064,7 @@ namespace Tweens
                     return;
 
                 var loopedPlayedTime = PlayedTime % LoopDuration;
-                ChronoLine lastChronoline = null;
+                Chronoline lastChronoline = null;
 
                 for (int i = 0; i < _chronolines.Count; i++)
                 {
@@ -831,7 +1109,7 @@ namespace Tweens
                     return;
 
                 var loopedPlayedTime = LoopDuration - LoopTime(PlayedTime);
-                ChronoLine lastChronoline = null;
+                Chronoline lastChronoline = null;
 
                 for (int i = _chronolines.Count - 1; i >= 0; i--)
                 {
