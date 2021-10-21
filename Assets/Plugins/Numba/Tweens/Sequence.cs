@@ -31,6 +31,8 @@ namespace Tweens
                 Playable = playable;
                 Order = order;
             }
+
+            public override string ToString() => Playable.Name;
         }
 
         #region Phases
@@ -592,16 +594,28 @@ namespace Tweens
             return false;
         }
 
-        private void AddChronoline(Chronoline chronoline)
+        private void SortAndAddChronoline(Chronoline chronoline)
         {
             var index = 0;
             for (; index < _chronolines.Count; index++)
             {
-                if (_chronolines[index].Time < chronoline.Time)
-                    continue;
+                if (_chronolines[index].Time > chronoline.Time)
+                    break;
             }
 
             _chronolines.Insert(index, chronoline);
+        }
+
+        private IntersectionType GetIntersectionType(Element element, float playedTime)
+        {
+            if (playedTime == 0f)
+                return IntersectionType.Start;
+            else if (playedTime == element.Playable.Duration)
+                return IntersectionType.Complete;
+            else if (playedTime % element.Playable.LoopDuration == 0f)
+                return IntersectionType.Loop;
+            else
+                return IntersectionType.Update;
         }
 
         private Chronoline GenerateChronoline(float time)
@@ -696,50 +710,6 @@ namespace Tweens
             return chronoline;
         }
 
-        public Sequence GenerateChronolines()
-        {
-            _chronolines.Clear();
-
-            for (int i = 0; i < _elements.Count; i++)
-            {
-                var element = _elements[i];
-
-                if (element.Playable.Duration == 0f)
-                {
-                    if (ChronolineExist(element.StartTime))
-                        continue;
-
-                    AddChronoline(GenerateChronoline(element.StartTime));
-                }
-                else
-                {
-                    for (int j = 0; j <= element.Playable.LoopsCount; j++)
-                    {
-                        var phaseTime = element.StartTime + element.Playable.LoopDuration * j;
-
-                        if (ChronolineExist(phaseTime))
-                            continue;
-
-                        AddChronoline(GenerateChronoline(phaseTime));
-                    }
-                }
-            }
-
-            return this;
-        }
-
-        private IntersectionType GetIntersectionType(Element element, float playedTime)
-        {
-            if (playedTime == 0f)
-                return IntersectionType.Start;
-            else if (playedTime == element.Playable.Duration)
-                return IntersectionType.Complete;
-            else if (playedTime % element.Playable.LoopDuration == 0f)
-                return IntersectionType.Loop;
-            else
-                return IntersectionType.Update;
-        }
-
         private void InjectPhaseEventsForElement(Element element)
         {
             // Handle old chronolines on element [start -> end] and [end -> start] intervals.
@@ -779,8 +749,8 @@ namespace Tweens
 
                             if (oldElement == element)
                             {
-                                chain.InsertEvent(insertIndex++, new PhaseStart(element));
-                                chain.InsertEvent(insertIndex++, new PhaseFirstLoopStart(element));
+                                chain.InsertEvent(chain.PrePostPoint + insertIndex++, new PhaseStartZeroed(element));
+                                chain.InsertEvent(chain.PrePostPoint + insertIndex++, new PhaseFirstLoopStartZeroed(element));
 
                                 // Save new element to zeroed buffer for handling it within others zeroed elements.
                                 _elementsBuffer.Add(oldElement);
@@ -814,11 +784,11 @@ namespace Tweens
                                 // For current element we need add its phase events to chain.
                                 if (zeroedElement == element)
                                 {
-                                    chain.InsertEvent(insertIndex++, new PhaseLoopComplete(element, j));
+                                    chain.InsertEvent(chain.PrePostPoint + insertIndex++, new PhaseLoopCompleteZeroed(element, j));
 
                                     if (j == element.Playable.LoopsCount - 1)
                                     {
-                                        chain.InsertEvent(insertIndex, new PhaseComplete(element));
+                                        chain.InsertEvent(chain.PrePostPoint + insertIndex, new PhaseCompleteZeroed(element));
                                         goto END;
                                     }
 
@@ -843,7 +813,7 @@ namespace Tweens
                             }
 
                             insertIndex += startPhaseShift;
-                            chain.InsertEvent(insertIndex++, new PhaseLoopStart(element, j + 1));
+                            chain.InsertEvent(chain.PrePostPoint + insertIndex++, new PhaseLoopStartZeroed(element, j + 1));
 
                             var startsEventsLeft = _elementsBuffer.Count - 1 - _elementsBuffer.IndexOf(element);
                             insertIndex += startsEventsLeft;
@@ -872,10 +842,8 @@ namespace Tweens
                                     ++insertIndex;
                             }
 
-                            chain.InsertEvent(insertIndex++, new PhaseStart(element));
-                            chain.InsertEvent(insertIndex, new PhaseFirstLoopStart(element));
-
-                            chain.PrePostPoint += 2;
+                            chain.InsertEvent(chain.PrePostPoint + insertIndex++, new PhaseStart(element));
+                            chain.InsertEvent(chain.PrePostPoint + insertIndex, new PhaseFirstLoopStart(element));
                         }
                         else
                         {
@@ -961,13 +929,13 @@ namespace Tweens
             {
                 // Handle all phase events at once.
                 if (!ChronolineExist(element.StartTime))
-                    AddChronoline(GenerateChronoline(element.StartTime));
+                    SortAndAddChronoline(GenerateChronoline(element.StartTime));
             }
             else
             {
                 // Handle start chronoline.
                 if (!ChronolineExist(element.StartTime))
-                    AddChronoline(GenerateChronoline(element.StartTime));
+                    SortAndAddChronoline(GenerateChronoline(element.StartTime));
 
                 // Handle intermediate new chronolines (loop lines).
                 for (int j = 0; j <= element.Playable.LoopsCount; j++)
@@ -977,12 +945,12 @@ namespace Tweens
                     if (ChronolineExist(phaseTime))
                         continue;
 
-                    AddChronoline(GenerateChronoline(phaseTime));
+                    SortAndAddChronoline(GenerateChronoline(phaseTime));
                 }
 
                 // Handle end chronoline.
                 if (!ChronolineExist(element.EndTime))
-                    AddChronoline(GenerateChronoline(element.EndTime));
+                    SortAndAddChronoline(GenerateChronoline(element.EndTime));
             }
         }
 

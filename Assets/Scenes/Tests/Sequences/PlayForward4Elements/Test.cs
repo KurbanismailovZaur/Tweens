@@ -67,7 +67,7 @@ namespace Tweens.Scenes.Tests.Sequences.PlayForward4Elements
             seq.Insert(0.5f, tween2);
             seq.Insert(1f, tween3);
 
-            seq.GenerateChronolines().Play();
+            seq.Play();
         }
     }
 }

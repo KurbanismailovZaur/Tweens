@@ -45,7 +45,7 @@ namespace Tweens.Scenes.Tests.Sequences.RewindToEndForwardAllLoopsCount2
             seq.Insert(0f, tween0);
 
             SubscribeOnAllEvents(seq);
-            seq.GenerateChronolines().RewindToEnd();
+            seq.RewindToEnd();
         }
     }
 }

@@ -51,7 +51,6 @@ namespace Tweens.Scenes.Tests.Sequences.PlayForwardAndBackward4ElementsSequence
             SubscribeOnAllEvents(subseq);
 
             subseq.Append(tween1);
-            subseq.GenerateChronolines();
 
             var seq = new Sequence("seq", Formula.Linear, 1, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
             SubscribeOnAllEvents(seq);
@@ -59,7 +58,7 @@ namespace Tweens.Scenes.Tests.Sequences.PlayForwardAndBackward4ElementsSequence
             seq.Insert(0f, tween0);
             seq.Insert(0.5f, subseq);
             
-            yield return seq.GenerateChronolines().Play().WaitForComplete();
+            yield return seq.Play().WaitForComplete();
 
             yield return new WaitForSeconds(1f);
 

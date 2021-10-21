@@ -81,7 +81,7 @@ namespace Tweens.Scenes.Tests.Sequences.PlayForwardAndBackward6Elements
             seq.Insert(1f, tween4);
             seq.Insert(0.5f, tween5);
 
-            seq.GenerateChronolines().Play();
+            seq.Play();
 
             yield return seq.WaitForComplete();
             yield return new WaitForSeconds(1f);

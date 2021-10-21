@@ -44,7 +44,6 @@ namespace Tweens.Scenes.Tests.Sequences.PlayOneElementBackward
             var seq = new Sequence("seq", Formula.Linear, 1, LoopType.Reset, Direction.Backward, LoopResetBehaviour.Rewind);
             seq.Insert(0f, tween0);
 
-            seq.GenerateChronolines();
             SubscribeOnAllEvents(seq);
             seq.SkipToEnd().Play();
         }

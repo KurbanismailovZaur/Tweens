@@ -59,7 +59,7 @@ namespace Tweens.Scenes.Tests.Sequences.RewindToEndForwardAndBackwardZeroed
             seq.Insert(0f, tween2);
 
             SubscribeOnAllEvents(seq);
-            seq.GenerateChronolines().RewindToEnd();
+            seq.RewindToEnd();
 
             yield return new WaitForSeconds(1f);
 
