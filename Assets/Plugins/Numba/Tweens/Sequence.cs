@@ -218,7 +218,7 @@ namespace Tweens
 
         private readonly List<Element> _elements = new List<Element>();
 
-        public ReadOnlyCollection<Element> Elements => _elements.AsReadOnly();
+        public ReadOnlyCollection<Element> Elements { get; private set; }
 
         private int _nextOrder;
 
@@ -231,9 +231,9 @@ namespace Tweens
         private float _lastLoopedNormalizedTime;
 
         #region Played time calculators (used in injectings methods)
-        private static Func<Chronoline, Element, float> _forwardPlayedTimeCalcualtor = (chronoline, element) => chronoline.Time - element.StartTime; 
+        private static Func<Chronoline, Element, float> _forwardPlayedTimeCalcualtor = (chronoline, element) => chronoline.Time - element.StartTime;
 
-        private static Func<Chronoline, Element, float> _backwardPlayedTimeCalcualtor = (chronoline, element) => element.EndTime - chronoline.Time; 
+        private static Func<Chronoline, Element, float> _backwardPlayedTimeCalcualtor = (chronoline, element) => element.EndTime - chronoline.Time;
         #endregion
 
         #region Constructors
@@ -245,6 +245,7 @@ namespace Tweens
 
         public Sequence(GameObject owner, string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : base(owner, name, 0f, formula, loopsCount, loopType, direction)
         {
+            Elements = _elements.AsReadOnly();
             LoopResetBehaviour = loopResetBehaviour;
         }
         #endregion
@@ -268,12 +269,14 @@ namespace Tweens
 
         #region Elements
         #region Add
-        public Element Prepend(Playable playable)
+        public Element Prepend(Playable playable) => Prepend(_nextOrder++, playable);
+
+        public Element Prepend(int order, Playable playable)
         {
             var leftmost = GetLeftmostElement();
 
             if (leftmost == null)
-                return Insert(0f, playable);
+                return Insert(order, 0f, playable);
 
             var startTime = leftmost.StartTime - playable.Duration;
 
@@ -282,13 +285,15 @@ namespace Tweens
                 for (int i = 0; i < _elements.Count; i++)
                     _elements[i].StartTime -= startTime;
 
-                return Insert(0f, playable);
+                return Insert(order, 0f, playable);
             }
             else
-                return Insert(startTime, playable);
+                return Insert(order, startTime, playable);
         }
 
-        public Element Append(Playable playable) => Insert(LoopDuration, playable);
+        public Element Append(Playable playable) => Append(_nextOrder++, playable);
+
+        public Element Append(int order, Playable playable) => Insert(order, LoopDuration, playable);
 
         public Element Insert(float time, Playable playable) => Insert(_nextOrder++, time, playable);
 
@@ -318,134 +323,88 @@ namespace Tweens
         }
         #endregion
 
+        #region Contains
+        public bool Contains(string name) => GetElement(name) != null;
+
+        public bool Contains(IPlayable<Playable> playable) => GetElement(playable) != null;
+        #endregion
+
         #region Get
-        public Element GetLeftmostElement()
+        public List<Element> GetElementsAtTime(float time) => _elements.Where(el => time >= el.StartTime && time <= el.EndTime).ToList();
+
+        public Element GetLeftmostElement() => _elements.FirstOrDefault(el => el.StartTime == _elements.Min(el => el.StartTime));
+
+        public List<Element> GetLeftmostsElements()
         {
             if (_elements.Count == 0)
-                return null;
+                return new List<Element>(0);
 
-            Element element = _elements[0];
-
-            for (int i = 1; i < _elements.Count; i++)
-            {
-                if (_elements[i].StartTime <= element.StartTime)
-                    element = _elements[i];
-            }
-
-            return element;
+            return _elements.Where(el => el.StartTime == _elements.Min(el => el.StartTime)).ToList();
         }
 
-        public Element GetRightmostElement()
+        public Element GetRightmostElement() => _elements.FirstOrDefault(el => el.EndTime == _elements.Max(el => el.EndTime));
+
+        public List<Element> GetRightmostsElements()
         {
             if (_elements.Count == 0)
-                return null;
+                return new List<Element>(0);
 
-            Element element = _elements[0];
-
-            for (int i = 1; i < _elements.Count; i++)
-            {
-                if (_elements[i].EndTime >= element.EndTime)
-                    element = _elements[i];
-            }
-
-            return element;
+            return _elements.Where(el => el.EndTime == _elements.Max(el => el.EndTime)).ToList();
         }
 
-        public Element GetElement(IPlayable<Playable> playable)
-        {
-            foreach (var element in _elements)
-            {
-                if (element.Playable == playable)
-                    return element;
-            }
+        public Element GetElement(IPlayable<Playable> playable) => _elements.FirstOrDefault(el => el.Playable == playable);
 
-            return null;
-        }
+        public List<Element> GetElements(IPlayable<Playable> playable) => _elements.Where(el => el.Playable == playable).ToList();
 
-        public List<Element> GetElements(IPlayable<Playable> playable)
-        {
-            var elements = new List<Element>();
+        public Element GetElement(string name) => _elements.FirstOrDefault(el => el.Playable.Name == name);
 
-            foreach (var element in _elements)
-            {
-                if (element.Playable == playable)
-                    elements.Add(element);
-            }
+        public List<Element> GetElements(string name) => _elements.Where(el => el.Playable.Name == name).ToList();
 
-            return elements;
-        }
-
-        public Element GetElement(string name)
-        {
-            foreach (var element in _elements)
-            {
-                if (element.Playable.Name == name)
-                    return element;
-            }
-
-            return null;
-        }
-
-        public List<Element> GetElements(string name)
-        {
-            var elements = new List<Element>();
-
-            foreach (var element in _elements)
-            {
-                if (element.Playable.Name == name)
-                    elements.Add(element);
-            }
-
-            return elements;
-        }
+        public Element GetElement(int order) => _elements[order];
         #endregion
 
         #region Remove
         public int Remove(IPlayable<Playable> playable)
         {
-            var elements = GetElements(playable);
-
-            if (elements == null)
-                throw new ArgumentException($"{Type} \"{Name}\": Playable \"{playable.Name}\" can not be removed, because it was not added to sequence");
-
-            for (int i = 0; i < elements.Count; i++)
-                _elements.Remove(elements[i]);
-
+            var count = _elements.RemoveAll(el => el.Playable == playable);
             LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
 
-            return elements.Count;
+            return count;
         }
 
-        public void Remove(IEnumerable<IPlayable<Playable>> playables)
+        public int Remove(IEnumerable<IPlayable<Playable>> playables)
         {
-            for (int i = 0; i < playables.Count(); i++)
-                Remove(playables.ElementAt(i));
+            var count = 0;
+
+            foreach (var playable in playables)
+                count += Remove(playable);
+
+            return count;
         }
 
-        public void Remove(params IPlayable<Playable>[] playables) => Remove((IEnumerable<IPlayable<Playable>>)playables);
+        public int Remove(params IPlayable<Playable>[] playables) => Remove((IEnumerable<IPlayable<Playable>>)playables);
 
         public int Remove(string name)
         {
-            var elements = GetElements(Name);
-
-            if (elements == null)
-                throw new ArgumentException($"{Type} \"{Name}\": Playable with \"{name}\" can not be removed, because it was not added to sequence");
-
-            for (int i = 0; i < elements.Count; i++)
-                _elements.Remove(elements[i]);
-
+            var count = _elements.RemoveAll(el => el.Playable.Name == name);
             LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
 
-            return elements.Count;
+            return count;
         }
 
-        public void Remove(IEnumerable<string> names)
+        public int Remove(IEnumerable<string> names)
         {
-            for (int i = 0; i < names.Count(); i++)
-                Remove(names.ElementAt(i));
+            var count = 0;
+
+            foreach (var name in names)
+                count += Remove(name);
+
+            return count;
         }
 
-        public void Remove(params string[] names) => Remove((IEnumerable<string>)names);
+        public int Remove(params string[] names) => Remove((IEnumerable<string>)names);
+
+        public void Remove(int order) => _elements.RemoveAt(order);
 
         public void Remove(Element element)
         {
@@ -457,13 +416,13 @@ namespace Tweens
 
         public void Remove(IEnumerable<Element> elements)
         {
-            for (int i = 0; i < elements.Count(); i++)
-                Remove(elements.ElementAt(i));
+            foreach (var element in elements)
+                Remove(element);
         }
 
         public void Remove(params Element[] elements) => Remove((IEnumerable<Element>)elements);
 
-        public int RemoveAll()
+        public int Clear()
         {
             var removed = _elements.Count;
             _elements.Clear();
@@ -472,21 +431,12 @@ namespace Tweens
             return removed;
         }
 
-        public int RemoveAll(Func<Element, bool> predicate)
+        public int RemoveAll(Predicate<Element> predicate)
         {
-            var removed = 0;
+            var count = _elements.RemoveAll(predicate);
 
-            for (int i = _elements.Count - 1; i >= 0; i--)
-            {
-                if (predicate(_elements[i]))
-                {
-                    _elements.RemoveAt(i);
-                    removed++;
-                }
-            }
-
-            LoopDuration = 0f;
-            return removed;
+            LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
+            return count;
         }
         #endregion
         #endregion
