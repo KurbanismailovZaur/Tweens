@@ -11,7 +11,7 @@ using Coroutine = Coroutines.Coroutine;
 
 namespace Tweens
 {
-	public enum LoopResetBehaviour
+	public enum LoopResetBehaviour : byte
 	{
 		Rewind,
 		Skip

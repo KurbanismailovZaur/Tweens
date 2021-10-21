@@ -40,49 +40,51 @@ namespace Tweens
         {
             protected Element _element;
 
+            internal Element Element => _element;
+
             protected Phase(Element element) => _element = element;
 
-            abstract public void Call(Direction direction);
+            abstract internal void Call(Direction direction);
         }
 
         #region Zedo duration
         private class PhaseStartZeroed : Phase
         {
-            public PhaseStartZeroed(Element element) : base(element) { }
+            internal PhaseStartZeroed(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseStartZeroed(direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseStartZeroed(direction);
         }
 
         private class PhaseFirstLoopStartZeroed : Phase
         {
-            public PhaseFirstLoopStartZeroed(Element element) : base(element) { }
+            internal PhaseFirstLoopStartZeroed(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseFirstLoopStartZeroed(direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseFirstLoopStartZeroed(direction);
         }
 
         private class PhaseLoopCompleteZeroed : Phase
         {
             private int _loop;
 
-            public PhaseLoopCompleteZeroed(Element element, int loop) : base(element) => _loop = loop;
+            internal PhaseLoopCompleteZeroed(Element element, int loop) : base(element) => _loop = loop;
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseLoopCompleteZeroed(_loop, direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseLoopCompleteZeroed(_loop, direction);
         }
 
         private class PhaseLoopStartZeroed : Phase
         {
             private int _loop;
 
-            public PhaseLoopStartZeroed(Element element, int loop) : base(element) => _loop = loop;
+            internal PhaseLoopStartZeroed(Element element, int loop) : base(element) => _loop = loop;
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseLoopStartZeroed(_loop, direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseLoopStartZeroed(_loop, direction);
         }
 
         private class PhaseCompleteZeroed : Phase
         {
-            public PhaseCompleteZeroed(Element element) : base(element) { }
+            internal PhaseCompleteZeroed(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseCompleteZeroed(direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseCompleteZeroed(direction);
         }
         #endregion
 
@@ -91,32 +93,32 @@ namespace Tweens
         {
             public PhaseStart(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseStart(direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseStart(direction);
         }
 
         private class PhaseFirstLoopStart : Phase
         {
             public PhaseFirstLoopStart(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseFirstLoopStart(direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseFirstLoopStart(direction);
         }
 
         private class PhaseLoopComplete : Phase
         {
             private int _loop;
 
-            public PhaseLoopComplete(Element element, int loop) : base(element) => _loop = loop;
+            internal PhaseLoopComplete(Element element, int loop) : base(element) => _loop = loop;
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseLoopComplete(_loop, direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseLoopComplete(_loop, direction);
         }
 
         private class PhaseLoopStart : Phase
         {
             private int _loop;
 
-            public PhaseLoopStart(Element element, int loop) : base(element) => _loop = loop;
+            internal PhaseLoopStart(Element element, int loop) : base(element) => _loop = loop;
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseLoopStart(_loop, direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseLoopStart(_loop, direction);
         }
 
         private class PhaseLoopUpdate : Phase
@@ -127,21 +129,21 @@ namespace Tweens
 
             private float _loopedTime;
 
-            public PhaseLoopUpdate(Element element, float endTime, int loop, float loopedTime) : base(element)
+            internal PhaseLoopUpdate(Element element, float endTime, int loop, float loopedTime) : base(element)
             {
                 _endTime = endTime;
                 _loop = loop;
                 _loopedTime = loopedTime;
             }
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseLoopUpdate(_endTime, _loop, _loopedTime, direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseLoopUpdate(_endTime, _loop, _loopedTime, direction);
         }
 
         private class PhaseComplete : Phase
         {
-            public PhaseComplete(Element element) : base(element) { }
+            internal PhaseComplete(Element element) : base(element) { }
 
-            public override void Call(Direction direction) => _element.Playable.HandlePhaseComplete(direction);
+            internal override void Call(Direction direction) => _element.Playable.HandlePhaseComplete(direction);
         }
         #endregion
         #endregion
@@ -177,6 +179,40 @@ namespace Tweens
                     for (int i = 0; i < _events.Count; i++)
                         _events[i].Call(direction);
                 }
+
+                internal void RemoveElementsPhaseEvents(Element element)
+                {
+                    for (int i = 0; i < _events.Count; i++)
+                    {
+                        var @event = _events[i];
+
+                        if (@event.Element != element)
+                            continue;
+
+                        // If we delete pre-event, than we need decrease pre/post point.
+                        if (i < PrePostPoint)
+                            --PrePostPoint;
+
+                        _events.RemoveAt(i--);
+                    }
+                }
+
+                internal bool HasNoUpdateEvents()
+                {
+                    // If we have post-events, than it is 100% that not update events exist.
+                    if (PrePostPoint < _events.Count)
+                        return true;
+
+                    // If we have pre-events, than we need to check it type on non update event.
+                    for (int i = 0; i < PrePostPoint; i++)
+                    {
+                        if (!(_events[i] is PhaseLoopUpdate))
+                            return true;
+                    }
+
+                    // Otwerwise the chain is not contains non update events.
+                    return false;
+                }
             }
 
             internal class ChainsData
@@ -203,10 +239,19 @@ namespace Tweens
             internal ChainsData Chains { get; set; } = new ChainsData();
 
             internal Chronoline(float time) => Time = time;
+
+            internal void RemovePhaseEventsForElement(Element element)
+            {
+                Chains.Forward.RemoveElementsPhaseEvents(element);
+                Chains.Backward.RemoveElementsPhaseEvents(element);
+            }
+
+            // It is not matter, what direction chain we use.
+            internal bool HasNoUpdateEvents() => Chains.Forward.HasNoUpdateEvents();
         }
 
         // Used for detecting intersection type between chronoline and element.
-        private enum IntersectionType
+        private enum IntersectionType : byte
         {
             Start,
             Update,
@@ -224,6 +269,7 @@ namespace Tweens
 
         private int _nextOrder;
 
+        // Useful buffer for many situations.
         private readonly List<Element> _elementsBuffer = new List<Element>();
 
         private readonly List<Chronoline> _chronolines = new List<Chronoline>();
@@ -271,7 +317,7 @@ namespace Tweens
 
         #region Elements
         #region Add
-        public Element Prepend(Playable playable) => Prepend(_nextOrder++, playable);
+        public Element Prepend(Playable playable) => Prepend(_nextOrder, playable);
 
         public Element Prepend(int order, Playable playable)
         {
@@ -293,11 +339,11 @@ namespace Tweens
                 return Insert(order, startTime, playable);
         }
 
-        public Element Append(Playable playable) => Append(_nextOrder++, playable);
+        public Element Append(Playable playable) => Append(_nextOrder, playable);
 
         public Element Append(int order, Playable playable) => Insert(order, LoopDuration, playable);
 
-        public Element Insert(float time, Playable playable) => Insert(_nextOrder++, time, playable);
+        public Element Insert(float time, Playable playable) => Insert(_nextOrder, time, playable);
 
         public Element Insert(int order, float time, Playable playable)
         {
@@ -310,6 +356,7 @@ namespace Tweens
             order = Mathf.Clamp(order, 0, _elements.Count);
 
             var element = new Element(Mathf.Max(time, 0f), playable, order);
+            ++_nextOrder;
 
             _elements.Insert(order, element);
 
@@ -368,10 +415,10 @@ namespace Tweens
         #region Remove
         public int Remove(IPlayable<Playable> playable)
         {
-            var count = _elements.RemoveAll(el => el.Playable == playable);
-            LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
+            var elements = GetElements(playable);
+            Remove(elements);
 
-            return count;
+            return elements.Count;
         }
 
         public int Remove(IEnumerable<IPlayable<Playable>> playables)
@@ -388,10 +435,10 @@ namespace Tweens
 
         public int Remove(string name)
         {
-            var count = _elements.RemoveAll(el => el.Playable.Name == name);
-            LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
-
-            return count;
+            var elements = GetElements(name);
+            Remove(elements);
+            
+            return elements.Count;
         }
 
         public int Remove(IEnumerable<string> names)
@@ -406,14 +453,14 @@ namespace Tweens
 
         public int Remove(params string[] names) => Remove((IEnumerable<string>)names);
 
-        public void Remove(int order) => _elements.RemoveAt(order);
+        public void Remove(int order) => RemoveElement(GetElement(order));
 
         public void Remove(Element element)
         {
-            if (!_elements.Remove(element))
+            if (!_elements.Contains(element))
                 throw new ArgumentException($"{Type} \"{Name}\": The element with hash code \"{element.GetHashCode()}\" passed for removing does not exist in the sequence");
 
-            LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
+            RemoveElement(element);
         }
 
         public void Remove(IEnumerable<Element> elements)
@@ -424,21 +471,35 @@ namespace Tweens
 
         public void Remove(params Element[] elements) => Remove((IEnumerable<Element>)elements);
 
+        public int RemoveAll(Predicate<Element> predicate)
+        {
+            var count = 0;
+
+            for (int i = 0; i < _elements.Count; i++)
+            {
+                var element = _elements[i];
+            
+                if (predicate(element))
+                {
+                    RemoveElement(element);
+                    ++count;
+                    --i;
+                }
+            }
+
+            return count;
+        }
+
         public int Clear()
         {
             var removed = _elements.Count;
+
+            _chronolines.Clear();
             _elements.Clear();
 
+            _nextOrder = 0;
             LoopDuration = 0f;
             return removed;
-        }
-
-        public int RemoveAll(Predicate<Element> predicate)
-        {
-            var count = _elements.RemoveAll(predicate);
-
-            LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
-            return count;
         }
         #endregion
         #endregion
@@ -954,14 +1015,42 @@ namespace Tweens
             }
         }
 
+        private List<Chronoline> GetElementChronolines(Element element) => _chronolines.Where(cl => cl.Time >= element.StartTime && cl.Time <= element.EndTime).ToList();
+
+        private void RemoveElement(Element element)
+        {
+            var chronolines = GetElementChronolines(element);
+
+            foreach (var chronoline in chronolines)
+            {
+                chronoline.RemovePhaseEventsForElement(element);
+                
+                if (!chronoline.HasNoUpdateEvents())
+                    _chronolines.Remove(chronoline);
+            }
+
+            _elements.Remove(element);
+
+            // Decrease order on all elements next to the current.
+            for (int i = element.Order; i < _elements.Count; i++)
+                --_elements[i].Order;
+
+            LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
+        }
+
         #region Rewind
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction)
         {
+            // This is avoid situation when we jump from loop complete to loop start
             if (_lastLoopedNormalizedTime != 0f || loopedNormalizedTime != 1f)
             {
                 _lastLoopedNormalizedTime = loopedNormalizedTime;
                 return;
             }
+
+            // If sequence is empty, than there is nothing to handle.
+            if (_chronolines.Count == 0)
+                return;
 
             if (direction == Direction.Forward)
                 _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward);

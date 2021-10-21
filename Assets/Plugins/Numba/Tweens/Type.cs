@@ -11,7 +11,7 @@ using Coroutine = Coroutines.Coroutine;
 
 namespace Tweens
 {
-	public enum Type
+	public enum Type : byte
 	{
 		Tween,
 		Sequence,

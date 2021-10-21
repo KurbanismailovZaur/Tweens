@@ -11,7 +11,7 @@ using Coroutine = Coroutines.Coroutine;
 
 namespace Tweens
 {
-	public enum Direction
+	public enum Direction : byte
 	{
 		Forward,
 		Backward

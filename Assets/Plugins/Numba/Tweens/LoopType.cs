@@ -9,7 +9,7 @@ using Coroutine = Coroutines.Coroutine;
 
 namespace Tweens
 {
-	public enum LoopType
+	public enum LoopType : byte
 	{
 		Reset,
 		Continue,

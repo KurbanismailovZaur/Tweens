@@ -60,40 +60,36 @@ namespace Tweens
             yield return new WaitForSeconds(1f);
             
             var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            var tween1 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target1.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            var tween2 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target2.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            var tween3 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target3.SetPositionX, 0f, Formula.Linear, 3, LoopType.Reset, Direction.Forward);
+            var tween4 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target4.SetPositionX, 0f, Formula.Linear, 4, LoopType.Reset, Direction.Forward);
+            var tween5 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target5.SetPositionX, 0.5f, Formula.Linear, 2, LoopType.Reset, Direction.Forward);
+            var tween6 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target6.SetPositionX, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
+            var tween7 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target7.SetPositionX, 0f, Formula.Linear, 2, LoopType.Reset, Direction.Forward);
+
             SubscribeOnAllEvents(tween0);
-
-            var tween1 = new Tween<float, FloatTweak>("tween1", 0f, 1f, _target1.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
             SubscribeOnAllEvents(tween1);
-
-            var tween2 = new Tween<float, FloatTweak>("tween2", 0f, 1f, _target2.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
             SubscribeOnAllEvents(tween2);
-
-            var tween3 = new Tween<float, FloatTweak>("tween3", 0f, 1f, _target3.SetPositionX, 0f, Formula.Linear, 3, LoopType.Reset, Direction.Forward);
             SubscribeOnAllEvents(tween3);
-
-            var tween4 = new Tween<float, FloatTweak>("tween4", 0f, 1f, _target4.SetPositionX, 0f, Formula.Linear, 4, LoopType.Reset, Direction.Forward);
             SubscribeOnAllEvents(tween4);
-
-            var tween5 = new Tween<float, FloatTweak>("tween5", 0f, 1f, _target5.SetPositionX, 0.5f, Formula.Linear, 2, LoopType.Reset, Direction.Forward);
             SubscribeOnAllEvents(tween5);
-
-            var tween6 = new Tween<float, FloatTweak>("tween6", 0f, 1f, _target6.SetPositionX, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
             SubscribeOnAllEvents(tween6);
+            SubscribeOnAllEvents(tween7);
 
-            var tween7 = new Tween<float, FloatTweak>("tween7", 0f, 1f, _target7.SetPositionX, 0f, Formula.Linear, 2, LoopType.Reset, Direction.Forward);
-            SubscribeOnAllEvents(tween6);
-
-            var seq = new Sequence("seq", Formula.Linear, 1, LoopType.Reset, Direction.Backward, LoopResetBehaviour.Rewind);
+            var seq = new Sequence("seq", Formula.Linear, 1, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
             SubscribeOnAllEvents(seq);
 
             seq.Insert(0f, tween0);
             seq.Insert(0.5f, tween1);
             seq.Insert(1f, tween2);
             seq.Insert(1f, tween3);
+            seq.Insert(4, 1f, tween4);
             seq.Insert(0.5f, tween5);
             seq.Insert(1f, tween6);
             seq.Insert(1f, tween7);
-            seq.Insert(4, 1f, tween4);
+
+            seq.RemoveAll(el => true);
 
             seq.RewindToEnd();
         }
