@@ -89,9 +89,9 @@ namespace Tweens
             seq.Insert(1f, tween6);
             seq.Insert(1f, tween7);
 
-            seq.RemoveAll(el => true);
+            yield return seq.Play().WaitForComplete();
 
-            seq.RewindToEnd();
+            seq.PlayBackward();
         }
     }
 }
