@@ -936,22 +936,34 @@ namespace Tweens
 
         private void BeforeLoopStarting(Direction direction, LoopResetBehaviour loopResetBehaviour)
         {
-            if (loopResetBehaviour == LoopResetBehaviour.Rewind)
+            if (LoopType == LoopType.Reset)
             {
-                for (int i = 0; i < _elements.Count; i++)
+                if (loopResetBehaviour == LoopResetBehaviour.Rewind)
                 {
-                    var element = _elements[i];
+                    for (int i = 0; i < _elements.Count; i++)
+                    {
+                        var element = _elements[i];
 
-                    if (element.Playable.Duration == 0f)
-                        element.Playable.RewindTo(direction == Direction.Forward ? -1f : 1f, false);
-                    else
-                        element.Playable.RewindTo(direction == Direction.Forward ? 0f : Duration, false);
+                        // If element is sequence in mirror mode, than we don't need to call rewind method,
+                        // we need skip only this sequence (without childs).
+                        if (element.Playable is Sequence sequence && sequence.LoopType == LoopType.Mirror && sequence.Duration != 0f)
+                        {
+                            sequence.PlayedTime = direction == Direction.Forward ? 0f : Duration;
+                            continue;
+                        }
+
+                        // For other cases we use rewind method.
+                        if (element.Playable.Duration == 0f)
+                            element.Playable.RewindTo(direction == Direction.Forward ? -1f : 1f, false);
+                        else
+                            element.Playable.RewindTo(direction == Direction.Forward ? 0f : Duration, false);
+                    }
                 }
-            }
-            else
-            {
-                for (int i = 0; i < _elements.Count; i++)
-                    _elements[i].Playable.SkipTo(direction == Direction.Forward ? 0f : Duration);
+                else
+                {
+                    for (int i = 0; i < _elements.Count; i++)
+                        _elements[i].Playable.SkipTo(direction == Direction.Forward ? 0f : Duration);
+                }
             }
         }
         #endregion
