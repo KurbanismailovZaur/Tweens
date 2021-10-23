@@ -43,11 +43,11 @@ namespace Tweens
         IPlayable SetDirection(Direction direction);
 
         #region Rewinds
-        Playable RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        Playable RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true);
 
-        Playable RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        Playable RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true);
 
-        Playable RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        Playable RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true);
         #endregion
 
         #region Skips
@@ -1037,12 +1037,12 @@ namespace Tweens
         new T SetDirection(Direction direction);
 
         #region Rewinds
-        new T RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        new T RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true);
 
 
-        new T RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        new T RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true);
 
-        new T RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        new T RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true);
         #endregion
 
         #region Skips

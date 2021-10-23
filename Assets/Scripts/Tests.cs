@@ -9,16 +9,15 @@ using Coroutines.Extensions;
 using Object = UnityEngine.Object;
 using Coroutine = Coroutines.Coroutine;
 using Tweens.Tweaks;
-using Tweens;
 
-namespace Tweens.Scenes.Tests.Sequences.PlayOneElementForwardLoopsCount2
+namespace Tweens
 {
-    public class Test : MonoBehaviour
-    {
-        [SerializeField]
-        private Transform _target0;
+	public class Tests : MonoBehaviour
+	{
+		[SerializeField]
+		private Transform[] _targets;
 
-        private void SubscribeOnAllEvents(IPlayable<Playable> playable)
+        private IPlayable<Playable> SubscribeOnAllEvents(IPlayable<Playable> playable)
         {
             playable.OnPhaseStarting((p, dir) => print($"[{p.Name}] Phase starting in {dir} direction"));
             playable.OnPhaseStarted((p, dir) => print($"[{p.Name}] Phase started in {dir} direction"));
@@ -32,20 +31,30 @@ namespace Tweens.Scenes.Tests.Sequences.PlayOneElementForwardLoopsCount2
             playable.OnPhaseLoopCompleted((p, li, dir) => print($"[{p.Name}] Phase loop {li} completed in {dir} direction"));
             playable.OnPhaseCompleting((p, dir) => print($"[{p.Name}] Phase completing in {dir} direction"));
             playable.OnPhaseCompleted((p, dir) => print($"[{p.Name}] Phase completed in {dir} direction"));
+
+            return playable;
         }
 
-        IEnumerator Start()
+        private void PrintWithLog(int index, float value)
         {
-            yield return new WaitForSeconds(1f);
+            _targets[index].SetPositionX(value);
+            print($"<color=yellow>{value}</color>");
+        }
 
-            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 2, LoopType.Reset);
-            SubscribeOnAllEvents(tween0);
+        public void Tween0Rewind()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f);
+            SubscribeOnAllEvents(tween);
 
-            var seq = new Sequence("seq", Formula.Linear, 1, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
-            seq.Insert(0f, tween0);
+            tween.RewindToEnd(0, 1);
+        }
 
-            SubscribeOnAllEvents(seq);
-            seq.Play();
+        public void Tween1Rewind()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f);
+            SubscribeOnAllEvents(tween);
+
+            tween.RewindToEnd(0, 1);
         }
     }
 }
