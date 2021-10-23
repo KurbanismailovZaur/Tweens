@@ -73,7 +73,7 @@ namespace Tweens
                 if (direction == Direction.Forward)
                     (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
                 else
-                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount), Tweak.Evaluate(from, to, continueMaxLoopsCount - 1f));
+                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex), Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex - 1f));
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, Formula);
             }

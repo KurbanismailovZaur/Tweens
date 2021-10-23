@@ -67,8 +67,11 @@ namespace Tweens
             SubscribeOnAllEvents(tween0);
             SubscribeOnAllEvents(seq);
 
-            //seq.Play();
-            seq.SkipToEnd().PlayBackward();
+            seq.Play();
+
+            yield return new WaitForSeconds(2.5f);
+
+            seq.PlayBackward();
         }
     }
 }
