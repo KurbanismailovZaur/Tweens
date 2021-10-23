@@ -59,7 +59,7 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
             
-            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 2, LoopType.Reset);
+            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 2, LoopType.Continue);
 
             var seq = new Sequence("seq", Formula.Linear, 2, LoopType.Continue);
             seq.Append(tween0);
@@ -67,9 +67,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween0);
             SubscribeOnAllEvents(seq);
 
-            seq.Play();
-
-            yield return new WaitForSeconds(2.5f);
+            yield return seq.Play().WaitForComplete();
 
             seq.PlayBackward();
         }

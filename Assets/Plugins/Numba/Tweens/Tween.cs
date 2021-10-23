@@ -79,8 +79,12 @@ namespace Tweens
             }
             else if (LoopType == LoopType.Continue)
             {
-                var (from, to) = direction == Direction.Forward ? (From(), To()) : (Tweak.Evaluate(From(), To(), LoopsCount), Tweak.Evaluate(From(), To(), LoopsCount - 1));
-                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex + loop), Tweak.Evaluate(from, to, continueLoopIndex + loop + 1f));
+                var (from, to) = (From(), To());
+
+                if (direction == Direction.Forward)
+                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex * LoopsCount + loop), Tweak.Evaluate(from, to, continueLoopIndex * LoopsCount + loop + 1f));
+                else
+                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount * LoopsCount - (continueLoopIndex * LoopsCount) - loop), Tweak.Evaluate(from, to, continueMaxLoopsCount * LoopsCount - (continueLoopIndex * LoopsCount) - loop - 1f));
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, Formula);
             }
@@ -110,8 +114,13 @@ namespace Tweens
             }
             else if (LoopType == LoopType.Continue)
             {
-                var (from, to) = direction == Direction.Forward ? (From(), To()) : (Tweak.Evaluate(From(), To(), LoopsCount), Tweak.Evaluate(From(), To(), LoopsCount - 1));
-                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex + loop), Tweak.Evaluate(from, to, continueLoopIndex + loop + 1f));
+                var (from, to) = (From(), To());
+
+                if (direction == Direction.Forward)
+                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex * LoopsCount + loop), Tweak.Evaluate(from, to, continueLoopIndex * LoopsCount + loop + 1f));
+                else
+                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount * LoopsCount - (continueLoopIndex * LoopsCount) - loop), Tweak.Evaluate(from, to, continueMaxLoopsCount * LoopsCount - (continueLoopIndex * LoopsCount) - loop - 1f));
+                
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
             }
