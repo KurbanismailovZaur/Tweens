@@ -1081,12 +1081,24 @@ namespace Tweens
                 return;
 
             int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
-            continueMaxLoopsCount *= LoopsCount;
+
+            if (LoopType == LoopType.Continue)
+                continueMaxLoopsCount *= LoopsCount;
 
             if (direction == Direction.Forward)
+            {
                 _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward, continueRepeatIndex, continueMaxLoopsCount);
+
+                if (LoopType == LoopType.Mirror)
+                    _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward, continueRepeatIndex, continueMaxLoopsCount);
+            }
             else
+            {
                 _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward, continueRepeatIndex, continueMaxLoopsCount);
+
+                if (LoopType == LoopType.Mirror)
+                    _chronolines[0].Chains.Forward.CallAllEvents(Direction.Backward, continueRepeatIndex, continueMaxLoopsCount);
+            }
 
             _lastLoopedNormalizedTime = loopedNormalizedTime;
         }
@@ -1107,23 +1119,11 @@ namespace Tweens
                 }
             }
 
-            if (direction == Direction.Forward)
+            static void HandleChronolinesOnForwardInterval(List<Chronoline> chronolines, float loopedPlayedTime, float loopedTime, float loopDuration, int continueRepeatIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
             {
-                var nextPlayedTime = loop * LoopDuration + loopedTime;
-
-                // If we jump to the same position, than we don't need handle this situation.
-                if (nextPlayedTime == PlayedTime)
-                    return;
-
-                int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
-                continueMaxLoopsCount *= LoopsCount;
-
-                var loopedPlayedTime = PlayedTime % LoopDuration;
-                Chronoline lastChronoline = null;
-
-                for (int i = 0; i < _chronolines.Count; i++)
+                for (int i = 0; i < chronolines.Count; i++)
                 {
-                    var chronoline = _chronolines[i];
+                    var chronoline = chronolines[i];
 
                     // If chronoline stay back from start time, than we just skip it.
                     if (chronoline.Time < loopedPlayedTime)
@@ -1139,7 +1139,7 @@ namespace Tweens
                     else if (chronoline.Time == loopedTime)
                     {
                         // If chronoline stay at end of loop, than we need call all events.
-                        if (loopedTime == LoopDuration)
+                        if (loopedTime == loopDuration)
                             chronoline.Chains.Forward.CallAllEvents(Direction.Forward, continueRepeatIndex, continueMaxLoopsCount);
                         else
                             chronoline.Chains.Forward.CallPreEvents(Direction.Forward, continueRepeatIndex, continueMaxLoopsCount);
@@ -1149,30 +1149,14 @@ namespace Tweens
 
                     lastChronoline = chronoline;
                 }
-
-                // If last handled chronoline not stay at end of interval, than it means,
-                // that we need handle one extra chronoline for update phase.
-                if (lastChronoline == null || lastChronoline.Time != loopedTime)
-                    HandleUpdatePhases(loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, continueRepeatIndex, continueMaxLoopsCount);
             }
-            else
+
+            static void HandleChronolinesOnBackwardInterval(List<Chronoline> chronolines, float loopedPlayedTime, float loopedTime, float loopDuration, int continueRepeatIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
             {
-                var nextPlayedTime = Duration - (loop * LoopDuration + loopedTime);
-
-                // If we jump to the same position, than we don't need handle this situation.
-                if (nextPlayedTime == PlayedTime)
-                    return;
-
-                int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
-                continueMaxLoopsCount *= LoopsCount;
-
-                var loopedPlayedTime = LoopDuration - LoopTime(PlayedTime);
-                Chronoline lastChronoline = null;
-
-                for (int i = _chronolines.Count - 1; i >= 0; i--)
+                for (int i = chronolines.Count - 1; i >= 0; i--)
                 {
-                    var chronoline = _chronolines[i];
-                    var backwardChronolineTime = LoopDuration - chronoline.Time;
+                    var chronoline = chronolines[i];
+                    var backwardChronolineTime = loopDuration - chronoline.Time;
 
                     // If chronoline stay back from start time, than we just skip it.
                     if (backwardChronolineTime < loopedPlayedTime)
@@ -1188,7 +1172,7 @@ namespace Tweens
                     else if (backwardChronolineTime == loopedTime)
                     {
                         // If chronoline stay at end of loop, than we need call all events.
-                        if (loopedTime == LoopDuration)
+                        if (loopedTime == loopDuration)
                             chronoline.Chains.Backward.CallAllEvents(Direction.Backward, continueRepeatIndex, continueMaxLoopsCount);
                         else
                             chronoline.Chains.Backward.CallPreEvents(Direction.Backward, continueRepeatIndex, continueMaxLoopsCount);
@@ -1198,11 +1182,121 @@ namespace Tweens
 
                     lastChronoline = chronoline;
                 }
+            }
 
-                // If last handled chronoline not stay at end of interval, than it means,
-                // that we need handle one extra chronoline for update phase.
-                if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
-                    HandleUpdatePhases(LoopDuration - loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, continueRepeatIndex, continueMaxLoopsCount);
+            if (direction == Direction.Forward)
+            {
+                var nextPlayedTime = loop * LoopDuration + loopedTime;
+
+                // If we jump to the same position, than we don't need handle this situation.
+                if (nextPlayedTime == PlayedTime)
+                    return;
+
+                int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
+
+                if (LoopType == LoopType.Continue)
+                    continueMaxLoopsCount *= LoopsCount;
+
+                var loopedPlayedTime = PlayedTime % LoopDuration;
+                Chronoline lastChronoline = null;
+
+                if (LoopType != LoopType.Mirror)
+                {
+                    HandleChronolinesOnForwardInterval(_chronolines, loopedPlayedTime, loopedTime, LoopDuration, continueRepeatIndex, continueMaxLoopsCount, ref lastChronoline);
+
+                    // If last handled chronoline not stay at end of interval, than it means,
+                    // that we need handle one extra chronoline for update phase.
+                    if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                        HandleUpdatePhases(loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, continueRepeatIndex, continueMaxLoopsCount);
+                }
+                else
+                {
+                    loopedPlayedTime *= 2f;
+                    loopedTime *= 2;
+
+                    // If we jump from forward handling to backward, then we need handling this jump in 2 steps.
+                    if (loopedPlayedTime < LoopDuration && loopedTime > LoopDuration)
+                    {
+                        HandleChronolinesOnForwardInterval(_chronolines, loopedPlayedTime, LoopDuration, LoopDuration, continueRepeatIndex, continueMaxLoopsCount, ref lastChronoline);
+                        loopedPlayedTime = LoopDuration;
+                    }
+
+                    // Forward handling.
+                    if (loopedPlayedTime < LoopDuration)
+                    {
+                        HandleChronolinesOnForwardInterval(_chronolines, loopedPlayedTime, loopedTime, LoopDuration, continueRepeatIndex, continueMaxLoopsCount, ref lastChronoline);
+
+                        if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                            HandleUpdatePhases(loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, continueRepeatIndex, continueMaxLoopsCount);
+                    }
+                    else // Backward handling
+                    {
+                        loopedPlayedTime %= LoopDuration;
+                        loopedTime = LoopTime(loopedTime);
+
+                        HandleChronolinesOnBackwardInterval(_chronolines, loopedPlayedTime, loopedTime, LoopDuration, continueRepeatIndex, continueMaxLoopsCount, ref lastChronoline);
+
+                        if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
+                            HandleUpdatePhases(LoopDuration - loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, continueRepeatIndex, continueMaxLoopsCount);
+                    }
+                }
+            }
+            else
+            {
+                var nextPlayedTime = Duration - (loop * LoopDuration + loopedTime);
+
+                // If we jump to the same position, than we don't need handle this situation.
+                if (nextPlayedTime == PlayedTime)
+                    return;
+
+                int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
+
+                if (LoopType == LoopType.Continue)
+                    continueMaxLoopsCount *= LoopsCount;
+
+                var loopedPlayedTime = LoopDuration - LoopTime(PlayedTime);
+                Chronoline lastChronoline = null;
+
+                if (LoopType != LoopType.Mirror)
+                {
+                    HandleChronolinesOnBackwardInterval(_chronolines, loopedPlayedTime, loopedTime, LoopDuration, continueRepeatIndex, continueMaxLoopsCount, ref lastChronoline);
+
+                    // If last handled chronoline not stay at end of interval, than it means,
+                    // that we need handle one extra chronoline for update phase.
+                    if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
+                        HandleUpdatePhases(LoopDuration - loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, continueRepeatIndex, continueMaxLoopsCount);
+                }
+                else
+                {
+                    loopedPlayedTime *= 2f;
+                    loopedTime *= 2;
+
+                    // If we jump from forward handling to backward, then we need handling this jump in 2 steps.
+                    if (loopedPlayedTime < LoopDuration && loopedTime > LoopDuration)
+                    {
+                        HandleChronolinesOnForwardInterval(_chronolines, loopedPlayedTime, LoopDuration, LoopDuration, continueRepeatIndex, continueMaxLoopsCount, ref lastChronoline);
+                        loopedPlayedTime = LoopDuration;
+                    }
+
+                    // Forward handling.
+                    if (loopedPlayedTime < LoopDuration)
+                    {
+                        HandleChronolinesOnForwardInterval(_chronolines, loopedPlayedTime, loopedTime, LoopDuration, continueRepeatIndex, continueMaxLoopsCount, ref lastChronoline);
+
+                        if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                            HandleUpdatePhases(loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, continueRepeatIndex, continueMaxLoopsCount);
+                    }
+                    else // Backward handling
+                    {
+                        loopedPlayedTime %= LoopDuration;
+                        loopedTime = LoopTime(loopedTime);
+
+                        HandleChronolinesOnBackwardInterval(_chronolines, loopedPlayedTime, loopedTime, LoopDuration, continueRepeatIndex, continueMaxLoopsCount, ref lastChronoline);
+
+                        if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
+                            HandleUpdatePhases(LoopDuration - loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, continueRepeatIndex, continueMaxLoopsCount);
+                    }
+                }
             }
         }
         #endregion

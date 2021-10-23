@@ -91,9 +91,17 @@ namespace Tweens
             else if (LoopType == LoopType.Mirror)
             {
                 var (from, to) = (From(), To());
-                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
 
-                Tweak.Apply(From(), To(), 0f, Action, Formula);
+                if (direction == Direction.Forward)
+                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+                else
+                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex - 1f), Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex));
+
+                // Calling half-end state.
+                if (loopedNormalizedTime == 1f)
+                    Tweak.Apply(from, to, 1f, Action, Formula);
+
+                Tweak.Apply(from, to, 0f, Action, Formula);
             }
         }
 
@@ -120,19 +128,27 @@ namespace Tweens
                     (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex * LoopsCount + loop), Tweak.Evaluate(from, to, continueLoopIndex * LoopsCount + loop + 1f));
                 else
                     (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount * LoopsCount - (continueLoopIndex * LoopsCount) - loop), Tweak.Evaluate(from, to, continueMaxLoopsCount * LoopsCount - (continueLoopIndex * LoopsCount) - loop - 1f));
-                
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
             }
             else if (LoopType == LoopType.Mirror)
             {
+                var (from, to) = (From(), To());
+
+                if (direction == Direction.Forward)
+                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+                else
+                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex - 1f), Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex));
+
+                // Calling half-end state.
+                var loopedNormalizedPlayedTime = (direction == Direction.Forward ? PlayedTime % LoopDuration : LoopDuration - LoopTime(PlayedTime)) / LoopDuration;
+                if (loopedNormalizedPlayedTime < 0.5f && loopedNormalizedTime > 0.5f)
+                    Tweak.Apply(from, to, 1f, Action, InvertIfRequiredAndGetFormula(direction));
+
                 var loopedMirroredNormalizedTime = loopedNormalizedTime * 2f;
 
                 if (loopedMirroredNormalizedTime > 1f)
                     loopedMirroredNormalizedTime = 2f - loopedMirroredNormalizedTime;
-
-                var (from, to) = (From(), To());
-                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
 
                 Tweak.Apply(from, to, loopedMirroredNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
             }
