@@ -64,37 +64,46 @@ namespace Tweens
 
         private FormulaBase InvertIfRequiredAndGetFormula(Direction direction) => direction == Direction.Forward ? Formula : Tweens.Formula.Invertion.WithFormula(Formula);
 
-        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction)
+        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, int continueLoopIndex)
         {
             if (LoopType == LoopType.Reset)
             {
                 var (from, to) = direction == Direction.Forward ? (From(), To()) : (To(), From());
+                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, Formula);
             }
             else if (LoopType == LoopType.Continue)
             {
                 var (from, to) = direction == Direction.Forward ? (From(), To()) : (Tweak.Evaluate(From(), To(), LoopsCount), Tweak.Evaluate(From(), To(), LoopsCount - 1));
-                (from, to) = (Tweak.Evaluate(from, to, loop), Tweak.Evaluate(from, to, loop + 1f));
+                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex + loop), Tweak.Evaluate(from, to, continueLoopIndex + loop + 1f));
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, Formula);
             }
             else if (LoopType == LoopType.Mirror)
+            {
+                var (from, to) = (From(), To());
+                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+
                 Tweak.Apply(From(), To(), 0f, Action, Formula);
+            }
         }
 
-        protected override void RewindHandler(int loop, float loopedTime, Direction direction)
+        protected override void RewindHandler(int loop, float loopedTime, Direction direction, int continueLoopIndex)
         {
             var loopedNormalizedTime = loopedTime / LoopDuration;
 
             if (LoopType == LoopType.Reset)
             {
                 var (from, to) = direction == Direction.Forward ? (From(), To()) : (To(), From());
+                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
             }
             else if (LoopType == LoopType.Continue)
             {
                 var (from, to) = direction == Direction.Forward ? (From(), To()) : (Tweak.Evaluate(From(), To(), LoopsCount), Tweak.Evaluate(From(), To(), LoopsCount - 1));
-                (from, to) = (Tweak.Evaluate(from, to, loop), Tweak.Evaluate(from, to, loop + 1f));
+                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex + loop), Tweak.Evaluate(from, to, continueLoopIndex + loop + 1f));
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
             }
@@ -105,7 +114,10 @@ namespace Tweens
                 if (loopedMirroredNormalizedTime > 1f)
                     loopedMirroredNormalizedTime = 2f - loopedMirroredNormalizedTime;
 
-                Tweak.Apply(From(), To(), loopedMirroredNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
+                var (from, to) = (From(), To());
+                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+
+                Tweak.Apply(from, to, loopedMirroredNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
             }
         }
     }

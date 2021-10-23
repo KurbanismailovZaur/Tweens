@@ -46,7 +46,7 @@ namespace Tweens.Scenes.Tests.Sequences.RewindToStartBackward
 
             SubscribeOnAllEvents(seq);
             seq.SkipToEnd();
-            seq.RewindToStart();
+            seq.RewindToStart(0);
         }
     }
 }

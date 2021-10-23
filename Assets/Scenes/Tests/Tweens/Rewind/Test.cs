@@ -38,7 +38,7 @@ namespace Tweens.Scenes.Tests.Tweens.Rewind
             yield return new WaitForSeconds(1f);
             var tween = new Tween<float, FloatTweak>(0f, 1f, _target.SetPositionX, 1f, Formula.Linear, 2, LoopType.Continue);
             SubscribeOnAllEvents(tween);
-            tween.RewindTo(1.5f);
+            tween.RewindTo(1.5f, 0);
         }
     }
 }

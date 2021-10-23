@@ -59,39 +59,15 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
             
-            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
-            var tween1 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target1.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
-            var tween2 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target2.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
-            var tween3 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target3.SetPositionX, 0f, Formula.Linear, 3, LoopType.Reset, Direction.Forward);
-            var tween4 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target4.SetPositionX, 0f, Formula.Linear, 4, LoopType.Reset, Direction.Forward);
-            var tween5 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target5.SetPositionX, 0.5f, Formula.Linear, 2, LoopType.Reset, Direction.Forward);
-            var tween6 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target6.SetPositionX, 0f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
-            var tween7 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target7.SetPositionX, 0f, Formula.Linear, 2, LoopType.Reset, Direction.Forward);
+            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset);
 
+            var seq = new Sequence("seq", Formula.Linear, 2, LoopType.Continue, Direction.Forward, LoopResetBehaviour.Rewind);
+            seq.Append(tween0);
+            
             SubscribeOnAllEvents(tween0);
-            SubscribeOnAllEvents(tween1);
-            SubscribeOnAllEvents(tween2);
-            SubscribeOnAllEvents(tween3);
-            SubscribeOnAllEvents(tween4);
-            SubscribeOnAllEvents(tween5);
-            SubscribeOnAllEvents(tween6);
-            SubscribeOnAllEvents(tween7);
-
-            var seq = new Sequence("seq", Formula.Linear, 1, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
             SubscribeOnAllEvents(seq);
 
-            seq.Insert(0f, tween0);
-            seq.Insert(0.5f, tween1);
-            seq.Insert(1f, tween2);
-            seq.Insert(1f, tween3);
-            seq.Insert(4, 1f, tween4);
-            seq.Insert(0.5f, tween5);
-            seq.Insert(1f, tween6);
-            seq.Insert(1f, tween7);
-
-            yield return seq.Play().WaitForComplete();
-
-            seq.PlayBackward();
+            seq.RewindTo(1.5f, 0);
         }
     }
 }

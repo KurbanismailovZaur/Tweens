@@ -45,7 +45,7 @@ namespace Tweens
 
             protected Phase(Element element) => _element = element;
 
-            abstract internal void Call(Direction direction);
+            abstract internal void Call(Direction direction, int continueRepeatIndex);
         }
 
         #region Zedo duration
@@ -53,14 +53,14 @@ namespace Tweens
         {
             internal PhaseStartZeroed(Element element) : base(element) { }
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseStartZeroed(direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseStartZeroed(direction, continueRepeatIndex);
         }
 
         private class PhaseFirstLoopStartZeroed : Phase
         {
             internal PhaseFirstLoopStartZeroed(Element element) : base(element) { }
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseFirstLoopStartZeroed(direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseFirstLoopStartZeroed(direction, continueRepeatIndex);
         }
 
         private class PhaseLoopCompleteZeroed : Phase
@@ -69,7 +69,7 @@ namespace Tweens
 
             internal PhaseLoopCompleteZeroed(Element element, int loop) : base(element) => _loop = loop;
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseLoopCompleteZeroed(_loop, direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseLoopCompleteZeroed(_loop, direction, continueRepeatIndex);
         }
 
         private class PhaseLoopStartZeroed : Phase
@@ -78,14 +78,14 @@ namespace Tweens
 
             internal PhaseLoopStartZeroed(Element element, int loop) : base(element) => _loop = loop;
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseLoopStartZeroed(_loop, direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseLoopStartZeroed(_loop, direction, continueRepeatIndex);
         }
 
         private class PhaseCompleteZeroed : Phase
         {
             internal PhaseCompleteZeroed(Element element) : base(element) { }
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseCompleteZeroed(direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseCompleteZeroed(direction, continueRepeatIndex);
         }
         #endregion
 
@@ -94,14 +94,14 @@ namespace Tweens
         {
             public PhaseStart(Element element) : base(element) { }
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseStart(direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseStart(direction, continueRepeatIndex);
         }
 
         private class PhaseFirstLoopStart : Phase
         {
             public PhaseFirstLoopStart(Element element) : base(element) { }
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseFirstLoopStart(direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseFirstLoopStart(direction, continueRepeatIndex);
         }
 
         private class PhaseLoopComplete : Phase
@@ -110,7 +110,7 @@ namespace Tweens
 
             internal PhaseLoopComplete(Element element, int loop) : base(element) => _loop = loop;
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseLoopComplete(_loop, direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseLoopComplete(_loop, direction, continueRepeatIndex);
         }
 
         private class PhaseLoopStart : Phase
@@ -119,7 +119,7 @@ namespace Tweens
 
             internal PhaseLoopStart(Element element, int loop) : base(element) => _loop = loop;
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseLoopStart(_loop, direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseLoopStart(_loop, direction, continueRepeatIndex);
         }
 
         private class PhaseLoopUpdate : Phase
@@ -137,14 +137,14 @@ namespace Tweens
                 _loopedTime = loopedTime;
             }
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseLoopUpdate(_endTime, _loop, _loopedTime, direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseLoopUpdate(_endTime, _loop, _loopedTime, direction, continueRepeatIndex);
         }
 
         private class PhaseComplete : Phase
         {
             internal PhaseComplete(Element element) : base(element) { }
 
-            internal override void Call(Direction direction) => _element.Playable.HandlePhaseComplete(direction);
+            internal override void Call(Direction direction, int continueRepeatIndex) => _element.Playable.HandlePhaseComplete(direction, continueRepeatIndex);
         }
         #endregion
         #endregion
@@ -163,22 +163,22 @@ namespace Tweens
 
                 internal void InsertEvent(int index, Phase phaseEvent) => _events.Insert(index, phaseEvent);
 
-                internal void CallPreEvents(Direction direction)
+                internal void CallPreEvents(Direction direction, int continueRepeatIndex)
                 {
                     for (int i = 0; i < PrePostPoint; i++)
-                        _events[i].Call(direction);
+                        _events[i].Call(direction, continueRepeatIndex);
                 }
 
-                internal void CallPostEvents(Direction direction)
+                internal void CallPostEvents(Direction direction, int continueRepeatIndex)
                 {
                     for (int i = PrePostPoint; i < _events.Count; i++)
-                        _events[i].Call(direction);
+                        _events[i].Call(direction, continueRepeatIndex);
                 }
 
-                internal void CallAllEvents(Direction direction)
+                internal void CallAllEvents(Direction direction, int continueRepeatIndex)
                 {
                     for (int i = 0; i < _events.Count; i++)
-                        _events[i].Call(direction);
+                        _events[i].Call(direction, continueRepeatIndex);
                 }
 
                 internal void RemoveElementsPhaseEvents(Element element)
@@ -932,38 +932,28 @@ namespace Tweens
         #endregion
 
         #region Before loop starting
-        protected override void BeforeStarting(Direction direction) => BeforeLoopStarting(direction, LoopResetBehaviour);
+        protected override void BeforeStarting(Direction direction, int loop, int parentContinueLoopIndex) => BeforeLoopStarting(direction, LoopResetBehaviour, loop, parentContinueLoopIndex);
 
-        private void BeforeLoopStarting(Direction direction, LoopResetBehaviour loopResetBehaviour)
+        private void BeforeLoopStarting(Direction direction, LoopResetBehaviour loopResetBehaviour, int loop, int parentContinueLoopIndex)
         {
-            if (LoopType == LoopType.Reset)
+            int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
+
+            if (loopResetBehaviour == LoopResetBehaviour.Rewind)
             {
-                if (loopResetBehaviour == LoopResetBehaviour.Rewind)
+                for (int i = 0; i < _elements.Count; i++)
                 {
-                    for (int i = 0; i < _elements.Count; i++)
-                    {
-                        var element = _elements[i];
+                    var element = _elements[i];
 
-                        // If element is sequence in mirror mode, than we don't need to call rewind method,
-                        // we need skip only this sequence (without childs).
-                        if (element.Playable is Sequence sequence && sequence.LoopType == LoopType.Mirror && sequence.Duration != 0f)
-                        {
-                            sequence.PlayedTime = direction == Direction.Forward ? 0f : Duration;
-                            continue;
-                        }
-
-                        // For other cases we use rewind method.
-                        if (element.Playable.Duration == 0f)
-                            element.Playable.RewindTo(direction == Direction.Forward ? -1f : 1f, false);
-                        else
-                            element.Playable.RewindTo(direction == Direction.Forward ? 0f : Duration, false);
-                    }
+                    if (element.Playable.Duration == 0f)
+                        element.Playable.RewindTo(direction == Direction.Forward ? -1f : 1f, continueRepeatIndex, false);
+                    else
+                        element.Playable.RewindTo(direction == Direction.Forward ? 0f : Duration, continueRepeatIndex, false);
                 }
-                else
-                {
-                    for (int i = 0; i < _elements.Count; i++)
-                        _elements[i].Playable.SkipTo(direction == Direction.Forward ? 0f : Duration);
-                }
+            }
+            else
+            {
+                for (int i = 0; i < _elements.Count; i++)
+                    _elements[i].Playable.SkipTo(direction == Direction.Forward ? 0f : Duration);
             }
         }
         #endregion
@@ -985,17 +975,16 @@ namespace Tweens
             // Loop started phase
             if (startTime == playedLoop * LoopDuration)
             {
-                BeforeLoopStarting(direction, LoopResetBehaviour.Skip);
+                BeforeLoopStarting(direction, LoopResetBehaviour.Skip, playedLoop, 0);
                 loopedPlayedTime = 0f;
             }
 
             // Intermediate phase
             for (int i = playedLoop + 1; i <= timeLoop - 1; i++)
             {
-                var loopedTime = LoopTime(LoopDuration * i);
-                SkipHandler(loopedPlayedTime, loopedTime, direction);
+                SkipHandler(loopedPlayedTime, playedLoop - 1, direction);
 
-                BeforeLoopStarting(direction, LoopResetBehaviour.Skip);
+                BeforeLoopStarting(direction, LoopResetBehaviour.Skip, playedLoop, 0);
                 loopedPlayedTime = 0f;
             }
 
@@ -1010,7 +999,7 @@ namespace Tweens
                 {
                     SkipHandler(loopedPlayedTime, LoopDuration, direction);
 
-                    BeforeLoopStarting(direction, LoopResetBehaviour.Skip);
+                    BeforeLoopStarting(direction, LoopResetBehaviour.Skip, timeLoop, 0);
                     loopedPlayedTime = 0f;
                 }
 
@@ -1078,7 +1067,7 @@ namespace Tweens
         #endregion
 
         #region Rewind
-        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction)
+        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, int parentContinueLoopIndex)
         {
             // This is avoid situation when we jump from loop complete to loop start
             if (_lastLoopedNormalizedTime != 0f || loopedNormalizedTime != 1f)
@@ -1091,17 +1080,19 @@ namespace Tweens
             if (_chronolines.Count == 0)
                 return;
 
+            int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
+
             if (direction == Direction.Forward)
-                _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward);
+                _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward, continueRepeatIndex);
             else
-                _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward);
+                _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward, continueRepeatIndex);
 
             _lastLoopedNormalizedTime = loopedNormalizedTime;
         }
 
-        protected override void RewindHandler(int loop, float loopedTime, Direction direction)
+        protected override void RewindHandler(int loop, float loopedTime, Direction direction, int parentContinueLoopIndex)
         {
-            void HandleUpdatePhases(float time, Direction direction, Func<float, Element, float> playedTimeCalcualtor)
+            void HandleUpdatePhases(float time, Direction direction, Func<float, Element, float> playedTimeCalcualtor, int continueRepeatIndex)
             {
                 for (int i = 0; i < _elements.Count; i++)
                 {
@@ -1111,7 +1102,7 @@ namespace Tweens
                         continue;
 
                     var playedTime = playedTimeCalcualtor(time, element);
-                    element.Playable.HandlePhaseLoopUpdate(playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration, direction);
+                    element.Playable.HandlePhaseLoopUpdate(playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration, direction, continueRepeatIndex);
                 }
             }
 
@@ -1122,6 +1113,8 @@ namespace Tweens
                 // If we jump to the same position, than we don't need handle this situation.
                 if (nextPlayedTime == PlayedTime)
                     return;
+
+                int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
 
                 var loopedPlayedTime = PlayedTime % LoopDuration;
                 Chronoline lastChronoline = null;
@@ -1140,17 +1133,17 @@ namespace Tweens
 
                     // If chronoline stay at start time, than we need handle only post events.
                     if (chronoline.Time == loopedPlayedTime)
-                        chronoline.Chains.Forward.CallPostEvents(Direction.Forward);
+                        chronoline.Chains.Forward.CallPostEvents(Direction.Forward, continueRepeatIndex);
                     else if (chronoline.Time == loopedTime)
                     {
                         // If chronoline stay at end of loop, than we need call all events.
                         if (loopedTime == LoopDuration)
-                            chronoline.Chains.Forward.CallAllEvents(Direction.Forward);
+                            chronoline.Chains.Forward.CallAllEvents(Direction.Forward, continueRepeatIndex);
                         else
-                            chronoline.Chains.Forward.CallPreEvents(Direction.Forward);
+                            chronoline.Chains.Forward.CallPreEvents(Direction.Forward, continueRepeatIndex);
                     }
                     else // Otherwise means that chronoline is between start and end, and we need call all events.
-                        chronoline.Chains.Forward.CallAllEvents(Direction.Forward);
+                        chronoline.Chains.Forward.CallAllEvents(Direction.Forward, continueRepeatIndex);
 
                     lastChronoline = chronoline;
                 }
@@ -1158,7 +1151,7 @@ namespace Tweens
                 // If last handled chronoline not stay at end of interval, than it means,
                 // that we need handle one extra chronoline for update phase.
                 if (lastChronoline == null || lastChronoline.Time != loopedTime)
-                    HandleUpdatePhases(loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor);
+                    HandleUpdatePhases(loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, continueRepeatIndex);
             }
             else
             {
@@ -1167,6 +1160,8 @@ namespace Tweens
                 // If we jump to the same position, than we don't need handle this situation.
                 if (nextPlayedTime == PlayedTime)
                     return;
+
+                int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
 
                 var loopedPlayedTime = LoopDuration - LoopTime(PlayedTime);
                 Chronoline lastChronoline = null;
@@ -1186,17 +1181,17 @@ namespace Tweens
 
                     // If chronoline stay at start time, than we need handle only post events.
                     if (backwardChronolineTime == loopedPlayedTime)
-                        chronoline.Chains.Backward.CallPostEvents(Direction.Backward);
+                        chronoline.Chains.Backward.CallPostEvents(Direction.Backward, continueRepeatIndex);
                     else if (backwardChronolineTime == loopedTime)
                     {
                         // If chronoline stay at end of loop, than we need call all events.
                         if (loopedTime == LoopDuration)
-                            chronoline.Chains.Backward.CallAllEvents(Direction.Backward);
+                            chronoline.Chains.Backward.CallAllEvents(Direction.Backward, continueRepeatIndex);
                         else
-                            chronoline.Chains.Backward.CallPreEvents(Direction.Backward);
+                            chronoline.Chains.Backward.CallPreEvents(Direction.Backward, continueRepeatIndex);
                     }
                     else // Otherwise means that chronoline is between start and end, and we need call all events.
-                        chronoline.Chains.Backward.CallAllEvents(Direction.Backward);
+                        chronoline.Chains.Backward.CallAllEvents(Direction.Backward, continueRepeatIndex);
 
                     lastChronoline = chronoline;
                 }
@@ -1204,7 +1199,7 @@ namespace Tweens
                 // If last handled chronoline not stay at end of interval, than it means,
                 // that we need handle one extra chronoline for update phase.
                 if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
-                    HandleUpdatePhases(LoopDuration - loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor);
+                    HandleUpdatePhases(LoopDuration - loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, continueRepeatIndex);
             }
         }
         #endregion
