@@ -64,12 +64,16 @@ namespace Tweens
 
         private FormulaBase InvertIfRequiredAndGetFormula(Direction direction) => direction == Direction.Forward ? Formula : Tweens.Formula.Invertion.WithFormula(Formula);
 
-        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, int continueLoopIndex)
+        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, int continueLoopIndex, int continueMaxLoopsCount)
         {
             if (LoopType == LoopType.Reset)
             {
-                var (from, to) = direction == Direction.Forward ? (From(), To()) : (To(), From());
-                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+                var (from, to) = (From(), To());
+
+                if (direction == Direction.Forward)
+                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+                else
+                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount), Tweak.Evaluate(from, to, continueMaxLoopsCount - 1f));
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, Formula);
             }
@@ -89,14 +93,18 @@ namespace Tweens
             }
         }
 
-        protected override void RewindHandler(int loop, float loopedTime, Direction direction, int continueLoopIndex)
+        protected override void RewindHandler(int loop, float loopedTime, Direction direction, int continueLoopIndex, int continueMaxLoopsCount)
         {
             var loopedNormalizedTime = loopedTime / LoopDuration;
 
             if (LoopType == LoopType.Reset)
             {
-                var (from, to) = direction == Direction.Forward ? (From(), To()) : (To(), From());
-                (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+                var (from, to) = (From(), To());
+
+                if (direction == Direction.Forward)
+                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+                else
+                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex), Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex - 1f));
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
             }

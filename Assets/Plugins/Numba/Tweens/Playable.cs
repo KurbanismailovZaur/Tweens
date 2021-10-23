@@ -43,11 +43,11 @@ namespace Tweens
         IPlayable SetDirection(Direction direction);
 
         #region Rewinds
-        Playable RewindTo(float time, int parentContinueLoopIndex, bool emitEvents);
+        Playable RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
 
-        Playable RewindToStart(int parentContinueLoopIndex, bool emitEvents);
+        Playable RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
 
-        Playable RewindToEnd(int parentContinueLoopIndex, bool emitEvents);
+        Playable RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
         #endregion
 
         #region Skips
@@ -430,97 +430,97 @@ namespace Tweens
         protected abstract void CallCompleted();
         #endregion
 
-        protected virtual void BeforeStarting(Direction direction, int loop, int parentContinueLoopIndex) { }
+        protected virtual void BeforeStarting(Direction direction, int loop, int parentContinueLoopIndex, int continueMaxLoopsCount) { }
 
         #region Phase partial handlers
         #region Zero duration
-        internal void HandlePhaseStartZeroed(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseStartZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            BeforeStarting(direction, 0, parentContinueLoopIndex);
+            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseStarting(direction);
-            RewindZeroHandler(0, 0f, direction, parentContinueLoopIndex);
+            RewindZeroHandler(0, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseStarted(direction);
         }
 
-        internal void HandlePhaseFirstLoopStartZeroed(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseFirstLoopStartZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseLoopStarting(0, direction);
-            RewindZeroHandler(0, 0f, direction, parentContinueLoopIndex);
+            RewindZeroHandler(0, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseLoopStarted(0, direction);
         }
 
-        internal void HandlePhaseLoopCompleteZeroed(int loop, Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseLoopCompleteZeroed(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseLoopCompleting(loop, direction);
-            RewindZeroHandler(loop, 1f, direction, parentContinueLoopIndex);
+            RewindZeroHandler(loop, 1f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseLoopCompleted(loop, direction);
         }
 
-        internal void HandlePhaseLoopStartZeroed(int loop, Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseLoopStartZeroed(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            BeforeStarting(direction, loop, parentContinueLoopIndex);
+            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseLoopStarting(loop, direction);
-            RewindZeroHandler(loop, 0f, direction, parentContinueLoopIndex);
+            RewindZeroHandler(loop, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseLoopStarted(loop, direction);
         }
 
-        internal void HandlePhaseCompleteZeroed(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseCompleteZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseCompleting(direction);
-            RewindZeroHandler(_loopsCount - 1, 1f, direction, parentContinueLoopIndex);
+            RewindZeroHandler(_loopsCount - 1, 1f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseCompleted(direction);
         }
         #endregion
 
         #region Zero duration, no events
-        internal void HandlePhaseStartZeroedNoEvents(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseStartZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            BeforeStarting(direction, 0, parentContinueLoopIndex);
-            RewindZeroHandler(0, 0f, direction, parentContinueLoopIndex);
+            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindZeroHandler(0, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        internal void HandlePhaseFirstLoopStartZeroedNoEvents(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseFirstLoopStartZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            RewindZeroHandler(0, 0f, direction, parentContinueLoopIndex);
+            RewindZeroHandler(0, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        internal void HandlePhaseLoopCompleteZeroedNoEvents(int loop, Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseLoopCompleteZeroedNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            RewindZeroHandler(loop, 1f, direction, parentContinueLoopIndex);
+            RewindZeroHandler(loop, 1f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        internal void HandlePhaseLoopStartZeroedNoEvents(int loop, Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseLoopStartZeroedNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            BeforeStarting(direction, loop, parentContinueLoopIndex);
-            RewindZeroHandler(loop, 0f, direction, parentContinueLoopIndex);
+            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindZeroHandler(loop, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        internal void HandlePhaseCompleteZeroedNoEvents(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseCompleteZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            RewindZeroHandler(_loopsCount - 1, 1f, direction, parentContinueLoopIndex);
+            RewindZeroHandler(_loopsCount - 1, 1f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
         #endregion
 
         #region Non zero duration
-        internal void HandlePhaseStart(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseStart(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            BeforeStarting(direction, 0, parentContinueLoopIndex);
+            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseStarting(direction);
-            RewindHandler(0, 0f, direction, parentContinueLoopIndex);
+            RewindHandler(0, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseStarted(direction);
         }
 
-        internal void HandlePhaseFirstLoopStart(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseFirstLoopStart(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseLoopStarting(0, direction);
-            RewindHandler(0, 0f, direction, parentContinueLoopIndex);
+            RewindHandler(0, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseLoopStarted(0, direction);
         }
 
-        internal void HandlePhaseLoopComplete(int loop, Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseLoopComplete(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseLoopCompleting(loop, direction);
-            RewindHandler(loop, _loopDuration, direction, parentContinueLoopIndex);
+            RewindHandler(loop, _loopDuration, direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             PlayedTime = loop * _loopDuration + _loopDuration;
             if (direction == Direction.Backward)
@@ -529,78 +529,78 @@ namespace Tweens
             CallPhaseLoopCompleted(loop, direction);
         }
 
-        internal void HandlePhaseLoopStart(int loop, Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseLoopStart(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            BeforeStarting(direction, loop, parentContinueLoopIndex);
+            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseLoopStarting(loop, direction);
-            RewindHandler(loop, 0f, direction, parentContinueLoopIndex);
+            RewindHandler(loop, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseLoopStarted(loop, direction);
         }
 
-        internal void HandlePhaseLoopUpdate(float endTime, int loop, float loopedTime, Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseLoopUpdate(float endTime, int loop, float loopedTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseUpdating(endTime, direction);
             CallPhaseLoopUpdating(loop, loopedTime, direction);
-            RewindHandler(loop, loopedTime, direction, parentContinueLoopIndex);
+            RewindHandler(loop, loopedTime, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             PlayedTime = direction == Direction.Forward ? endTime : Duration - endTime;
             CallPhaseLoopUpdated(loop, loopedTime, direction);
             CallPhaseUpdated(endTime, direction);
         }
 
-        internal void HandlePhaseComplete(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseComplete(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseCompleting(direction);
-            RewindHandler(_loopsCount - 1, _loopDuration, direction, parentContinueLoopIndex);
+            RewindHandler(_loopsCount - 1, _loopDuration, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseCompleted(direction);
         }
         #endregion
 
         #region Non zero duration, no events
-        internal void HandlePhaseStartNoEvents(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseStartNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            BeforeStarting(direction, 0, parentContinueLoopIndex);
-            RewindHandler(0, 0f, direction, parentContinueLoopIndex);
+            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindHandler(0, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        internal void HandlePhaseFirstLoopStartNoEvents(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseFirstLoopStartNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            RewindHandler(0, 0f, direction, parentContinueLoopIndex);
+            RewindHandler(0, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        internal void HandlePhaseLoopCompleteNoEvents(int loop, Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseLoopCompleteNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            RewindHandler(loop, _loopDuration, direction, parentContinueLoopIndex);
+            RewindHandler(loop, _loopDuration, direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             PlayedTime = loop * _loopDuration + _loopDuration;
             if (direction == Direction.Backward)
                 PlayedTime = Duration - PlayedTime;
         }
 
-        internal void HandlePhaseLoopStartNoEvents(int loop, Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseLoopStartNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            BeforeStarting(direction, loop, parentContinueLoopIndex);
-            RewindHandler(loop, 0f, direction, parentContinueLoopIndex);
+            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindHandler(loop, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        internal void HandlePhaseLoopUpdateNoEvents(float endTime, int loop, float loopedTime, Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseLoopUpdateNoEvents(float endTime, int loop, float loopedTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            RewindHandler(loop, loopedTime, direction, parentContinueLoopIndex);
+            RewindHandler(loop, loopedTime, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             PlayedTime = direction == Direction.Forward ? endTime : Duration - endTime;
         }
 
-        internal void HandlePhaseCompleteNoEvents(Direction direction, int parentContinueLoopIndex)
+        internal void HandlePhaseCompleteNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            RewindHandler(_loopsCount - 1, _loopDuration, direction, parentContinueLoopIndex);
+            RewindHandler(_loopsCount - 1, _loopDuration, direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
         #endregion
         #endregion
 
         #region Rewinds
-        public Playable RewindToStart(int parentContinueLoopIndex, bool emitEvents = true) => Duration == 0f ? RewindTo(-1f, parentContinueLoopIndex, emitEvents) : RewindTo(0f, parentContinueLoopIndex, emitEvents);
+        public Playable RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true) => Duration == 0f ? RewindTo(-1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(0f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
-        public Playable RewindToEnd(int parentContinueLoopIndex, bool emitEvents = true) => Duration == 0f ? RewindTo(1f, parentContinueLoopIndex, emitEvents) : RewindTo(Duration, parentContinueLoopIndex, emitEvents);
+        public Playable RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true) => Duration == 0f ? RewindTo(1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(Duration, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
-        public Playable RewindTo(float time, int parentContinueLoopIndex, bool emitEvents = true)
+        public Playable RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true)
         {
             if (_loopDuration == 0f)
             {
@@ -610,9 +610,9 @@ namespace Tweens
                 var direction = time > 0f ? Direction.Forward : Direction.Backward;
 
                 if (emitEvents)
-                    RewindZeroDurationWithEvents(direction, parentContinueLoopIndex);
+                    RewindZeroDurationWithEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
                 else
-                    RewindZeroDurationWithoutEvents(direction, parentContinueLoopIndex);
+                    RewindZeroDurationWithoutEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
             else
             {
@@ -624,67 +624,67 @@ namespace Tweens
                 if (time > PlayedTime)
                 {
                     if (emitEvents)
-                        RewindWithEvents(PlayedTime, time, Direction.Forward, parentContinueLoopIndex);
+                        RewindWithEvents(PlayedTime, time, Direction.Forward, parentContinueLoopIndex, continueMaxLoopsCount);
                     else
-                        RewindWithoutEvents(PlayedTime, time, Direction.Forward, parentContinueLoopIndex);
+                        RewindWithoutEvents(PlayedTime, time, Direction.Forward, parentContinueLoopIndex, continueMaxLoopsCount);
                 }
                 else
                 {
                     if (emitEvents)
-                        RewindWithEvents(Duration - PlayedTime, Duration - time, Direction.Backward, parentContinueLoopIndex);
+                        RewindWithEvents(Duration - PlayedTime, Duration - time, Direction.Backward, parentContinueLoopIndex, continueMaxLoopsCount);
                     else
-                        RewindWithoutEvents(Duration - PlayedTime, Duration - time, Direction.Backward, parentContinueLoopIndex);
+                        RewindWithoutEvents(Duration - PlayedTime, Duration - time, Direction.Backward, parentContinueLoopIndex, continueMaxLoopsCount);
                 }
             }
 
             return this;
         }
 
-        private void RewindZeroDurationWithEvents(Direction direction, int parentContinueLoopIndex)
+        private void RewindZeroDurationWithEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             // Started events.
-            HandlePhaseStartZeroed(direction, parentContinueLoopIndex);
-            HandlePhaseFirstLoopStartZeroed(direction, parentContinueLoopIndex);
+            HandlePhaseStartZeroed(direction, parentContinueLoopIndex, continueMaxLoopsCount);
+            HandlePhaseFirstLoopStartZeroed(direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             // Intermediate events
             for (int i = 1; i < _loopsCount; i++)
             {
-                HandlePhaseLoopCompleteZeroed(i - 1, direction, parentContinueLoopIndex);
-                HandlePhaseLoopStartZeroed(i, direction, parentContinueLoopIndex);
+                HandlePhaseLoopCompleteZeroed(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                HandlePhaseLoopStartZeroed(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Loop completed event.
-            HandlePhaseLoopCompleteZeroed(_loopsCount - 1, direction, parentContinueLoopIndex);
+            HandlePhaseLoopCompleteZeroed(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             // Completed event
-            HandlePhaseCompleteZeroed(direction, parentContinueLoopIndex);
+            HandlePhaseCompleteZeroed(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        private void RewindZeroDurationWithoutEvents(Direction direction, int parentContinueLoopIndex)
+        private void RewindZeroDurationWithoutEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             // Started events.
-            HandlePhaseStartZeroedNoEvents(direction, parentContinueLoopIndex);
-            HandlePhaseFirstLoopStartZeroedNoEvents(direction, parentContinueLoopIndex);
+            HandlePhaseStartZeroedNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
+            HandlePhaseFirstLoopStartZeroedNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             // Intermediate events
             for (int i = 1; i < _loopsCount; i++)
             {
-                HandlePhaseLoopCompleteZeroedNoEvents(i - 1, direction, parentContinueLoopIndex);
-                HandlePhaseLoopStartZeroedNoEvents(i, direction, parentContinueLoopIndex);
+                HandlePhaseLoopCompleteZeroedNoEvents(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                HandlePhaseLoopStartZeroedNoEvents(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Loop completed event.
-            HandlePhaseLoopCompleteZeroedNoEvents(_loopsCount - 1, direction, parentContinueLoopIndex);
+            HandlePhaseLoopCompleteZeroedNoEvents(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             // Completed event
-            HandlePhaseCompleteZeroedNoEvents(direction, parentContinueLoopIndex);
+            HandlePhaseCompleteZeroedNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        private void RewindWithEvents(float startTime, float endTime, Direction direction, int parentContinueLoopIndex)
+        private void RewindWithEvents(float startTime, float endTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             // Global started phase
             if (startTime == 0f)
-                HandlePhaseStart(direction, parentContinueLoopIndex);
+                HandlePhaseStart(direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             var playedLoop = (int)(startTime / _loopDuration);
             var timeLoop = (int)(endTime / _loopDuration);
@@ -695,47 +695,47 @@ namespace Tweens
                 // If all elements already handled in global start phase (BeforeStarting method was called previously),
                 // than we don't need handle elements.
                 if (startTime == 0f)
-                    HandlePhaseFirstLoopStart(direction, parentContinueLoopIndex);
+                    HandlePhaseFirstLoopStart(direction, parentContinueLoopIndex, continueMaxLoopsCount);
                 else
-                    HandlePhaseLoopStart(playedLoop, direction, parentContinueLoopIndex);
+                    HandlePhaseLoopStart(playedLoop, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Intermediate phase.
             for (int i = playedLoop + 1; i <= timeLoop - 1; i++)
             {
-                HandlePhaseLoopComplete(playedLoop - 1, direction, parentContinueLoopIndex);
-                HandlePhaseLoopStart(playedLoop, direction, parentContinueLoopIndex);
+                HandlePhaseLoopComplete(playedLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                HandlePhaseLoopStart(playedLoop, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Loop completed phase.
             if (endTime == timeLoop * _loopDuration)
-                HandlePhaseLoopComplete(timeLoop - 1, direction, parentContinueLoopIndex);
+                HandlePhaseLoopComplete(timeLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             else // Global and loop update phases.
             {
                 // Last intermediate loop phase. For example, when we start from
                 // middle looped position and ended on other middle looped position.
                 if (timeLoop - playedLoop > 0)
                 {
-                    HandlePhaseLoopComplete(timeLoop - 1, direction, parentContinueLoopIndex);
-                    HandlePhaseLoopStart(timeLoop, direction, parentContinueLoopIndex);
+                    HandlePhaseLoopComplete(timeLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                    HandlePhaseLoopStart(timeLoop, direction, parentContinueLoopIndex, continueMaxLoopsCount);
                 }
 
                 // Update phase.
                 var loopedTime = LoopTime(endTime);
 
-                HandlePhaseLoopUpdate(endTime, timeLoop, loopedTime, direction, parentContinueLoopIndex);
+                HandlePhaseLoopUpdate(endTime, timeLoop, loopedTime, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Global complete phase.
             if (endTime == Duration)
-                HandlePhaseComplete(direction, parentContinueLoopIndex);
+                HandlePhaseComplete(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        private void RewindWithoutEvents(float startTime, float endTime, Direction direction, int parentContinueLoopIndex)
+        private void RewindWithoutEvents(float startTime, float endTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             // Global started phase
             if (startTime == 0f)
-                HandlePhaseStartNoEvents(direction, parentContinueLoopIndex);
+                HandlePhaseStartNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             var playedLoop = (int)(startTime / _loopDuration);
             var timeLoop = (int)(endTime / _loopDuration);
@@ -746,45 +746,45 @@ namespace Tweens
                 // If all elements already handled in global start phase (BeforeStarting method was called previously),
                 // than we don't need handle elements.
                 if (startTime == 0f)
-                    HandlePhaseFirstLoopStartNoEvents(direction, parentContinueLoopIndex);
+                    HandlePhaseFirstLoopStartNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
                 else
-                    HandlePhaseLoopStartNoEvents(playedLoop, direction, parentContinueLoopIndex);
+                    HandlePhaseLoopStartNoEvents(playedLoop, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Intermediate phase.
             for (int i = playedLoop + 1; i <= timeLoop - 1; i++)
             {
-                HandlePhaseLoopCompleteNoEvents(playedLoop - 1, direction, parentContinueLoopIndex);
-                HandlePhaseLoopStartNoEvents(playedLoop, direction, parentContinueLoopIndex);
+                HandlePhaseLoopCompleteNoEvents(playedLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                HandlePhaseLoopStartNoEvents(playedLoop, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Loop completed phase.
             if (endTime == timeLoop * _loopDuration)
-                HandlePhaseLoopCompleteNoEvents(timeLoop - 1, direction, parentContinueLoopIndex);
+                HandlePhaseLoopCompleteNoEvents(timeLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             else // Global and loop update phases.
             {
                 // Last intermediate loop phase. For example, when we start from
                 // middle looped position and ended on other middle looped position.
                 if (timeLoop - playedLoop > 0)
                 {
-                    HandlePhaseLoopCompleteNoEvents(timeLoop - 1, direction, parentContinueLoopIndex);
-                    HandlePhaseLoopStartNoEvents(timeLoop, direction, parentContinueLoopIndex);
+                    HandlePhaseLoopCompleteNoEvents(timeLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                    HandlePhaseLoopStartNoEvents(timeLoop, direction, parentContinueLoopIndex, continueMaxLoopsCount);
                 }
 
                 // Update phase.
                 var loopedTime = LoopTime(endTime);
 
-                HandlePhaseLoopUpdateNoEvents(endTime, timeLoop, loopedTime, direction, parentContinueLoopIndex);
+                HandlePhaseLoopUpdateNoEvents(endTime, timeLoop, loopedTime, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Global complete phase.
             if (endTime == Duration)
-                HandlePhaseCompleteNoEvents(direction, parentContinueLoopIndex);
+                HandlePhaseCompleteNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        protected abstract void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, int parentLoop);
+        protected abstract void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, int parentLoop, int continueMaxLoopsCount);
 
-        protected abstract void RewindHandler(int loop, float loopedTime, Direction direction, int parentLoop);
+        protected abstract void RewindHandler(int loop, float loopedTime, Direction direction, int parentLoop, int continueMaxLoopsCount);
         #endregion
 
         #region Skips
@@ -857,7 +857,7 @@ namespace Tweens
         {
             if (Duration == 0f)
             {
-                RewindTo(Direction == Direction.Forward ? 1f : -1f, 0);
+                RewindTo(Direction == Direction.Forward ? 1f : -1f, 0, 1);
                 State = State.Completed;
 
                 yield break;
@@ -866,11 +866,11 @@ namespace Tweens
             while (Time.time < _endTime)
             {
                 var timePassed = Direction == Direction.Forward ? Time.time - _startTime : _endTime - Time.time;
-                RewindTo(timePassed, 0);
+                RewindTo(timePassed, 0, 1);
                 yield return null;
             }
 
-            RewindTo(Direction == Direction.Forward ? Duration : 0f, 0);
+            RewindTo(Direction == Direction.Forward ? Duration : 0f, 0, 1);
             State = State.Completed;
         }
 
@@ -1037,12 +1037,12 @@ namespace Tweens
         new T SetDirection(Direction direction);
 
         #region Rewinds
-        new T RewindTo(float time, int parentContinueLoopIndex, bool emitEvents);
+        new T RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
 
 
-        new T RewindToStart(int parentContinueLoopIndex, bool emitEvents);
+        new T RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
 
-        new T RewindToEnd(int parentContinueLoopIndex, bool emitEvents);
+        new T RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
         #endregion
 
         #region Skips
@@ -1287,11 +1287,11 @@ namespace Tweens
 
         #region Overlaps
         #region Rewinds
-        public new T RewindTo(float time, int parentContinueLoopIndex, bool emitEvents = true) => (T)base.RewindTo(time, parentContinueLoopIndex, emitEvents);
+        public new T RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true) => (T)base.RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
-        public new T RewindToStart(int parentContinueLoopIndex, bool emitEvents = true) => (T)base.RewindToStart(parentContinueLoopIndex, emitEvents);
+        public new T RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true) => (T)base.RewindToStart(parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
-        public new T RewindToEnd(int parentContinueLoopIndex, bool emitEvents = true) => (T)base.RewindToEnd(parentContinueLoopIndex, emitEvents);
+        public new T RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents = true) => (T)base.RewindToEnd(parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
         #endregion
 
         #region Skips

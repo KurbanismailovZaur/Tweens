@@ -45,7 +45,7 @@ namespace Tweens.Scenes.Tests.Sequences.RewindToEndForward
             seq.Insert(0f, tween0);
 
             SubscribeOnAllEvents(seq);
-            seq.RewindToEnd(0);
+            seq.RewindToEnd(0, 1);
         }
     }
 }
