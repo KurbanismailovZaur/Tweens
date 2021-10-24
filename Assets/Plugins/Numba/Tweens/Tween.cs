@@ -22,6 +22,12 @@ namespace Tweens
 
         public Action<T> Action { private get; set; }
 
+        /// <summary>
+        /// Needed for handling zeroed loops.
+        /// Used for detect complete phase and ignore half-event.
+        /// </summary>
+        private float _lastLoopedNormalizedTime;
+
         #region Constructors
         public Tween(T from, T to, Action<T> action, float loopDuration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : this(new U(), from, to, action, loopDuration, formula, loopsCount, loopType, direction) { }
 
@@ -98,10 +104,12 @@ namespace Tweens
                     (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex - 1f), Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex));
 
                 // Calling half-end state.
-                if (loopedNormalizedTime == 1f)
+                if (_lastLoopedNormalizedTime == 0f && loopedNormalizedTime == 1f)
                     Tweak.Apply(from, to, 1f, Action, Formula);
 
                 Tweak.Apply(from, to, 0f, Action, Formula);
+
+                _lastLoopedNormalizedTime = loopedNormalizedTime;
             }
         }
 
@@ -142,7 +150,7 @@ namespace Tweens
 
                 // Calling half-end state.
                 var loopedNormalizedPlayedTime = (direction == Direction.Forward ? PlayedTime % LoopDuration : LoopDuration - LoopTime(PlayedTime)) / LoopDuration;
-                if (loopedNormalizedPlayedTime < 0.5f && loopedNormalizedTime > 0.5f)
+                if (PlayedTime != Duration && loopedNormalizedPlayedTime < 0.5f && loopedNormalizedTime > 0.5f)
                     Tweak.Apply(from, to, 1f, Action, InvertIfRequiredAndGetFormula(direction));
 
                 var loopedMirroredNormalizedTime = loopedNormalizedTime * 2f;
