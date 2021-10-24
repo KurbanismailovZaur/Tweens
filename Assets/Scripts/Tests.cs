@@ -9,6 +9,9 @@ using Coroutines.Extensions;
 using Object = UnityEngine.Object;
 using Coroutine = Coroutines.Coroutine;
 using Tweens.Tweaks;
+using UnityEditor;
+using System.Reflection;
+
 
 namespace Tweens
 {
@@ -41,20 +44,74 @@ namespace Tweens
             print($"<color=yellow>{value}</color>");
         }
 
-        public void Tween0Rewind()
+        public void ResetAllTargets()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f);
+            foreach (var target in _targets)
+                target.SetPositionX(0f);
+        }
+
+        public void Tween0ResetRewind()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToEnd(0, 1);
         }
 
-        public void Tween1Rewind()
+        public void Tween0ResetPlay()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f);
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2);
+            SubscribeOnAllEvents(tween);
+
+            tween.Play();
+        }
+
+        public void Tween1ResetRewind()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f, null, 2);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToEnd(0, 1);
+        }
+
+        public void Tween1ResetPlay()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f, null, 2);
+            SubscribeOnAllEvents(tween);
+
+            tween.Play();
+        }
+
+        public void Tween0ContinueRewind()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            SubscribeOnAllEvents(tween);
+
+            tween.RewindToEnd(0, 1);
+        }
+
+        public void Tween0ContinuePlay()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            SubscribeOnAllEvents(tween);
+
+            tween.Play();
+        }
+
+        public void Tween1ContinueRewind()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            SubscribeOnAllEvents(tween);
+
+            tween.RewindToEnd(0, 1);
+        }
+
+        public void Tween1ContinuePlay()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            SubscribeOnAllEvents(tween);
+
+            tween.Play();
         }
     }
 }

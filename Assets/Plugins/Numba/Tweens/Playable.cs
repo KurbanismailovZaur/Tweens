@@ -703,8 +703,10 @@ namespace Tweens
             // Intermediate phase.
             for (int i = playedLoop + 1; i <= timeLoop - 1; i++)
             {
-                HandlePhaseLoopComplete(playedLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
-                HandlePhaseLoopStart(playedLoop, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                var loopIndex = LoopIndex(LoopDuration * i);
+
+                HandlePhaseLoopComplete(loopIndex, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                HandlePhaseLoopStart(loopIndex + 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Loop completed phase.
@@ -754,8 +756,10 @@ namespace Tweens
             // Intermediate phase.
             for (int i = playedLoop + 1; i <= timeLoop - 1; i++)
             {
-                HandlePhaseLoopCompleteNoEvents(playedLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
-                HandlePhaseLoopStartNoEvents(playedLoop, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                var loopIndex = LoopIndex(LoopDuration * i);
+
+                HandlePhaseLoopCompleteNoEvents(loopIndex, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                HandlePhaseLoopStartNoEvents(loopIndex + 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Loop completed phase.
