@@ -1086,19 +1086,9 @@ namespace Tweens
                 continueMaxLoopsCount *= LoopsCount;
 
             if (direction == Direction.Forward)
-            {
                 _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward, continueRepeatIndex, continueMaxLoopsCount);
-
-                if (LoopType == LoopType.Mirror)
-                    _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward, continueRepeatIndex, continueMaxLoopsCount);
-            }
             else
-            {
                 _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward, continueRepeatIndex, continueMaxLoopsCount);
-
-                if (LoopType == LoopType.Mirror)
-                    _chronolines[0].Chains.Forward.CallAllEvents(Direction.Backward, continueRepeatIndex, continueMaxLoopsCount);
-            }
 
             _lastLoopedNormalizedTime = loopedNormalizedTime;
         }
@@ -1214,13 +1204,6 @@ namespace Tweens
                     loopedPlayedTime *= 2f;
                     loopedTime *= 2;
 
-                    // If we jump from forward handling to backward, then we need handling this jump in 2 steps.
-                    if (loopedPlayedTime < LoopDuration && loopedTime > LoopDuration)
-                    {
-                        HandleChronolinesOnForwardInterval(_chronolines, loopedPlayedTime, LoopDuration, LoopDuration, continueRepeatIndex, continueMaxLoopsCount, ref lastChronoline);
-                        loopedPlayedTime = LoopDuration;
-                    }
-
                     // Forward handling.
                     if (loopedPlayedTime < LoopDuration)
                     {
@@ -1270,13 +1253,6 @@ namespace Tweens
                 {
                     loopedPlayedTime *= 2f;
                     loopedTime *= 2;
-
-                    // If we jump from forward handling to backward, then we need handling this jump in 2 steps.
-                    if (loopedPlayedTime < LoopDuration && loopedTime > LoopDuration)
-                    {
-                        HandleChronolinesOnForwardInterval(_chronolines, loopedPlayedTime, LoopDuration, LoopDuration, continueRepeatIndex, continueMaxLoopsCount, ref lastChronoline);
-                        loopedPlayedTime = LoopDuration;
-                    }
 
                     // Forward handling.
                     if (loopedPlayedTime < LoopDuration)

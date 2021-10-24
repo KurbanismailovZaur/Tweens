@@ -11,7 +11,7 @@ using Coroutine = Coroutines.Coroutine;
 using Tweens.Tweaks;
 using UnityEditor;
 using System.Reflection;
-
+using UnityEngine.UI;
 
 namespace Tweens
 {
@@ -50,8 +50,9 @@ namespace Tweens
                 target.SetPositionX(0f);
         }
 
-        #region Tween reset
-
+        #region Tween
+        #region Forward
+        #region Reset
         public void Tween0ResetRewind()
         {
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2);
@@ -85,7 +86,7 @@ namespace Tweens
         }
         #endregion
 
-        #region Tween continue
+        #region Continue
         public void Tween0ContinueRewind()
         {
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Continue);
@@ -119,7 +120,7 @@ namespace Tweens
         }
         #endregion
 
-        #region Tween mirror
+        #region Mirror
         public void Tween0MirrorRewind()
         {
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Mirror);
@@ -151,6 +152,112 @@ namespace Tweens
 
             tween.Play();
         }
+        #endregion
+        #endregion
+
+        #region Backward
+        #region Reset
+        public void Tween0ResetRewindBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Reset, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.RewindToStart(0, 1);
+        }
+
+        public void Tween0ResetPlayBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Reset, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.Play();
+        }
+
+        public void Tween1ResetRewindBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Reset, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.SkipToEnd().RewindToStart(0, 1);
+        }
+
+        public void Tween1ResetPlayBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Reset, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.SkipToEnd().Play();
+        }
+        #endregion
+
+        #region Continue
+        public void Tween0ContinueRewindBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Continue, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.RewindToStart(0, 1);
+        }
+
+        public void Tween0ContinuePlayBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Continue, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.Play();
+        }
+
+        public void Tween1ContinueRewindBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Continue, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.SkipToEnd().RewindToStart(0, 1);
+        }
+
+        public void Tween1ContinuePlayBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Continue, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.SkipToEnd().Play();
+        }
+        #endregion
+
+        #region Mirror
+        public void Tween0MirrorRewindBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Mirror, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.RewindToStart(0, 1);
+        }
+
+        public void Tween0MirrorPlayBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Mirror, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.Play();
+        }
+
+        public void Tween1MirrorRewindBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Mirror, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.SkipToEnd().RewindToStart(0, 1);
+        }
+
+        public void Tween1MirrorPlayBackward()
+        {
+            var tween = new Tween<float, FloatTweak>(0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Mirror, Direction.Backward);
+            SubscribeOnAllEvents(tween);
+
+            tween.SkipToEnd().Play();
+        }
+        #endregion
+        #endregion
         #endregion
     }
 }
