@@ -464,6 +464,15 @@ namespace Tweens
             CallPhaseLoopStarted(loop, direction);
         }
 
+        internal void HandlePhaseLoopUpdateZeroed(int loop, float loopedTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            CallPhaseUpdating(loop + loopedTime, direction);
+            CallPhaseLoopUpdating(loop, loopedTime, direction);
+            RewindZeroHandler(loop, loopedTime, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseLoopUpdated(loop, loopedTime, direction);
+            CallPhaseUpdated(loop + loopedTime, direction);
+        }
+
         internal void HandlePhaseCompleteZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseCompleting(direction);
@@ -493,6 +502,11 @@ namespace Tweens
         {
             BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
             RewindZeroHandler(loop, 0f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+
+        internal void HandlePhaseLoopUpdateZeroedNoEvents(int loop, float loopedTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            RewindZeroHandler(loop, loopedTime, direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
         internal void HandlePhaseCompleteZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
@@ -621,19 +635,93 @@ namespace Tweens
                 if (time == PlayedTime)
                     return this;
 
-                if (time > PlayedTime)
+                if (LoopType != LoopType.Mirror)
                 {
-                    if (emitEvents)
-                        RewindWithEvents(PlayedTime, time, Direction.Forward, parentContinueLoopIndex, continueMaxLoopsCount);
+                    if (time > PlayedTime)
+                    {
+                        if (emitEvents)
+                            RewindWithEvents(PlayedTime, time, Direction.Forward, parentContinueLoopIndex, continueMaxLoopsCount);
+                        else
+                            RewindWithoutEvents(PlayedTime, time, Direction.Forward, parentContinueLoopIndex, continueMaxLoopsCount);
+                    }
                     else
-                        RewindWithoutEvents(PlayedTime, time, Direction.Forward, parentContinueLoopIndex, continueMaxLoopsCount);
+                    {
+                        if (emitEvents)
+                            RewindWithEvents(Duration - PlayedTime, Duration - time, Direction.Backward, parentContinueLoopIndex, continueMaxLoopsCount);
+                        else
+                            RewindWithoutEvents(Duration - PlayedTime, Duration - time, Direction.Backward, parentContinueLoopIndex, continueMaxLoopsCount);
+                    }
                 }
                 else
                 {
-                    if (emitEvents)
-                        RewindWithEvents(Duration - PlayedTime, Duration - time, Direction.Backward, parentContinueLoopIndex, continueMaxLoopsCount);
+                    var halfLoopDuration = LoopDuration / 2f;
+
+                    if (time > PlayedTime)
+                    {
+                        var playedLoop = (int)(PlayedTime / LoopDuration);
+                        var timeLoop = (int)(time / LoopDuration);
+
+                        if (time % LoopDuration == 0f)
+                            --timeLoop;
+
+                        if (emitEvents)
+                        {
+                            for (int i = playedLoop; i <= timeLoop; i++)
+                            {
+                                var halfPoint = i * LoopDuration + halfLoopDuration;
+
+                                if (halfPoint > PlayedTime && halfPoint < time)
+                                    RewindWithEvents(PlayedTime, halfPoint, Direction.Forward, parentContinueLoopIndex, continueMaxLoopsCount);
+                            }
+
+                            RewindWithEvents(PlayedTime, time, Direction.Forward, parentContinueLoopIndex, continueMaxLoopsCount);
+                        }
+                        else
+                        {
+                            for (int i = playedLoop; i <= timeLoop; i++)
+                            {
+                                var halfPoint = i * LoopDuration + halfLoopDuration;
+
+                                if (halfPoint > PlayedTime && halfPoint < time)
+                                    RewindWithoutEvents(PlayedTime, halfPoint, Direction.Forward, parentContinueLoopIndex, continueMaxLoopsCount);
+                            }
+
+                            RewindWithoutEvents(PlayedTime, time, Direction.Forward, parentContinueLoopIndex, continueMaxLoopsCount);
+                        }
+                    }
                     else
-                        RewindWithoutEvents(Duration - PlayedTime, Duration - time, Direction.Backward, parentContinueLoopIndex, continueMaxLoopsCount);
+                    {
+                        var playedLoop = (int)(PlayedTime / LoopDuration);
+                        var timeLoop = (int)(time / LoopDuration);
+
+                        if (PlayedTime % LoopDuration == 0f)
+                            --playedLoop;
+
+                        if (emitEvents)
+                        {
+                            for (int i = playedLoop; i >= timeLoop; i--)
+                            {
+                                var halfPoint = i * LoopDuration + halfLoopDuration;
+
+                                if (halfPoint < PlayedTime && halfPoint > time)
+                                    RewindWithEvents(Duration - PlayedTime, Duration - halfPoint, Direction.Backward, parentContinueLoopIndex, continueMaxLoopsCount);
+                            }
+
+                            RewindWithEvents(Duration - PlayedTime, Duration - time, Direction.Backward, parentContinueLoopIndex, continueMaxLoopsCount);
+                        }
+                        else
+                        {
+                            for (int i = playedLoop; i >= timeLoop; i--)
+                            {
+                                var halfPoint = i * LoopDuration + halfLoopDuration;
+
+                                if (halfPoint < PlayedTime && halfPoint > time)
+                                    RewindWithoutEvents(Duration - PlayedTime, Duration - halfPoint, Direction.Backward, parentContinueLoopIndex, continueMaxLoopsCount);
+                            }
+
+                            RewindWithoutEvents(Duration - PlayedTime, Duration - time, Direction.Backward, parentContinueLoopIndex, continueMaxLoopsCount);
+                        }
+                    }
                 }
             }
 
@@ -642,21 +730,36 @@ namespace Tweens
 
         private void RewindZeroDurationWithEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            // Started events.
+            // Start events.
             HandlePhaseStartZeroed(direction, parentContinueLoopIndex, continueMaxLoopsCount);
             HandlePhaseFirstLoopStartZeroed(direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
-            // Intermediate events
-            for (int i = 1; i < _loopsCount; i++)
+            if (LoopType == LoopType.Mirror)
             {
-                HandlePhaseLoopCompleteZeroed(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
-                HandlePhaseLoopStartZeroed(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                // Intermediate events
+                for (int i = 1; i < _loopsCount; i++)
+                {
+                    HandlePhaseLoopUpdateZeroed(i - 1, 0.5f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                    HandlePhaseLoopCompleteZeroed(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                    HandlePhaseLoopStartZeroed(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                }
+            }
+            else
+            {
+                // Intermediate events
+                for (int i = 1; i < _loopsCount; i++)
+                {
+                    HandlePhaseLoopCompleteZeroed(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                    HandlePhaseLoopStartZeroed(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                }
             }
 
-            // Loop completed event.
-            HandlePhaseLoopCompleteZeroed(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+            // Mirror's update event on last loop.
+            if (LoopType == LoopType.Mirror)
+                HandlePhaseLoopUpdateZeroed(_loopsCount - 1, 0.5f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
-            // Completed event
+            // Completed events.
+            HandlePhaseLoopCompleteZeroed(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             HandlePhaseCompleteZeroed(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
@@ -666,17 +769,32 @@ namespace Tweens
             HandlePhaseStartZeroedNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
             HandlePhaseFirstLoopStartZeroedNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
-            // Intermediate events
-            for (int i = 1; i < _loopsCount; i++)
+            if (LoopType == LoopType.Mirror)
             {
-                HandlePhaseLoopCompleteZeroedNoEvents(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
-                HandlePhaseLoopStartZeroedNoEvents(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                // Intermediate events
+                for (int i = 1; i < _loopsCount; i++)
+                {
+                    HandlePhaseLoopUpdateZeroedNoEvents(i - 1, 0.5f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                    HandlePhaseLoopCompleteZeroedNoEvents(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                    HandlePhaseLoopStartZeroedNoEvents(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                }
+            }
+            else
+            {
+                // Intermediate events
+                for (int i = 1; i < _loopsCount; i++)
+                {
+                    HandlePhaseLoopCompleteZeroedNoEvents(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                    HandlePhaseLoopStartZeroedNoEvents(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                }
             }
 
-            // Loop completed event.
-            HandlePhaseLoopCompleteZeroedNoEvents(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+            // Mirror's update event on last loop.
+            if (LoopType == LoopType.Mirror)
+                HandlePhaseLoopUpdateZeroedNoEvents(_loopsCount - 1, 0.5f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
-            // Completed event
+            // Completed events.
+            HandlePhaseLoopCompleteZeroedNoEvents(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             HandlePhaseCompleteZeroedNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 

@@ -97,7 +97,12 @@ namespace Tweens
                 else
                     (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex - 1f), Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex));
 
-                Tweak.Apply(from, to, 0f, Action, Formula);
+                var loopedMirroredNormalizedTime = loopedNormalizedTime * 2f;
+
+                if (loopedMirroredNormalizedTime > 1f)
+                    loopedMirroredNormalizedTime = 2f - loopedMirroredNormalizedTime;
+
+                Tweak.Apply(from, to, loopedMirroredNormalizedTime, Action, Formula);
             }
         }
 

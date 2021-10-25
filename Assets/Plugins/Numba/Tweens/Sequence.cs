@@ -1069,26 +1069,36 @@ namespace Tweens
         #region Rewind
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            // This is avoid situation when we jump from loop complete to loop start
-            if (_lastLoopedNormalizedTime != 0f || loopedNormalizedTime != 1f)
+            // This is avoid situation when we jump to the same position.
+            if (_lastLoopedNormalizedTime == loopedNormalizedTime)
+                return;
+
+            if (_lastLoopedNormalizedTime == 1f && loopedNormalizedTime == 0)
             {
-                _lastLoopedNormalizedTime = loopedNormalizedTime;
+                _lastLoopedNormalizedTime = 0;
                 return;
             }
 
             // If sequence is empty, than there is nothing to handle.
             if (_chronolines.Count == 0)
-                return;
+            {
+                int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
 
-            int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
+                if (LoopType == LoopType.Continue)
+                    continueMaxLoopsCount *= LoopsCount;
 
-            if (LoopType == LoopType.Continue)
-                continueMaxLoopsCount *= LoopsCount;
-
-            if (direction == Direction.Forward)
-                _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward, continueRepeatIndex, continueMaxLoopsCount);
-            else
-                _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward, continueRepeatIndex, continueMaxLoopsCount);
+                if (LoopType != LoopType.Mirror)
+                    // It is not matter what chain (forward or backward) we use when sequence is zeroed.
+                    _chronolines[0].Chains.Forward.CallAllEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                else
+                {
+                    // If it is first half of mirror mode, than we move forward.
+                    if (loopedNormalizedTime == 0.5f)
+                        _chronolines[0].Chains.Forward.CallAllEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    else // else - backward.
+                        _chronolines[0].Chains.Backward.CallAllEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                }
+            }
 
             _lastLoopedNormalizedTime = loopedNormalizedTime;
         }
