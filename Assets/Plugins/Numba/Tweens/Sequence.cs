@@ -81,6 +81,15 @@ namespace Tweens
             internal override void Call(Direction direction, int continueRepeatIndex, int continueMaxLoopsCount) => _element.Playable.HandlePhaseLoopStartZeroed(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
         }
 
+        private class PhaseLoopUpdateZeroed : Phase
+        {
+            private int _loop;
+
+            internal PhaseLoopUpdateZeroed(Element element, int loop) : base(element) => _loop = loop;
+
+            internal override void Call(Direction direction, int continueRepeatIndex, int continueMaxLoopsCount) => _element.Playable.HandlePhaseLoopUpdateZeroed(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+        }
+
         private class PhaseCompleteZeroed : Phase
         {
             internal PhaseCompleteZeroed(Element element) : base(element) { }
@@ -129,6 +138,9 @@ namespace Tweens
             private int _loop;
 
             private float _loopedTime;
+
+            // Need for mirror's mode to detect should we delete chronoline or no.
+            public float LoopedTime => _loopedTime;
 
             internal PhaseLoopUpdate(Element element, float endTime, int loop, float loopedTime) : base(element)
             {
@@ -198,16 +210,16 @@ namespace Tweens
                     }
                 }
 
-                internal bool HasNoUpdateEvents()
+                internal bool HasUsefulEvents()
                 {
-                    // If we have post-events, than it is 100% that not update events exist.
+                    // If we have post-events, than it is 100% that non update events exist.
                     if (PrePostPoint < _events.Count)
                         return true;
 
                     // If we have pre-events, than we need to check it type on non update event.
                     for (int i = 0; i < PrePostPoint; i++)
                     {
-                        if (!(_events[i] is PhaseLoopUpdate))
+                        if (!(_events[i] is PhaseLoopUpdate @event) || @event.Element.Playable.LoopType == LoopType.Mirror && @event.LoopedTime % (@event.Element.Playable.LoopDuration / 2f) == 0f)
                             return true;
                     }
 
@@ -248,7 +260,7 @@ namespace Tweens
             }
 
             // It is not matter, what direction chain we use.
-            internal bool HasNoUpdateEvents() => Chains.Forward.HasNoUpdateEvents();
+            internal bool HasUsefulEvents() => Chains.Forward.HasUsefulEvents();
         }
 
         /// <summary>
@@ -328,7 +340,7 @@ namespace Tweens
             return false;
         }
 
-        private void SortAndAddChronoline(Chronoline chronoline)
+        private void AddChronolineToNecessaryPosition(Chronoline chronoline)
         {
             var index = 0;
             for (; index < _chronolines.Count; index++)
@@ -362,13 +374,6 @@ namespace Tweens
             else
                 return IntersectionType.Update;
         }
-
-        /// <summary>
-        /// Calculate all chronolines which intersects with passed element.
-        /// </summary>
-        /// <param name="element">Element whose chronolones must be calcualted.</param>
-        /// <returns>Intersected chronolines.</returns>
-        private List<Chronoline> GetElementChronolines(Element element) => _chronolines.Where(cl => cl.Time >= element.StartTime && cl.Time <= element.EndTime).ToList();
 
         #region Chronolines
         /// <summary>
@@ -443,6 +448,16 @@ namespace Tweens
                 // It is not matter which chain we will use, forward or backward, both have same events count.
                 var insertIndex = chronoline.Chains.Forward.EventsCount;
 
+                // Additional cycle for handling mirror's mode update half-event.
+                for (int j = 0; j < _elementsBuffer.Count; j++)
+                {
+                    var element = _elementsBuffer[j];
+
+                    if (element.Playable.LoopType == LoopType.Mirror)
+                        chronoline.Chains.InsertEvent(insertIndex++, new PhaseLoopUpdateZeroed(element, i));
+                }
+
+                // Handling other events.
                 for (int j = 0; j < _elementsBuffer.Count; j++)
                 {
                     var element = _elementsBuffer[j];
@@ -474,7 +489,7 @@ namespace Tweens
         /// <param name="element">Element whose phase events are to be injected.</param>
         private void InjectPhaseEventsForElement(Element element)
         {
-            // Handle old chronolines on element [start -> end] and [end -> start] intervals.
+            // Handle old chronolines on element's [start -> end] and [end -> start] intervals.
             for (int i = 0; i < _chronolines.Count; i++)
             {
                 var chronoline = _chronolines[i];
@@ -520,6 +535,7 @@ namespace Tweens
                                 continue;
                             }
 
+                            // For zeroed elements this return start, otherwise calculated value will be returned.
                             var intersectionType = GetIntersectionType(oldElement, playedTimeCalculator(chronoline.Time, oldElement));
 
                             if (intersectionType == IntersectionType.Start)
@@ -535,6 +551,20 @@ namespace Tweens
                         // Cycle for new element loops count (for adding phase loop events to chain).
                         for (int j = 0; j < element.Playable.LoopsCount; j++)
                         {
+                            // Cycle for inserting mirror's mode half-update phase.
+                            for (int k = 0; k < _elementsBuffer.Count; k++)
+                            {
+                                var zeroedElement = _elementsBuffer[k];
+
+                                if (zeroedElement.Playable.LoopType == LoopType.Mirror)
+                                {
+                                    ++insertIndex;
+
+                                    if (zeroedElement == element)
+                                        chain.InsertEvent(chain.PrePostPoint + insertIndex - 1, new PhaseLoopUpdateZeroed(element, j));
+                                }
+                            }
+
                             // Used for calculating loop start phase event position for newly added element.
                             var startPhaseShift = 0;
 
@@ -691,28 +721,28 @@ namespace Tweens
             {
                 // Handle all phase events at once.
                 if (!ChronolineExist(element.StartTime))
-                    SortAndAddChronoline(GenerateChronoline(element.StartTime));
+                    AddChronolineToNecessaryPosition(GenerateChronoline(element.StartTime));
             }
             else
             {
-                // Handle start chronoline.
-                if (!ChronolineExist(element.StartTime))
-                    SortAndAddChronoline(GenerateChronoline(element.StartTime));
+                int loopsCount = element.Playable.LoopsCount;
+                float loopDuration = element.Playable.LoopDuration;
 
-                // Handle intermediate new chronolines (loop lines).
-                for (int j = 0; j <= element.Playable.LoopsCount; j++)
+                // For element in mirror's mode we need handle its half-events too, so we need half-step.
+                if (element.Playable.LoopType == LoopType.Mirror)
                 {
-                    var phaseTime = element.StartTime + element.Playable.LoopDuration * j;
-
-                    if (ChronolineExist(phaseTime))
-                        continue;
-
-                    SortAndAddChronoline(GenerateChronoline(phaseTime));
+                    loopsCount *= 2;
+                    loopDuration /= 2f;
                 }
 
-                // Handle end chronoline.
-                if (!ChronolineExist(element.EndTime))
-                    SortAndAddChronoline(GenerateChronoline(element.EndTime));
+                // Handle all loops phase events.
+                for (int j = 0; j <= loopsCount; j++)
+                {
+                    var phaseTime = element.StartTime + loopDuration * j;
+
+                    if (!ChronolineExist(phaseTime))
+                        AddChronolineToNecessaryPosition(GenerateChronoline(phaseTime));
+                }
             }
         }
         #endregion
@@ -723,13 +753,13 @@ namespace Tweens
         /// <param name="element">Element to remove</param>
         private void RemoveElement(Element element)
         {
-            var chronolines = GetElementChronolines(element);
+            var chronolines = _chronolines.Where(cl => cl.Time >= element.StartTime && cl.Time <= element.EndTime).ToList();
 
             foreach (var chronoline in chronolines)
             {
                 chronoline.RemovePhaseEventsForElement(element);
 
-                if (!chronoline.HasNoUpdateEvents())
+                if (!chronoline.HasUsefulEvents())
                     _chronolines.Remove(chronoline);
             }
 
@@ -803,6 +833,8 @@ namespace Tweens
         public bool Contains(string name) => GetElement(name) != null;
 
         public bool Contains(IPlayable<Playable> playable) => GetElement(playable) != null;
+
+        public bool Contains(Element element) => _elements.Contains(element);
         #endregion
 
         #region Get
@@ -936,6 +968,8 @@ namespace Tweens
 
         private void BeforeLoopStarting(Direction direction, LoopResetBehaviour loopResetBehaviour, int loop, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
+            Debug.Log($"[{Name}] Before loop {loop} starting in {direction} direction with {loopResetBehaviour} behaviour");
+
             int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
 
             if (loopResetBehaviour == LoopResetBehaviour.Rewind)
@@ -1080,7 +1114,7 @@ namespace Tweens
             }
 
             // If sequence is empty, than there is nothing to handle.
-            if (_chronolines.Count == 0)
+            if (_chronolines.Count != 0)
             {
                 int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
 

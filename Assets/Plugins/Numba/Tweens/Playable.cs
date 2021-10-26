@@ -464,13 +464,13 @@ namespace Tweens
             CallPhaseLoopStarted(loop, direction);
         }
 
-        internal void HandlePhaseLoopUpdateZeroed(int loop, float loopedTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        internal void HandlePhaseLoopUpdateZeroed(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            CallPhaseUpdating(loop + loopedTime, direction);
-            CallPhaseLoopUpdating(loop, loopedTime, direction);
-            RewindZeroHandler(loop, loopedTime, direction, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseLoopUpdated(loop, loopedTime, direction);
-            CallPhaseUpdated(loop + loopedTime, direction);
+            CallPhaseUpdating(loop + 0.5f, direction);
+            CallPhaseLoopUpdating(loop, 0.5f, direction);
+            RewindZeroHandler(loop, 0.5f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseLoopUpdated(loop, 0.5f, direction);
+            CallPhaseUpdated(loop + 0.5f, direction);
         }
 
         internal void HandlePhaseCompleteZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
@@ -739,7 +739,7 @@ namespace Tweens
                 // Intermediate events
                 for (int i = 1; i < _loopsCount; i++)
                 {
-                    HandlePhaseLoopUpdateZeroed(i - 1, 0.5f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                    HandlePhaseLoopUpdateZeroed(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
                     HandlePhaseLoopCompleteZeroed(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
                     HandlePhaseLoopStartZeroed(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
                 }
@@ -756,7 +756,7 @@ namespace Tweens
 
             // Mirror's update event on last loop.
             if (LoopType == LoopType.Mirror)
-                HandlePhaseLoopUpdateZeroed(_loopsCount - 1, 0.5f, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                HandlePhaseLoopUpdateZeroed(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             // Completed events.
             HandlePhaseLoopCompleteZeroed(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);

@@ -259,5 +259,183 @@ namespace Tweens
         #endregion
         #endregion
         #endregion
+
+        #region Sequence
+        #region Empty
+        public void SequenceEmptyRewind()
+        {
+            var sequence = new Sequence();
+            SubscribeOnAllEvents(sequence);
+
+            sequence.RewindToEnd(0, 1);
+        }
+
+        public void SequenceEmptyPlay()
+        {
+            var sequence = new Sequence();
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
+        #endregion
+
+        #region Reset
+        public void SequenceResetRewindTween0Reset()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 0f, null, 2);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.RewindToEnd(0, 1);
+        }
+
+        public void SequenceResetPlayTween0Reset()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 0f, null, 2);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
+
+        public void SequenceResetRewindTween1Reset()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 1f, null, 2);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.RewindToEnd(0, 1);
+        }
+
+        public void SequenceResetPlayTween1Reset()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 1f, null, 2);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
+
+        public void SequenceResetRewindTween0Continue()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Continue);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.RewindToEnd(0, 1);
+        }
+
+        public void SequenceResetPlayTween0Continue()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Continue);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
+
+        public void SequenceResetRewindTween1Continue()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Continue);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.RewindToEnd(0, 1);
+        }
+
+        public void SequenceResetPlayTween1Continue()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Continue);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
+
+        public void SequenceResetRewindTween0Mirror()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.RewindToEnd(0, 1);
+        }
+
+        public void SequenceResetPlayTween0Mirror()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
+
+        public void SequenceResetRewindTween1Mirror()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.RewindToEnd(0, 1);
+        }
+
+        public void SequenceResetPlayTween1Mirror()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => PrintWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+
+            var sequence = new Sequence("sequence", null, 2);
+            sequence.Append(tween);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
+        #endregion
+        #endregion
     }
 }

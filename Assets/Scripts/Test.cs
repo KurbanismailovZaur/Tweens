@@ -61,8 +61,6 @@ namespace Tweens
             
             var tween = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset, Direction.Forward);
 
-
-
             //var seq = new Sequence("seq", Formula.Linear, 2, LoopType.Continue);
             //seq.Append(tween0);
 
@@ -77,4 +75,27 @@ namespace Tweens
             //seq.SkipToEnd().PlayBackward();
         }
     }
+
+    //class ResearchTeam
+    //{
+    //    public int PersonsCount => UnityEngine.Random.Range(1, 3);
+    //}
+
+    //// Просто создаю 5 researchTeam с произвольным количеством участников
+    //var researchTeams = Enumerable.Range(0, 5).Select(i => new ResearchTeam());
+
+    //// Условно n - это сколько участников должно быть в группе.
+    //var n = 3;
+
+    //// Группируем researchTeam по количеству их участников
+    //var groupsByPersonsCount = researchTeams.GroupBy(rt => rt.PersonsCount);
+
+    //// затем берем только те группы где количество участников = n (метод Where)
+    //var groupsWherePersonsCountEqualsToN = groupsByPersonsCount.Where(rt => rt.Key == n);
+
+    //// но мы знаем, что там будет только 1 группа, поэтому мы вызываем метод First, который вернет эту единственную группу
+    //var firstGroup = groupsWherePersonsCountEqualsToN.First();
+
+    //// а затем, у этой группы я вызываю ToList, который преобразует эту группу в список из ResearchTeam.
+    //List<ResearchTeam> listOfResearchTeamsOfThisGroup = firstGroup.ToList();
 }
