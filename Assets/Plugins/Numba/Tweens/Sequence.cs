@@ -1142,9 +1142,9 @@ namespace Tweens
                 {
                     // If it is first half of mirror mode, than we move forward.
                     if (loopedNormalizedTime == 0.5f)
-                        _chronolines[0].Chains.Forward.CallAllEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                        _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward, continueRepeatIndex, continueMaxLoopsCount);
                     else // else - backward.
-                        _chronolines[0].Chains.Backward.CallAllEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                        _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward, continueRepeatIndex, continueMaxLoopsCount);
                 }
             }
 
