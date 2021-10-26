@@ -968,20 +968,34 @@ namespace Tweens
 
         private void BeforeLoopStarting(Direction direction, LoopResetBehaviour loopResetBehaviour, int loop, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            Debug.Log($"[{Name}] Before loop {loop} starting in {direction} direction with {loopResetBehaviour} behaviour");
+            Debug.Log($"[{Name}] Before loop {loop} starting in {direction} direction with {loopResetBehaviour} behaviour and ({parentContinueLoopIndex}, {continueMaxLoopsCount}) continue parameters");
 
-            int continueRepeatIndex = LoopType == LoopType.Continue ? parentContinueLoopIndex * LoopsCount + loop : parentContinueLoopIndex;
+            int continueRepeatIndex = parentContinueLoopIndex;
 
             if (loopResetBehaviour == LoopResetBehaviour.Rewind)
             {
+                if (LoopType == LoopType.Continue)
+                {
+                    continueRepeatIndex = continueRepeatIndex * LoopsCount + loop;
+                    continueMaxLoopsCount *= LoopsCount;
+
+                    // This need to correct loop handling in childs when continue loop type is used.
+                    // For example, when we try to rewind child we go on backward direction,
+                    // so child will be use continueMaxLoopsCount value to calculate result value in backward direction
+                    // and start from last loop, but we need childs started from first loop.
+                    continueRepeatIndex = continueMaxLoopsCount - 1 - continueRepeatIndex; 
+                }
+
                 for (int i = 0; i < _elements.Count; i++)
                 {
                     var element = _elements[i];
 
-                    if (element.Playable.Duration == 0f)
-                        element.Playable.RewindTo(direction == Direction.Forward ? -1f : 1f, continueRepeatIndex, continueMaxLoopsCount, false);
+                    var (forwardTime, backwardTime) = element.Playable.Duration == 0f ? (-1f, 1f) : (0f, Duration);
+
+                    if (direction == Direction.Forward)
+                        element.Playable.RewindTo(forwardTime, continueRepeatIndex, continueMaxLoopsCount, false);
                     else
-                        element.Playable.RewindTo(direction == Direction.Forward ? 0f : Duration, continueRepeatIndex, continueMaxLoopsCount, false);
+                        element.Playable.RewindTo(backwardTime, continueRepeatIndex, continueMaxLoopsCount, false);
                 }
             }
             else
