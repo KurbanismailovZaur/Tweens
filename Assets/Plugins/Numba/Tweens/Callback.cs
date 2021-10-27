@@ -17,8 +17,8 @@ namespace Tweens
 
         public override Type Type => Type.Callback;
 
-        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, int parentLoop, int continueMaxLoopsCount) { }
+        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, int parentLoop, int continueMaxLoopsCount, bool redirectBeforeStart) { }
 
-        protected override void RewindHandler(int loop, float loopedTime, Direction direction, int parentLoop, int continueMaxLoopsCount) { }
+        protected override void RewindHandler(int loop, float loopedTime, Direction direction, int parentLoop, int continueMaxLoopsCount, bool redirectBeforeStart) { }
     }
 }
