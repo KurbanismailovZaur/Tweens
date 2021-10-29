@@ -990,7 +990,13 @@ namespace Tweens
                 {
                     var element = _elements[i];
 
-                    var (forwardTime, backwardTime) = element.Playable.Duration == 0f ? (-1f, 1f) : (0f, Duration);
+                    float forwardTime;
+                    float backwardTime;
+
+                    if (LoopType != LoopType.Mirror)
+                        (forwardTime, backwardTime) = element.Playable.Duration == 0f ? (-1f, 1f) : (0f, Duration);
+                    else
+                        (forwardTime, backwardTime) = element.Playable.Duration == 0f ? (-1f, -1f) : (0f, 0f);
 
                     if (direction == Direction.Forward)
                         element.Playable.RewindTo(forwardTime, continueRepeatIndex, continueMaxLoopsCount, false, true);
