@@ -1269,6 +1269,57 @@ namespace Tweens
 
             sequence.RewindToEnd(0, 1, true, true);
         }
+
+        public void SequenceResetPlaySequenceContinueTween0Mirror()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+
+            var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Continue);
+            subsequence.Append(tween);
+
+            var sequence = new Sequence("sequence", null, 2, LoopType.Reset);
+            sequence.Append(subsequence);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(subsequence);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
+
+        public void SequenceResetRewindSequenceContinueTween1Mirror()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+
+            var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Continue);
+            subsequence.Append(tween);
+
+            var sequence = new Sequence("sequence", null, 2, LoopType.Reset);
+            sequence.Append(subsequence);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(subsequence);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.RewindToEnd(0, 1, true, true);
+        }
+
+        public void SequenceResetPlaySequenceContinueTween1Mirror()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+
+            var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Continue);
+            subsequence.Append(tween);
+
+            var sequence = new Sequence("sequence", null, 2, LoopType.Reset);
+            sequence.Append(subsequence);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(subsequence);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
         #endregion
     }
 }

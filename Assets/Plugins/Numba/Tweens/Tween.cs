@@ -64,7 +64,7 @@ namespace Tweens
 
         private FormulaBase InvertIfRequiredAndGetFormula(Direction direction) => direction == Direction.Forward ? Formula : Tweens.Formula.Invertion.WithFormula(Formula);
 
-        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, int continueLoopIndex, int continueMaxLoopsCount, bool redirectBeforeStart)
+        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int continueLoopIndex, int continueMaxLoopsCount, bool redirectBeforeStart)
         {
             if (LoopType == LoopType.Reset)
             {
@@ -106,7 +106,7 @@ namespace Tweens
             }
         }
 
-        protected override void RewindHandler(int loop, float loopedTime, Direction direction, int continueLoopIndex, int continueMaxLoopsCount, bool redirectBeforeStart)
+        protected override void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int continueLoopIndex, int continueMaxLoopsCount, bool redirectBeforeStart)
         {
             var loopedNormalizedTime = loopedTime / LoopDuration;
 
