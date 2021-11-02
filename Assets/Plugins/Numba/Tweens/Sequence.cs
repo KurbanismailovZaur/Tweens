@@ -1054,7 +1054,8 @@ namespace Tweens
                 continueMaxLoopsCount *= LoopsCount;
             }
 
-            parentContinueLoopIndex = continueMaxLoopsCount - parentContinueLoopIndex - 1;
+            if (!(LoopType == LoopType.Mirror && direction == Direction.Backward))
+                parentContinueLoopIndex = continueMaxLoopsCount - parentContinueLoopIndex - 1;
 
             Debug.Log($"<color=#FF8888><b>[{Name}] Before starting: loop {loop} {direction} {LoopType} {loopResetBehaviour} {parentContinueLoopIndex} {continueMaxLoopsCount}</b></color>");
 
@@ -1220,11 +1221,13 @@ namespace Tweens
                     _chronolines[0].Chains.Forward.CallAllEvents(direction, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
                 else
                 {
+                    var (forwardParentContinueLoopIndex, backwardParentContinueLoopIndex) = direction == Direction.Forward ? (parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1) : (continueMaxLoopsCount - parentContinueLoopIndex - 1, parentContinueLoopIndex);
+
                     // If it is first half of mirror mode, than we move forward.
                     if (loopedNormalizedTime == 0.5f)
-                        _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
+                        _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
                     else // else - backward.
-                        _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
+                        _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
                 }
             }
 
@@ -1347,23 +1350,25 @@ namespace Tweens
                     loopedPlayedTime *= 2f;
                     loopedTime *= 2;
 
+                    var (forwardParentContinueLoopIndex, backwardParentContinueLoopIndex) = direction == Direction.Forward ? (parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1) : (continueMaxLoopsCount - parentContinueLoopIndex - 1, parentContinueLoopIndex);
+
                     // Forward handling.
                     if (loopedPlayedTime < LoopDuration)
                     {
-                        HandleChronolinesOnForwardInterval(_chronolines, loopedPlayedTime, loopedTime, LoopDuration, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
+                        HandleChronolinesOnForwardInterval(_chronolines, loopedPlayedTime, loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
 
                         if (lastChronoline == null || lastChronoline.Time != loopedTime)
-                            HandleUpdatePhases(loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
+                            HandleUpdatePhases(loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
                     }
                     else // Backward handling
                     {
                         loopedPlayedTime %= LoopDuration;
                         loopedTime = LoopTime(loopedTime);
 
-                        HandleChronolinesOnBackwardInterval(_chronolines, loopedPlayedTime, loopedTime, LoopDuration, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
+                        HandleChronolinesOnBackwardInterval(_chronolines, loopedPlayedTime, loopedTime, LoopDuration, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
 
                         if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
-                            HandleUpdatePhases(LoopDuration - loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
+                            HandleUpdatePhases(LoopDuration - loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
                     }
                 }
             }
