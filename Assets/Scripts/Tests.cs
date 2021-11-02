@@ -29,7 +29,7 @@ namespace Tweens
             playable.OnPhaseUpdating((p, t, dir) => print($"[{p.Name}] Phase updating {t} time in {dir} direction"));
             playable.OnPhaseUpdated((p, t, dir) => print($"[{p.Name}] Phase updated {t} time in {dir} direction"));
             playable.OnPhaseLoopUpdating((p, li, lt, dir) => print($"[{p.Name}] Phase loop {li} updating {lt} time in {dir} direction"));
-            playable.OnPhaseLoopUpdated((p, li, lt, dir) => print($"[{p.Name}] Phase loop {li} updated {lt} time in {dir} direction"));
+            playable.OnPhaseLoopUpdated((p, li, lt, dir) => print($"[<color=#FF00FF>{p.Name}</color>] Phase loop {li} updated {lt} time in {dir} direction"));
             playable.OnPhaseLoopCompleting((p, li, dir) => print($"[{p.Name}] Phase loop {li} completing in {dir} direction"));
             playable.OnPhaseLoopCompleted((p, li, dir) => print($"[{p.Name}] Phase loop {li} completed in {dir} direction"));
             playable.OnPhaseCompleting((p, dir) => print($"[{p.Name}] Phase completing in {dir} direction"));
@@ -1386,6 +1386,28 @@ namespace Tweens
             SubscribeOnAllEvents(subsequence);
             SubscribeOnAllEvents(sequence);
 
+            sequence.Play();
+        }
+
+        public void SCSCSMTR()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset);
+
+            var sequence2 = new Sequence("seq 2", null, 2, LoopType.Mirror);
+            sequence2.Append(tween);
+
+            var sequence1 = new Sequence("seq 1", null, 2, LoopType.Continue);
+            sequence1.Append(sequence2);
+
+            var sequence = new Sequence("root", null, 2, LoopType.Mirror);
+            sequence.Append(sequence1);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(sequence1);
+            SubscribeOnAllEvents(sequence2);
+            SubscribeOnAllEvents(sequence);
+
+            //sequence.RewindToEnd(0, 1, true);
             sequence.Play();
         }
         #endregion
