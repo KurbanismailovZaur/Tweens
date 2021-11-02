@@ -64,38 +64,36 @@ namespace Tweens
 
         private FormulaBase InvertIfRequiredAndGetFormula(Direction direction) => direction == Direction.Forward ? Formula : Tweens.Formula.Invertion.WithFormula(Formula);
 
-        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int continueLoopIndex, int continueMaxLoopsCount, bool redirectBeforeStart)
+        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
+            var (from, to) = (From(), To());
+
+            (T, T) Evaluate(float fromInterlopation, float toInterpolation) => (Tweak.Evaluate(from, to, fromInterlopation), Tweak.Evaluate(from, to, toInterpolation));
+
             if (LoopType == LoopType.Reset)
             {
-                var (from, to) = (From(), To());
-
                 if (direction == Direction.Forward)
-                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+                    (from, to) = Evaluate(parentContinueLoopIndex, parentContinueLoopIndex + 1f);
                 else
-                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex), Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex - 1f));
+                    (from, to) = Evaluate(continueMaxLoopsCount - parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1f);
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, Formula);
             }
             else if (LoopType == LoopType.Continue)
             {
-                var (from, to) = (From(), To());
-
                 if (direction == Direction.Forward)
-                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex * LoopsCount + loop), Tweak.Evaluate(from, to, continueLoopIndex * LoopsCount + loop + 1f));
+                    (from, to) = Evaluate(parentContinueLoopIndex * LoopsCount + loop, parentContinueLoopIndex * LoopsCount + loop + 1f);
                 else
-                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount * LoopsCount - (continueLoopIndex * LoopsCount) - loop), Tweak.Evaluate(from, to, continueMaxLoopsCount * LoopsCount - (continueLoopIndex * LoopsCount) - loop - 1f));
+                    (from, to) = Evaluate(continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop, continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop - 1f);
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, Formula);
             }
             else if (LoopType == LoopType.Mirror)
             {
-                var (from, to) = (From(), To());
-
                 if (direction == Direction.Forward)
-                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+                    (from, to) = Evaluate(parentContinueLoopIndex, parentContinueLoopIndex + 1f);
                 else
-                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex - 1f), Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex));
+                    (from, to) = Evaluate(continueMaxLoopsCount - parentContinueLoopIndex - 1f, continueMaxLoopsCount - parentContinueLoopIndex);
 
                 var loopedMirroredNormalizedTime = loopedNormalizedTime * 2f;
 
@@ -106,40 +104,38 @@ namespace Tweens
             }
         }
 
-        protected override void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int continueLoopIndex, int continueMaxLoopsCount, bool redirectBeforeStart)
+        protected override void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
+            var (from, to) = (From(), To());
+
+            (T, T) Evaluate(float fromInterlopation, float toInterpolation) => (Tweak.Evaluate(from, to, fromInterlopation), Tweak.Evaluate(from, to, toInterpolation));
+
             var loopedNormalizedTime = loopedTime / LoopDuration;
 
             if (LoopType == LoopType.Reset)
             {
-                var (from, to) = (From(), To());
-
                 if (direction == Direction.Forward)
-                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+                    (from, to) = Evaluate(parentContinueLoopIndex, parentContinueLoopIndex + 1f);
                 else
-                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex), Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex - 1f));
+                    (from, to) = Evaluate(continueMaxLoopsCount - parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1f);
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
             }
             else if (LoopType == LoopType.Continue)
             {
-                var (from, to) = (From(), To());
-
                 if (direction == Direction.Forward)
-                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex * LoopsCount + loop), Tweak.Evaluate(from, to, continueLoopIndex * LoopsCount + loop + 1f));
+                    (from, to) = Evaluate(parentContinueLoopIndex * LoopsCount + loop, parentContinueLoopIndex * LoopsCount + loop + 1f);
                 else
-                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount * LoopsCount - (continueLoopIndex * LoopsCount) - loop), Tweak.Evaluate(from, to, continueMaxLoopsCount * LoopsCount - (continueLoopIndex * LoopsCount) - loop - 1f));
+                    (from, to) = Evaluate(continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop, continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop - 1f);
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
             }
             else if (LoopType == LoopType.Mirror)
             {
-                var (from, to) = (From(), To());
-
                 if (direction == Direction.Forward)
-                    (from, to) = (Tweak.Evaluate(from, to, continueLoopIndex), Tweak.Evaluate(from, to, continueLoopIndex + 1f));
+                    (from, to) = Evaluate(parentContinueLoopIndex, parentContinueLoopIndex + 1f);
                 else
-                    (from, to) = (Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex - 1f), Tweak.Evaluate(from, to, continueMaxLoopsCount - continueLoopIndex));
+                    (from, to) = Evaluate(continueMaxLoopsCount - parentContinueLoopIndex - 1f, continueMaxLoopsCount - parentContinueLoopIndex);
 
                 var loopedMirroredNormalizedTime = loopedNormalizedTime * 2f;
 

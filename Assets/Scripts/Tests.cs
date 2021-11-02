@@ -58,7 +58,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
             SubscribeOnAllEvents(tween);
 
-            tween.RewindToEnd(0, 1, true, true);
+            tween.RewindToEnd(0, 1, true);
         }
 
         public void Tween0ResetPlay()
@@ -74,7 +74,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
             SubscribeOnAllEvents(tween);
 
-            tween.RewindToEnd(0, 1, true, true);
+            tween.RewindToEnd(0, 1, true);
         }
 
         public void Tween1ResetPlay()
@@ -92,7 +92,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
             SubscribeOnAllEvents(tween);
 
-            tween.RewindToEnd(0, 1, true, true);
+            tween.RewindToEnd(0, 1, true);
         }
 
         public void Tween0ContinuePlay()
@@ -108,7 +108,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
             SubscribeOnAllEvents(tween);
 
-            tween.RewindToEnd(0, 1, true, true);
+            tween.RewindToEnd(0, 1, true);
         }
 
         public void Tween1ContinuePlay()
@@ -126,7 +126,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
             SubscribeOnAllEvents(tween);
 
-            tween.RewindToEnd(0, 1, true, true);
+            tween.RewindToEnd(0, 1, true);
         }
 
         public void Tween0MirrorPlay()
@@ -142,7 +142,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
             SubscribeOnAllEvents(tween);
 
-            tween.RewindToEnd(0, 1, true, true);
+            tween.RewindToEnd(0, 1, true);
         }
 
         public void Tween1MirrorPlay()
@@ -162,7 +162,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
-            tween.RewindToStart(0, 1, true, true);
+            tween.RewindToStart(0, 1, true);
         }
 
         public void Tween0ResetPlayBackward()
@@ -178,7 +178,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
-            tween.SkipToEnd().RewindToStart(0, 1, true, true);
+            tween.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void Tween1ResetPlayBackward()
@@ -196,7 +196,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
-            tween.RewindToStart(0, 1, true, true);
+            tween.RewindToStart(0, 1, true);
         }
 
         public void Tween0ContinuePlayBackward()
@@ -212,7 +212,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
-            tween.SkipToEnd().RewindToStart(0, 1, true, true);
+            tween.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void Tween1ContinuePlayBackward()
@@ -230,7 +230,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
-            tween.RewindToStart(0, 1, true, true);
+            tween.RewindToStart(0, 1, true);
         }
 
         public void Tween0MirrorPlayBackward()
@@ -246,7 +246,7 @@ namespace Tweens
             var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
-            tween.SkipToEnd().RewindToStart(0, 1, true, true);
+            tween.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void Tween1MirrorPlayBackward()
@@ -267,7 +267,7 @@ namespace Tweens
             var sequence = new Sequence();
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceEmptyPlay()
@@ -285,7 +285,7 @@ namespace Tweens
             var sequence = new Sequence();
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.RewindToStart(0, 1, true);
         }
 
         public void SequenceEmptyPlayBackward()
@@ -293,7 +293,7 @@ namespace Tweens
             var sequence = new Sequence();
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().PlayBackward();
+            sequence.PlayBackward();
         }
         #endregion
         #endregion
@@ -311,7 +311,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceResetPlayTween0Reset()
@@ -337,7 +337,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceResetPlayTween1Reset()
@@ -363,7 +363,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceResetPlayTween0Continue()
@@ -389,7 +389,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceResetPlayTween1Continue()
@@ -415,7 +415,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceResetPlayTween0Mirror()
@@ -441,7 +441,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceResetPlayTween1Mirror()
@@ -469,7 +469,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceContinuePlayTween0Reset()
@@ -495,7 +495,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceContinuePlayTween1Reset()
@@ -521,7 +521,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceContinuePlayTween0Continue()
@@ -547,7 +547,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceContinuePlayTween1Continue()
@@ -573,7 +573,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceContinuePlayTween0Mirror()
@@ -599,7 +599,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceContinuePlayTween1Mirror()
@@ -627,7 +627,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween0Reset()
@@ -653,7 +653,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween1Reset()
@@ -679,7 +679,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween0Continue()
@@ -705,7 +705,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween1Continue()
@@ -731,7 +731,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween0Mirror()
@@ -757,7 +757,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween1Mirror()
@@ -787,7 +787,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceResetPlayTween0ResetBackward()
@@ -813,7 +813,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceResetPlayTween1ResetBackward()
@@ -839,7 +839,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceResetPlayTween0ContinueBackward()
@@ -865,7 +865,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceResetPlayTween1ContinueBackward()
@@ -891,7 +891,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceResetPlayTween0MirrorBackward()
@@ -917,7 +917,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceResetPlayTween1MirrorBackward()
@@ -945,7 +945,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceContinuePlayTween0ResetBackward()
@@ -971,7 +971,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceContinuePlayTween1ResetBackward()
@@ -997,7 +997,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceContinuePlayTween0ContinueBackward()
@@ -1023,7 +1023,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceContinuePlayTween1ContinueBackward()
@@ -1049,7 +1049,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceContinuePlayTween0MirrorBackward()
@@ -1075,7 +1075,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceContinuePlayTween1MirrorBackward()
@@ -1103,7 +1103,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween0ResetBackward()
@@ -1129,7 +1129,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween1ResetBackward()
@@ -1155,7 +1155,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween0ContinueBackward()
@@ -1181,7 +1181,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween1ContinueBackward()
@@ -1207,7 +1207,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween0MirrorBackward()
@@ -1233,7 +1233,7 @@ namespace Tweens
             SubscribeOnAllEvents(tween);
             SubscribeOnAllEvents(sequence);
 
-            sequence.SkipToEnd().RewindToStart(0, 1, true, true);
+            sequence.SkipToEnd().RewindToStart(0, 1, true);
         }
 
         public void SequenceMirrorPlayTween1MirrorBackward()
@@ -1267,7 +1267,7 @@ namespace Tweens
             SubscribeOnAllEvents(subsequence);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceResetPlaySequenceContinueTween0Mirror()
@@ -1301,7 +1301,7 @@ namespace Tweens
             SubscribeOnAllEvents(subsequence);
             SubscribeOnAllEvents(sequence);
 
-            sequence.RewindToEnd(0, 1, true, true);
+            sequence.RewindToEnd(0, 1, true);
         }
 
         public void SequenceResetPlaySequenceContinueTween1Mirror()
@@ -1312,6 +1312,74 @@ namespace Tweens
             subsequence.Append(tween);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Reset);
+            sequence.Append(subsequence);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(subsequence);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
+
+        public void SequenceContinueRewindSequenceMirrorTween0Reset()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset);
+
+            var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Mirror);
+            subsequence.Append(tween);
+
+            var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
+            sequence.Append(subsequence);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(subsequence);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.RewindToEnd(0, 1, true);
+        }
+
+        public void SequenceContinuePlaySequenceMirrorTween0Reset()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset);
+
+            var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Mirror);
+            subsequence.Append(tween);
+
+            var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
+            sequence.Append(subsequence);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(subsequence);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.Play();
+        }
+
+        public void SequenceContinueRewindSequenceMirrorTween1Reset()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset);
+
+            var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Mirror);
+            subsequence.Append(tween);
+
+            var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
+            sequence.Append(subsequence);
+
+            SubscribeOnAllEvents(tween);
+            SubscribeOnAllEvents(subsequence);
+            SubscribeOnAllEvents(sequence);
+
+            sequence.RewindToEnd(0, 1, true);
+        }
+
+        public void SequenceContinuePlaySequenceMirrorTween1Reset()
+        {
+            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset);
+
+            var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Mirror);
+            subsequence.Append(tween);
+
+            var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(subsequence);
 
             SubscribeOnAllEvents(tween);
