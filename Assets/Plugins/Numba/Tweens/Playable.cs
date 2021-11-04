@@ -502,7 +502,7 @@ namespace Tweens
         internal void HandlePhaseCompleteZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseCompleting(direction);
-            RewindZeroHandler(_loopsCount - 1, 1f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindZeroHandler(LoopsCount - 1, 1f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseCompleted(direction);
         }
         #endregion
@@ -537,7 +537,7 @@ namespace Tweens
 
         internal void HandlePhaseCompleteZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            RewindZeroHandler(_loopsCount - 1, 1f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindZeroHandler(LoopsCount - 1, 1f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
         }
         #endregion
 
@@ -560,9 +560,9 @@ namespace Tweens
         internal void HandlePhaseLoopComplete(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseLoopCompleting(loop, direction);
-            RewindHandler(loop, _loopDuration, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindHandler(loop, LoopDuration, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
 
-            PlayedTime = loop * _loopDuration + _loopDuration;
+            PlayedTime = loop * LoopDuration + LoopDuration;
             if (direction == Direction.Backward)
                 PlayedTime = Duration - PlayedTime;
 
@@ -590,7 +590,7 @@ namespace Tweens
         internal void HandlePhaseComplete(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             CallPhaseCompleting(direction);
-            RewindHandler(_loopsCount - 1, _loopDuration, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindHandler(LoopsCount - 1, LoopDuration, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
             CallPhaseCompleted(direction);
         }
         #endregion
@@ -609,9 +609,9 @@ namespace Tweens
 
         internal void HandlePhaseLoopCompleteNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            RewindHandler(loop, _loopDuration, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindHandler(loop, LoopDuration, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
 
-            PlayedTime = loop * _loopDuration + _loopDuration;
+            PlayedTime = loop * LoopDuration + LoopDuration;
             if (direction == Direction.Backward)
                 PlayedTime = Duration - PlayedTime;
         }
@@ -630,7 +630,7 @@ namespace Tweens
 
         internal void HandlePhaseCompleteNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            RewindHandler(_loopsCount - 1, _loopDuration, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindHandler(LoopsCount - 1, LoopDuration, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
         }
         #endregion
         #endregion
@@ -648,7 +648,7 @@ namespace Tweens
 
         internal Playable RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents)
         {
-            if (_loopDuration == 0f)
+            if (LoopDuration == 0f)
             {
                 if (time == 0f)
                     return this;
@@ -769,7 +769,7 @@ namespace Tweens
             if (LoopType == LoopType.Mirror)
             {
                 // Intermediate events
-                for (int i = 1; i < _loopsCount; i++)
+                for (int i = 1; i < LoopsCount; i++)
                 {
                     HandlePhaseLoopUpdateZeroed(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
                     HandlePhaseLoopCompleteZeroed(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
@@ -779,7 +779,7 @@ namespace Tweens
             else
             {
                 // Intermediate events
-                for (int i = 1; i < _loopsCount; i++)
+                for (int i = 1; i < LoopsCount; i++)
                 {
                     HandlePhaseLoopCompleteZeroed(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
                     HandlePhaseLoopStartZeroed(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
@@ -788,10 +788,10 @@ namespace Tweens
 
             // Mirror's update event on last loop.
             if (LoopType == LoopType.Mirror)
-                HandlePhaseLoopUpdateZeroed(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                HandlePhaseLoopUpdateZeroed(LoopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             // Completed events.
-            HandlePhaseLoopCompleteZeroed(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+            HandlePhaseLoopCompleteZeroed(LoopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             HandlePhaseCompleteZeroed(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
@@ -804,7 +804,7 @@ namespace Tweens
             if (LoopType == LoopType.Mirror)
             {
                 // Intermediate events
-                for (int i = 1; i < _loopsCount; i++)
+                for (int i = 1; i < LoopsCount; i++)
                 {
                     HandlePhaseLoopUpdateZeroedNoEvents(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
                     HandlePhaseLoopCompleteZeroedNoEvents(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
@@ -814,7 +814,7 @@ namespace Tweens
             else
             {
                 // Intermediate events
-                for (int i = 1; i < _loopsCount; i++)
+                for (int i = 1; i < LoopsCount; i++)
                 {
                     HandlePhaseLoopCompleteZeroedNoEvents(i - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
                     HandlePhaseLoopStartZeroedNoEvents(i, direction, parentContinueLoopIndex, continueMaxLoopsCount);
@@ -823,10 +823,10 @@ namespace Tweens
 
             // Mirror's update event on last loop.
             if (LoopType == LoopType.Mirror)
-                HandlePhaseLoopUpdateZeroedNoEvents(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+                HandlePhaseLoopUpdateZeroedNoEvents(LoopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             // Completed events.
-            HandlePhaseLoopCompleteZeroedNoEvents(_loopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
+            HandlePhaseLoopCompleteZeroedNoEvents(LoopsCount - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             HandlePhaseCompleteZeroedNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
@@ -836,11 +836,11 @@ namespace Tweens
             if (startTime == 0f)
                 HandlePhaseStart(direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
-            var playedLoop = (int)(startTime / _loopDuration);
-            var timeLoop = (int)(endTime / _loopDuration);
+            var playedLoop = (int)(startTime / LoopDuration);
+            var timeLoop = (int)(endTime / LoopDuration);
 
             // Loop started phase.
-            if (startTime == playedLoop * _loopDuration)
+            if (startTime == playedLoop * LoopDuration)
             {
                 // If all elements already handled in global start phase (BeforeStarting method was called previously),
                 // than we don't need handle elements.
@@ -860,7 +860,7 @@ namespace Tweens
             }
 
             // Loop completed phase.
-            if (endTime == timeLoop * _loopDuration)
+            if (endTime == timeLoop * LoopDuration)
                 HandlePhaseLoopComplete(timeLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             else // Global and loop update phases.
             {
@@ -889,11 +889,11 @@ namespace Tweens
             if (startTime == 0f)
                 HandlePhaseStartNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
-            var playedLoop = (int)(startTime / _loopDuration);
-            var timeLoop = (int)(endTime / _loopDuration);
+            var playedLoop = (int)(startTime / LoopDuration);
+            var timeLoop = (int)(endTime / LoopDuration);
 
             // Loop started phase.
-            if (startTime == playedLoop * _loopDuration)
+            if (startTime == playedLoop * LoopDuration)
             {
                 // If all elements already handled in global start phase (BeforeStarting method was called previously),
                 // than we don't need handle elements.
@@ -913,7 +913,7 @@ namespace Tweens
             }
 
             // Loop completed phase.
-            if (endTime == timeLoop * _loopDuration)
+            if (endTime == timeLoop * LoopDuration)
                 HandlePhaseLoopCompleteNoEvents(timeLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             else // Global and loop update phases.
             {
