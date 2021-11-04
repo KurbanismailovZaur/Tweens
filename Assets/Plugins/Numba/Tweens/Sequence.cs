@@ -819,8 +819,7 @@ namespace Tweens
         }
         #endregion
 
-        #region Elements
-        #region Add
+        #region Adding elements
         public Element Prepend(IPlayable playable) => Prepend(_nextOrder, playable);
 
         public Element Prepend(int order, IPlayable playable)
@@ -828,7 +827,7 @@ namespace Tweens
             var leftmost = GetLeftmostElement();
 
             if (leftmost == null)
-                return Insert(order, 0f, playable);
+                return Insert(0f, order, playable);
 
             var startTime = leftmost.StartTime - playable.Duration;
 
@@ -837,19 +836,19 @@ namespace Tweens
                 for (int i = 0; i < _elements.Count; i++)
                     _elements[i].StartTime -= startTime;
 
-                return Insert(order, 0f, playable);
+                return Insert(0f, order, playable);
             }
             else
-                return Insert(order, startTime, playable);
+                return Insert(startTime, order, playable);
         }
 
         public Element Append(IPlayable playable) => Append(_nextOrder, playable);
 
-        public Element Append(int order, IPlayable playable) => Insert(order, LoopDuration, playable);
+        public Element Append(int order, IPlayable playable) => Insert(LoopDuration, order, playable);
 
-        public Element Insert(float time, IPlayable playable) => Insert(_nextOrder, time, playable);
+        public Element Insert(float time, IPlayable playable) => Insert(time, _nextOrder, playable);
 
-        public Element Insert(int order, float time, IPlayable playable)
+        public Element Insert(float time, int order, IPlayable playable)
         {
             if (playable == this)
                 throw new ArgumentException($"{Type} \"{Name}\": Sequence can't contain itself");
@@ -880,17 +879,46 @@ namespace Tweens
         }
         #endregion
 
-        // State changed handler, needed to recalculate phase events for changed playable element
+        #region Adding callbacks
+        public Element PrependCallback(Action callback) => PrependCallback(_nextOrder, callback);
+
+        public Element PrependCallback(int order, Action callback) => PrependCallback(order, null, callback);
+
+        public Element PrependCallback(string name, Action callback) => PrependCallback(_nextOrder, name, callback);
+
+        public Element PrependCallback(int order, string name, Action callback) => InsertCallback(GetLeftmostElement()?.StartTime ?? 0f, order, name, callback);
+
+        public Element AppendCallback(Action callback) => AppendCallback(_nextOrder, callback);
+
+        public Element AppendCallback(int order, Action callback) => AppendCallback(order, null, callback);
+
+        public Element AppendCallback(string name, Action callback) => AppendCallback(_nextOrder, name, callback);
+
+        public Element AppendCallback(int order, string name, Action callback) => InsertCallback(LoopDuration, order, name, callback);
+
+        public Element InsertCallback(float time, Action callback) => InsertCallback(time, _nextOrder, callback);
+
+        public Element InsertCallback(float time, int order, Action callback) => InsertCallback(time, order, null, callback);
+
+        public Element InsertCallback(float time, string name, Action callback) => InsertCallback(time, _nextOrder, name, callback);
+
+        public Element InsertCallback(float time, int order, string name, Action callback) => Insert(time, order, new Callback(name, callback));
+        #endregion
+
+        /// <summary>
+        /// State changed handler, needed to recalculate phase events for changed playable element 
+        /// </summary>
+        /// <param name="playable">Observable playable.</param>
         private void Playable_StateChanged(Playable playable)
         {
             foreach (var element in GetElements(playable))
             {
                 RemoveElement(element);
-                Insert(element.Order, element.StartTime, element.Playable);
+                Insert(element.StartTime, element.Order, element.Playable);
             }
         }
 
-        #region Contains
+        #region Containing elements
         public bool Contains(string name) => GetElement(name) != null;
 
         public bool Contains(IPlayable playable) => GetElement(playable) != null;
@@ -898,12 +926,12 @@ namespace Tweens
         public bool Contains(Element element) => _elements.Contains(element);
         #endregion
 
-        #region Get
+        #region Geting elements
         public List<Element> GetElementsAtTime(float time) => _elements.Where(el => time >= el.StartTime && time <= el.EndTime).ToList();
 
         public Element GetLeftmostElement() => _elements.FirstOrDefault(el => el.StartTime == _elements.Min(el => el.StartTime));
 
-        public List<Element> GetLeftmostsElements()
+        public List<Element> GetLeftmostElements()
         {
             if (_elements.Count == 0)
                 return new List<Element>(0);
@@ -913,7 +941,7 @@ namespace Tweens
 
         public Element GetRightmostElement() => _elements.FirstOrDefault(el => el.EndTime == _elements.Max(el => el.EndTime));
 
-        public List<Element> GetRightmostsElements()
+        public List<Element> GetRightmostElements()
         {
             if (_elements.Count == 0)
                 return new List<Element>(0);
@@ -932,7 +960,7 @@ namespace Tweens
         public Element GetElement(int order) => _elements[order];
         #endregion
 
-        #region Remove
+        #region Removing elements
         public int Remove(IPlayable playable)
         {
             var elements = GetElements(playable);
@@ -1052,7 +1080,6 @@ namespace Tweens
                 ((Playable)element.Playable).StateChanged -= Playable_StateChanged;
         }
         #endregion
-        #endregion
 
         #region Before loop starting
         protected override void BeforeStarting(Direction direction, int loop, int parentContinueLoopIndex, int continueMaxLoopsCount) => BeforeStarting(direction, LoopResetBehaviour, loop, parentContinueLoopIndex, continueMaxLoopsCount);
@@ -1076,7 +1103,7 @@ namespace Tweens
             if (!(LoopType == LoopType.Mirror && direction == Direction.Backward))
                 parentContinueLoopIndex = continueMaxLoopsCount - parentContinueLoopIndex - 1;
 
-            Debug.Log($"<color=#FF8888><b>[{Name}] Before starting: loop {loop} {direction} {LoopType} {loopResetBehaviour} {parentContinueLoopIndex} {continueMaxLoopsCount}</b></color>");
+            //Debug.Log($"<color=#FF8888><b>[{Name}] Before starting: loop {loop} {direction} {LoopType} {loopResetBehaviour} {parentContinueLoopIndex} {continueMaxLoopsCount}</b></color>");
 
             if (LoopType != LoopType.Mirror)
             {
@@ -1101,7 +1128,7 @@ namespace Tweens
                 }
             }
 
-            Debug.Log($"<color=#88FFFF><b>[{Name}] Before starting completed</b></color>");
+            //Debug.Log($"<color=#88FFFF><b>[{Name}] Before starting completed</b></color>");
         }
         #endregion
 

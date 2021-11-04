@@ -13,12 +13,26 @@ namespace Tweens
 {
     internal class Callback : Playable<Callback>
     {
-        public Callback(GameObject owner) : base(owner, null, 0f, null, 1, LoopType.Reset, Direction.Forward) { }
-
         public override Type Type => Type.Callback;
 
-        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentLoop, int continueMaxLoopsCount) { }
+        private Action _callback;
 
-        protected override void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int parentLoop, int continueMaxLoopsCount) { }
+        private bool _startPhaseFlag;
+
+        public Callback(string name, Action callback) : base(null, name, 0f, Tweens.Formula.Linear, 1, LoopType.Reset, Direction.Forward)
+        {
+            _callback = callback ?? throw new ArgumentNullException(nameof(callback));
+        }
+
+        protected override void BeforeStarting(Direction direction, int loop, int parentContinueLoopIndex, int continueMaxLoopsCount) => _startPhaseFlag = true;
+
+        protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentLoop, int continueMaxLoopsCount)
+        {
+            if (!_startPhaseFlag || !emitEvents)
+                return;
+
+            _callback();
+            _startPhaseFlag = false;
+        }
     }
 }

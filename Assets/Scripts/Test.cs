@@ -58,18 +58,20 @@ namespace Tweens
         IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
-            
+
             var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, Formula.Linear, 1, LoopType.Reset);
             var tween1 = new Tween<float, FloatTweak>("tween1", 0f, 1f, _target1.SetPositionX, 0f, Formula.BackOut, 2, LoopType.Continue);
 
-            var sequence = new Sequence("sequence");
+            var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween0);
             sequence.Append(tween1);
+            sequence.AppendCallback("cb", () => print("Tick!"));
 
             tween0.LoopType = LoopType.Mirror;
+            sequence.Remove("cb");
 
-            sequence.Play();
+            yield return sequence.Play().WaitForComplete();
+            //sequence.PlayBackward();
         }
-
     }
 }

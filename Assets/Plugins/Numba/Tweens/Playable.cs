@@ -936,9 +936,9 @@ namespace Tweens
                 HandlePhaseCompleteNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
-        protected abstract void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentLoop, int continueMaxLoopsCount);
+        protected virtual void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentLoop, int continueMaxLoopsCount) { }
 
-        protected abstract void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int parentLoop, int continueMaxLoopsCount);
+        protected virtual void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int parentLoop, int continueMaxLoopsCount) { }
         #endregion
 
         #region Skips
