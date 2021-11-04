@@ -20,13 +20,13 @@ namespace Tweens
         {
             public float StartTime { get; internal set; }
 
-            public Playable Playable { get; internal set; }
+            public IPlayable Playable { get; internal set; }
 
             public float EndTime => StartTime + Playable.Duration;
 
             public int Order { get; internal set; }
 
-            internal Element(float time, Playable playable, int order)
+            internal Element(float time, IPlayable playable, int order)
             {
                 StartTime = time;
                 Playable = playable;
@@ -56,9 +56,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseStartZeroed(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseStartZeroed(direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseStartZeroedNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseStartZeroedNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
 
@@ -69,9 +69,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseFirstLoopStartZeroed(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseFirstLoopStartZeroed(direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseFirstLoopStartZeroedNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseFirstLoopStartZeroedNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
 
@@ -84,9 +84,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseLoopCompleteZeroed(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopCompleteZeroed(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseLoopCompleteZeroedNoEvents(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopCompleteZeroedNoEvents(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
 
@@ -99,9 +99,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseLoopStartZeroed(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopStartZeroed(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseLoopStartZeroedNoEvents(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopStartZeroedNoEvents(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
 
@@ -114,9 +114,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseLoopUpdateZeroed(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopUpdateZeroed(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseLoopUpdateZeroedNoEvents(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopUpdateZeroedNoEvents(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
 
@@ -127,9 +127,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseCompleteZeroed(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseCompleteZeroed(direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseCompleteZeroedNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseCompleteZeroedNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
         #endregion
@@ -142,9 +142,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseStart(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseStart(direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseStartNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseStartNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
 
@@ -155,9 +155,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseFirstLoopStart(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseFirstLoopStart(direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseFirstLoopStartNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseFirstLoopStartNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
 
@@ -170,9 +170,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseLoopComplete(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopComplete(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseLoopCompleteNoEvents(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopCompleteNoEvents(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
 
@@ -185,9 +185,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseLoopStart(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopStart(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseLoopStartNoEvents(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopStartNoEvents(_loop, direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
 
@@ -212,9 +212,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseLoopUpdate(_endTime, _loop, _loopedTime, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopUpdate(_endTime, _loop, _loopedTime, direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseLoopUpdateNoEvents(_endTime, _loop, _loopedTime, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseLoopUpdateNoEvents(_endTime, _loop, _loopedTime, direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
 
@@ -225,9 +225,9 @@ namespace Tweens
             internal override void Call(Direction direction, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
             {
                 if (emitEvents)
-                    _element.Playable.HandlePhaseComplete(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseComplete(direction, continueRepeatIndex, continueMaxLoopsCount);
                 else
-                    _element.Playable.HandlePhaseCompleteNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
+                    ((Playable)_element.Playable).HandlePhaseCompleteNoEvents(direction, continueRepeatIndex, continueMaxLoopsCount);
             }
         }
         #endregion
@@ -819,36 +819,11 @@ namespace Tweens
         }
         #endregion
 
-        /// <summary>
-        /// Remove element and all his phase events in chronolines.
-        /// </summary>
-        /// <param name="element">Element to remove</param>
-        private void RemoveElement(Element element)
-        {
-            var chronolines = _chronolines.Where(cl => cl.Time >= element.StartTime && cl.Time <= element.EndTime).ToList();
-
-            foreach (var chronoline in chronolines)
-            {
-                chronoline.RemovePhaseEventsForElement(element);
-
-                if (!chronoline.HasUsefulEvents())
-                    _chronolines.Remove(chronoline);
-            }
-
-            _elements.Remove(element);
-
-            // Decrease order on all elements next to the current.
-            for (int i = element.Order; i < _elements.Count; i++)
-                --_elements[i].Order;
-
-            LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
-        }
-
         #region Elements
         #region Add
-        public Element Prepend(Playable playable) => Prepend(_nextOrder, playable);
+        public Element Prepend(IPlayable playable) => Prepend(_nextOrder, playable);
 
-        public Element Prepend(int order, Playable playable)
+        public Element Prepend(int order, IPlayable playable)
         {
             var leftmost = GetLeftmostElement();
 
@@ -868,13 +843,13 @@ namespace Tweens
                 return Insert(order, startTime, playable);
         }
 
-        public Element Append(Playable playable) => Append(_nextOrder, playable);
+        public Element Append(IPlayable playable) => Append(_nextOrder, playable);
 
-        public Element Append(int order, Playable playable) => Insert(order, LoopDuration, playable);
+        public Element Append(int order, IPlayable playable) => Insert(order, LoopDuration, playable);
 
-        public Element Insert(float time, Playable playable) => Insert(_nextOrder, time, playable);
+        public Element Insert(float time, IPlayable playable) => Insert(_nextOrder, time, playable);
 
-        public Element Insert(int order, float time, Playable playable)
+        public Element Insert(int order, float time, IPlayable playable)
         {
             if (playable == this)
                 throw new ArgumentException($"{Type} \"{Name}\": Sequence can't contain itself");
@@ -884,7 +859,7 @@ namespace Tweens
 
             order = Mathf.Clamp(order, 0, _elements.Count);
 
-            var element = new Element(Mathf.Max(time, 0f), playable, order);
+            var element = new Element(Mathf.Max(time, 0f), (Playable)playable, order);
             ++_nextOrder;
 
             _elements.Insert(order, element);
@@ -897,14 +872,28 @@ namespace Tweens
 
             InjectPhaseEventsForElement(element);
 
+            // We need subscribe only first time when playable was added.
+            if (GetElements(playable).Count == 1)
+                ((Playable)playable).StateChanged += Playable_StateChanged;
+
             return element;
         }
         #endregion
 
+        // State changed handler, needed to recalculate phase events for changed playable element
+        private void Playable_StateChanged(Playable playable)
+        {
+            foreach (var element in GetElements(playable))
+            {
+                RemoveElement(element);
+                Insert(element.Order, element.StartTime, element.Playable);
+            }
+        }
+
         #region Contains
         public bool Contains(string name) => GetElement(name) != null;
 
-        public bool Contains(IPlayable<Playable> playable) => GetElement(playable) != null;
+        public bool Contains(IPlayable playable) => GetElement(playable) != null;
 
         public bool Contains(Element element) => _elements.Contains(element);
         #endregion
@@ -932,9 +921,9 @@ namespace Tweens
             return _elements.Where(el => el.EndTime == _elements.Max(el => el.EndTime)).ToList();
         }
 
-        public Element GetElement(IPlayable<Playable> playable) => _elements.FirstOrDefault(el => el.Playable == playable);
+        public Element GetElement(IPlayable playable) => _elements.FirstOrDefault(el => el.Playable == playable);
 
-        public List<Element> GetElements(IPlayable<Playable> playable) => _elements.Where(el => el.Playable == playable).ToList();
+        public List<Element> GetElements(IPlayable playable) => _elements.Where(el => el.Playable == playable).ToList();
 
         public Element GetElement(string name) => _elements.FirstOrDefault(el => el.Playable.Name == name);
 
@@ -944,7 +933,7 @@ namespace Tweens
         #endregion
 
         #region Remove
-        public int Remove(IPlayable<Playable> playable)
+        public int Remove(IPlayable playable)
         {
             var elements = GetElements(playable);
             Remove(elements);
@@ -952,7 +941,7 @@ namespace Tweens
             return elements.Count;
         }
 
-        public int Remove(IEnumerable<IPlayable<Playable>> playables)
+        public int Remove(IEnumerable<IPlayable> playables)
         {
             var count = 0;
 
@@ -962,7 +951,7 @@ namespace Tweens
             return count;
         }
 
-        public int Remove(params IPlayable<Playable>[] playables) => Remove((IEnumerable<IPlayable<Playable>>)playables);
+        public int Remove(params IPlayable[] playables) => Remove((IEnumerable<IPlayable>)playables);
 
         public int Remove(string name)
         {
@@ -1025,12 +1014,42 @@ namespace Tweens
         {
             var removed = _elements.Count;
 
-            _chronolines.Clear();
-            _elements.Clear();
+            while (_elements.Count != 0)
+                RemoveElement(_elements[0]);
 
             _nextOrder = 0;
             LoopDuration = 0f;
+
             return removed;
+        }
+
+        /// <summary>
+        /// Remove element and all his phase events in chronolines.
+        /// </summary>
+        /// <param name="element">Element to remove</param>
+        private void RemoveElement(Element element)
+        {
+            var chronolines = _chronolines.Where(cl => cl.Time >= element.StartTime && cl.Time <= element.EndTime).ToList();
+
+            foreach (var chronoline in chronolines)
+            {
+                chronoline.RemovePhaseEventsForElement(element);
+
+                if (!chronoline.HasUsefulEvents())
+                    _chronolines.Remove(chronoline);
+            }
+
+            _elements.Remove(element);
+
+            // Decrease order on all elements next to the current.
+            for (int i = element.Order; i < _elements.Count; i++)
+                --_elements[i].Order;
+
+            LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
+
+            // We Unsusbcribe from playable state chaned event only if this playable no more exist in sequence.
+            if (GetElements(element.Playable).Count == 0)
+                ((Playable)element.Playable).StateChanged -= Playable_StateChanged;
         }
         #endregion
         #endregion
@@ -1068,7 +1087,7 @@ namespace Tweens
                     var (backwardTime, forwardTime) = element.Playable.Duration == 0f ? (-1f, 1f) : (0f, element.Playable.Duration);
                     var time = direction == Direction.Forward ? backwardTime : forwardTime;
 
-                    element.Playable.RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, false);
+                    ((Playable)element.Playable).RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, false);
                 }
             }
             else
@@ -1078,7 +1097,7 @@ namespace Tweens
                     var element = _elements[i];
 
                     var time = element.Playable.Duration == 0f ? -1f : 0f;
-                    element.Playable.RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, false);
+                    ((Playable)element.Playable).RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, false);
                 }
             }
 
@@ -1248,9 +1267,9 @@ namespace Tweens
                     var playedTime = playedTimeCalcualtor(time, element);
 
                     if (emitEvents)
-                        element.Playable.HandlePhaseLoopUpdate(playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration, direction, continueRepeatIndex, continueMaxLoopsCount);
+                        ((Playable)element.Playable).HandlePhaseLoopUpdate(playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration, direction, continueRepeatIndex, continueMaxLoopsCount);
                     else
-                        element.Playable.HandlePhaseLoopUpdateNoEvents(playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration, direction, continueRepeatIndex, continueMaxLoopsCount);
+                        ((Playable)element.Playable).HandlePhaseLoopUpdateNoEvents(playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration, direction, continueRepeatIndex, continueMaxLoopsCount);
                 }
             }
 

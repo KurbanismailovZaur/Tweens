@@ -43,11 +43,11 @@ namespace Tweens
         IPlayable SetDirection(Direction direction);
 
         #region Rewinds
-        Playable RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        Playable RewindTo(float time, bool emitEvents = true);
 
-        Playable RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        Playable RewindToStart(bool emitEvents = true);
 
-        Playable RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        Playable RewindToEnd(bool emitEvents = true);
         #endregion
 
         #region Skips
@@ -238,8 +238,13 @@ namespace Tweens
                 if (value < 0f)
                     throw new ArgumentException($"{Type} \"{Name}\": Loop duration can't be less than 0 ({value} passed)");
 
+                if (value == _loopDuration)
+                    return;
+
                 _loopDuration = value;
                 RecalculateDuration();
+
+                StateChanged?.Invoke(this);
             }
         }
 
@@ -263,12 +268,33 @@ namespace Tweens
                 if (value < 1)
                     throw new ArgumentException($"{Type} \"{Name}\": Loops count can't be less than 1 ({value} passed)");
 
+                if (value == _loopsCount)
+                    return;
+
                 _loopsCount = value;
                 RecalculateDuration();
+
+                StateChanged?.Invoke(this);
             }
         }
 
-        public LoopType LoopType { get; set; }
+        private LoopType _loopType;
+
+        public LoopType LoopType
+        {
+            get => _loopType;
+            set
+            {
+                if (value == _loopType)
+                    return;
+
+                var wasMirror = _loopType == LoopType.Mirror;
+                _loopType = value;
+
+                if (wasMirror || _loopType == LoopType.Mirror)
+                    StateChanged?.Invoke(this);
+            }
+        }
 
         public float PlayedTime { get; protected set; }
 
@@ -302,9 +328,6 @@ namespace Tweens
 
         public bool IsCompleted => _state == State.Completed;
 
-        // TODO: need fix later
-        public bool IsPlayingByParent => IsPlaying;
-
         protected Direction _direction;
 
         public Direction Direction
@@ -319,6 +342,9 @@ namespace Tweens
                 RecalculatePlayTimes();
             }
         }
+
+        // Used in sequences for rebuilding its phase events state.
+        internal event Action<Playable> StateChanged;
         #endregion
 
         #region Routines
@@ -610,11 +636,17 @@ namespace Tweens
         #endregion
 
         #region Rewinds
-        public Playable RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => Duration == 0f ? RewindTo(-1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(0f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+        public Playable RewindToStart(bool emitEvents = true) => RewindToStart(0, 1, emitEvents);
 
-        public Playable RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => Duration == 0f ? RewindTo(1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(Duration, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+        internal Playable RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => Duration == 0f ? RewindTo(-1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(0f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
-        public Playable RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents)
+        public Playable RewindToEnd(bool emitEvents = true) => RewindToEnd(0, 1, emitEvents);
+
+        internal Playable RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => Duration == 0f ? RewindTo(1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(Duration, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+
+        public Playable RewindTo(float time, bool emitEvents = true) => RewindTo(time, 0, 1, emitEvents);
+
+        internal Playable RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents)
         {
             if (_loopDuration == 0f)
             {
@@ -1159,12 +1191,12 @@ namespace Tweens
         new T SetDirection(Direction direction);
 
         #region Rewinds
-        new T RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        new T RewindTo(float time, bool emitEvents = true);
 
 
-        new T RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        new T RewindToStart(bool emitEvents = true);
 
-        new T RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents);
+        new T RewindToEnd(bool emitEvents = true);
         #endregion
 
         #region Skips
@@ -1407,13 +1439,18 @@ namespace Tweens
 
         protected override IRepeater<Playable> CreateRepeater() => new Repeater<T>((T)(Playable)this);
 
-        #region Overlaps
         #region Rewinds
-        public new T RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (T)base.RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+        public new T RewindTo(float time, bool emitEvents = true) => RewindTo(time, 0, 1, emitEvents);
 
-        public new T RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (T)base.RewindToStart(parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+        internal new T RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (T)base.RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
-        public new T RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (T)base.RewindToEnd(parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+        public new T RewindToStart(bool emitEvents = true) => RewindToStart(0, 1, emitEvents);
+
+        internal new T RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (T)base.RewindToStart(parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+
+        public new T RewindToEnd(bool emitEvents = true) => RewindToEnd(0, 1, emitEvents);
+
+        internal new T RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (T)base.RewindToEnd(parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
         #endregion
 
         #region Skips
@@ -1442,7 +1479,6 @@ namespace Tweens
         public new IRepeater<T> Repeat() => GetRepeater().PlayForward();
 
         public new IRepeater<T> RepeatBackward() => GetRepeater().PlayBackward();
-        #endregion
         #endregion
     }
 }
