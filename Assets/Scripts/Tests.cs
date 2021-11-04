@@ -1407,8 +1407,8 @@ namespace Tweens
             SubscribeOnAllEvents(sequence2);
             SubscribeOnAllEvents(sequence);
 
-            //sequence.RewindToEnd(0, 1, true);
-            sequence.Play();
+            sequence.RewindToEnd(0, 1, true);
+            //sequence.Play();
         }
         #endregion
     }
