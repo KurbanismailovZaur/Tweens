@@ -19,10 +19,7 @@ namespace Tweens
 
         private bool _startPhaseFlag;
 
-        public Callback(string name, Action callback) : base(null, name, 0f, Tweens.Formula.Linear, 1, LoopType.Reset, Direction.Forward)
-        {
-            _callback = callback ?? throw new ArgumentNullException(nameof(callback));
-        }
+        public Callback(string name, Action callback) : base(null, name, 0f) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
         protected override void BeforeStarting(Direction direction, int loop, int parentContinueLoopIndex, int continueMaxLoopsCount) => _startPhaseFlag = true;
 

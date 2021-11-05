@@ -18,18 +18,42 @@ namespace Tweens
         #region Inner types
         public class Element
         {
-            public float StartTime { get; internal set; }
+            public Sequence Sequence { get; internal set; }
+
+            private float _startTime;
+
+            public float StartTime
+            {
+                get => _startTime;
+                set => Sequence.ChangeElementStartTime(this, value);
+            }
 
             public IPlayable Playable { get; internal set; }
 
             public float EndTime => StartTime + Playable.Duration;
 
-            public int Order { get; internal set; }
+            private int _order;
 
-            internal Element(float time, IPlayable playable, int order)
+            public int Order
             {
-                StartTime = time;
+                get => _order;
+                set => Sequence.ChangeElementOrder(this, value);
+            }
+
+            internal Element(float startTime, IPlayable playable, int order)
+            {
+                _startTime = startTime;
                 Playable = playable;
+                _order = order;
+            }
+
+            internal void SetStartTime(float startTime) => _startTime = startTime;
+
+            internal void SetOrder(int order) => _order = order;
+
+            public void SetStartTimeAndOrder(float startTime, int order)
+            {
+                StartTime = startTime;
                 Order = order;
             }
 
@@ -834,7 +858,7 @@ namespace Tweens
             if (startTime < 0f)
             {
                 for (int i = 0; i < _elements.Count; i++)
-                    _elements[i].StartTime -= startTime;
+                    _elements[i].SetStartTime(_elements[i].StartTime - startTime);
 
                 return Insert(0f, order, playable);
             }
@@ -861,19 +885,27 @@ namespace Tweens
             var element = new Element(Mathf.Max(time, 0f), (Playable)playable, order);
             ++_nextOrder;
 
-            _elements.Insert(order, element);
+            return InsertElement(element);
+        }
 
-            for (int i = order + 1; i < _elements.Count; i++)
-                ++_elements[i].Order;
+        private Element InsertElement(Element element)
+        {
+            element.Sequence = this;
+            _elements.Insert(element.Order, element);
+
+            for (int i = element.Order + 1; i < _elements.Count; i++)
+                _elements[i].SetOrder(_elements[i].Order + 1);
 
             if (element.EndTime > LoopDuration)
                 LoopDuration = element.EndTime;
 
-            InjectPhaseEventsForElement(element);
+            // Dummy playables shoud not participate in chronolines.
+            if (element.Playable.Type != Type.Interval)
+                InjectPhaseEventsForElement(element);
 
             // We need subscribe only first time when playable was added.
-            if (GetElements(playable).Count == 1)
-                ((Playable)playable).StateChanged += Playable_StateChanged;
+            if (GetElements(element.Playable).Count == 1)
+                ((Playable)element.Playable).StateChanged += Playable_StateChanged;
 
             return element;
         }
@@ -903,6 +935,20 @@ namespace Tweens
         public Element InsertCallback(float time, string name, Action callback) => InsertCallback(time, _nextOrder, name, callback);
 
         public Element InsertCallback(float time, int order, string name, Action callback) => Insert(time, order, new Callback(name, callback));
+        #endregion
+
+        #region Adding intervals
+        public Element PrependInterval(float duration) => PrependInterval(null, duration);
+
+        public Element PrependInterval(string name, float duration) => Prepend(new Interval(name, duration));
+
+        public Element AppendInterval(float duration) => AppendInterval(null, duration);
+
+        public Element AppendInterval(string name, float duration) => Append(new Interval(name, duration));
+
+        public Element InsertInterval(float time, float duration) => InsertInterval(time, null, duration);
+
+        public Element InsertInterval(float time, string name, float duration) => Insert(time, new Interval(name, duration));
         #endregion
 
         /// <summary>
@@ -1057,27 +1103,58 @@ namespace Tweens
         /// <param name="element">Element to remove</param>
         private void RemoveElement(Element element)
         {
-            var chronolines = _chronolines.Where(cl => cl.Time >= element.StartTime && cl.Time <= element.EndTime).ToList();
-
-            foreach (var chronoline in chronolines)
+            // Interval objects not participate in chronolines.
+            if (element.Playable.Type != Type.Interval)
             {
-                chronoline.RemovePhaseEventsForElement(element);
+                var chronolines = _chronolines.Where(cl => cl.Time >= element.StartTime && cl.Time <= element.EndTime).ToList();
 
-                if (!chronoline.HasUsefulEvents())
-                    _chronolines.Remove(chronoline);
+                foreach (var chronoline in chronolines)
+                {
+                    chronoline.RemovePhaseEventsForElement(element);
+
+                    if (!chronoline.HasUsefulEvents())
+                        _chronolines.Remove(chronoline);
+                }
             }
 
             _elements.Remove(element);
+            element.Sequence = null;
 
             // Decrease order on all elements next to the current.
             for (int i = element.Order; i < _elements.Count; i++)
-                --_elements[i].Order;
+                _elements[i].SetOrder(_elements[i].Order - 1);
 
             LoopDuration = GetRightmostElement()?.EndTime ?? 0f;
 
             // We Unsusbcribe from playable state chaned event only if this playable no more exist in sequence.
             if (GetElements(element.Playable).Count == 0)
                 ((Playable)element.Playable).StateChanged -= Playable_StateChanged;
+        }
+        #endregion
+
+        #region Changing elements
+        private void ChangeElementStartTime(Element element, float startTime)
+        {
+            startTime = Mathf.Max(startTime, 0f);
+
+            if (element.StartTime == startTime)
+                return;
+
+            RemoveElement(element);
+            element.SetStartTime(startTime);
+            InsertElement(element);
+        }
+
+        private void ChangeElementOrder(Element element, int order)
+        {
+            order = Mathf.Clamp(order, 0, _elements.Count);
+
+            if (element.Order == order)
+                return;
+
+            RemoveElement(element);
+            element.SetOrder(order);
+            InsertElement(element);
         }
         #endregion
 
@@ -1288,7 +1365,7 @@ namespace Tweens
                 {
                     var element = _elements[i];
 
-                    if (time <= element.StartTime || time >= element.EndTime)
+                    if (element.Playable.Type == Type.Interval || time <= element.StartTime || time >= element.EndTime)
                         continue;
 
                     var playedTime = playedTimeCalcualtor(time, element);

@@ -11,11 +11,10 @@ using Coroutine = Coroutines.Coroutine;
 
 namespace Tweens
 {
-	public enum Type : byte
-	{
-		Tween,
-		Sequence,
-		Interval,
-		Callback
-	}
+    internal class Interval : Playable<Interval>
+    {
+        public override Type Type => Type.Interval;
+
+        public Interval(string name, float duration) : base(null, name, duration) { }
+    }
 }
