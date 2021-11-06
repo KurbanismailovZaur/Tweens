@@ -59,21 +59,21 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 2f, null, 1);
-            var tween1 = new Tween<float, FloatTweak>("tween1", 0f, 1f, _target1.SetPositionX, 2f, null, 1);
+            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, null, 2);
+            var tween1 = new Tween<float, FloatTweak>("tween1", 0f, 1f, _target1.SetPositionX, 1f, Formula.BounceInOut, 2);
 
-            var sequence = new Sequence("sequence", Formula.BounceIn, 1, LoopType.Mirror, Direction.Forward, LoopResetBehaviour.Skip);
+            var sequence = new Sequence("sequence", Formula.BounceInOut, 2, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
             
             sequence.Append(tween0);
             sequence.Append(tween1);
 
-            SubscribeOnAllEvents(tween0);
-            SubscribeOnAllEvents(tween1);
+            var seq = new Sequence(Formula.BounceInOut);
+            seq.Append(sequence);
 
-            yield return sequence.Play().WaitForComplete();
+            yield return seq.Play().WaitForComplete();
             yield return new WaitForSeconds(1f);
 
-            sequence.PlayBackward();
+            //seq.PlayBackward();
         }
     }
 }
