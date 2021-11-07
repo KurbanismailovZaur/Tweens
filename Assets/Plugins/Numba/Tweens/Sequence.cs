@@ -1387,7 +1387,7 @@ namespace Tweens
                 }
             }
 
-            static void HandleChronolinesOnForwardInterval(List<Chronoline> chronolines, float remapedLoopedPlayedTime, float remapedLoopedTime, float loopDuration, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
+            static void HandleChronolinesOnForwardInterval(List<Chronoline> chronolines, float remapedLoopedPlayedTime, float remapedLoopedTime, float loopDuration, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
             {
                 for (int i = 0; i < chronolines.Count; i++)
                 {
@@ -1403,23 +1403,23 @@ namespace Tweens
 
                     // If chronoline stay at start time, than we need handle only post events.
                     if (chronoline.Time == remapedLoopedPlayedTime)
-                        chronoline.Chains.Forward.CallPostEvents(Direction.Forward, emitEvents, continueRepeatIndex, continueMaxLoopsCount);
+                        chronoline.Chains.Forward.CallPostEvents(Direction.Forward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
                     else if (chronoline.Time == remapedLoopedTime)
                     {
                         // If chronoline stay at end of loop, than we need call all events.
                         if (remapedLoopedTime == loopDuration)
-                            chronoline.Chains.Forward.CallAllEvents(Direction.Forward, emitEvents, continueRepeatIndex, continueMaxLoopsCount);
+                            chronoline.Chains.Forward.CallAllEvents(Direction.Forward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
                         else
-                            chronoline.Chains.Forward.CallPreEvents(Direction.Forward, emitEvents, continueRepeatIndex, continueMaxLoopsCount);
+                            chronoline.Chains.Forward.CallPreEvents(Direction.Forward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
                     }
                     else // Otherwise means that chronoline is between start and end, and we need call all events.
-                        chronoline.Chains.Forward.CallAllEvents(Direction.Forward, emitEvents, continueRepeatIndex, continueMaxLoopsCount);
+                        chronoline.Chains.Forward.CallAllEvents(Direction.Forward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
 
                     lastChronoline = chronoline;
                 }
             }
 
-            static void HandleChronolinesOnBackwardInterval(List<Chronoline> chronolines, float remapedLoopedPlayedTime, float remapedLoopedTime, float loopDuration, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
+            static void HandleChronolinesOnBackwardInterval(List<Chronoline> chronolines, float remapedLoopedPlayedTime, float remapedLoopedTime, float loopDuration, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
             {
                 for (int i = chronolines.Count - 1; i >= 0; i--)
                 {
@@ -1436,19 +1436,55 @@ namespace Tweens
 
                     // If chronoline stay at start time, than we need handle only post events.
                     if (backwardChronolineTime == remapedLoopedPlayedTime)
-                        chronoline.Chains.Backward.CallPostEvents(Direction.Backward, emitEvents, continueRepeatIndex, continueMaxLoopsCount);
+                        chronoline.Chains.Backward.CallPostEvents(Direction.Backward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
                     else if (backwardChronolineTime == remapedLoopedTime)
                     {
                         // If chronoline stay at end of loop, than we need call all events.
                         if (remapedLoopedTime == loopDuration)
-                            chronoline.Chains.Backward.CallAllEvents(Direction.Backward, emitEvents, continueRepeatIndex, continueMaxLoopsCount);
+                            chronoline.Chains.Backward.CallAllEvents(Direction.Backward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
                         else
-                            chronoline.Chains.Backward.CallPreEvents(Direction.Backward, emitEvents, continueRepeatIndex, continueMaxLoopsCount);
+                            chronoline.Chains.Backward.CallPreEvents(Direction.Backward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
                     }
                     else // Otherwise means that chronoline is between start and end, and we need call all events.
-                        chronoline.Chains.Backward.CallAllEvents(Direction.Backward, emitEvents, continueRepeatIndex, continueMaxLoopsCount);
+                        chronoline.Chains.Backward.CallAllEvents(Direction.Backward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
 
                     lastChronoline = chronoline;
+                }
+            }
+
+            void HandleForwardBackwardIntervals((float loopedPlayedTime, float loopedTime) remaped, float forwardUpdateTime, float backwardUpdateTime, int forwardParentContinueLoopIndex, int backwardParentContinueLoopIndex, ref Chronoline lastChronoline)
+            {
+                if (remaped.loopedTime > remaped.loopedPlayedTime)
+                {
+                    HandleChronolinesOnForwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
+
+                    if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                        HandleUpdatePhases(forwardUpdateTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
+                }
+                else
+                {
+                    HandleChronolinesOnBackwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
+
+                    if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                        HandleUpdatePhases(backwardUpdateTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
+                }
+            }
+
+            void HandleBackwardForwardIntervals((float loopedPlayedTime, float loopedTime) remaped, float backwardUpdateTime, float forwardUpdateTime, int backwardParentContinueLoopIndex, int forwardParentContinueLoopIndex, ref Chronoline lastChronoline)
+            {
+                if (remaped.loopedTime > remaped.loopedPlayedTime)
+                {
+                    HandleChronolinesOnBackwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
+
+                    if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                        HandleUpdatePhases(backwardUpdateTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
+                }
+                else
+                {
+                    HandleChronolinesOnForwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
+
+                    if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                        HandleUpdatePhases(forwardUpdateTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
                 }
             }
 
@@ -1475,23 +1511,7 @@ namespace Tweens
                         return;
 
                     var (forwardParentContinueLoopIndex, backwardParentContinueLoopIndex) = direction == Direction.Forward ? (parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1) : (continueMaxLoopsCount - parentContinueLoopIndex - 1, parentContinueLoopIndex);
-
-                    if (remaped.loopedTime > remaped.loopedPlayedTime)
-                    {
-                        HandleChronolinesOnForwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                        //If last handled chronoline not stay at end of interval, than it means,
-                        //that we need handle one extra chronoline for update phase.
-                        if (lastChronoline == null || lastChronoline.Time != loopedTime)
-                            HandleUpdatePhases(remaped.loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
-                    }
-                    else
-                    {
-                        HandleChronolinesOnBackwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                        if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
-                            HandleUpdatePhases(remaped.loopedPlayedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
-                    }
+                    HandleForwardBackwardIntervals(remaped, remaped.loopedTime, remaped.loopedPlayedTime, forwardParentContinueLoopIndex, backwardParentContinueLoopIndex, ref lastChronoline);
                 }
                 else
                 {
@@ -1506,20 +1526,7 @@ namespace Tweens
                         if (!RemapTimes(loopedPlayedTime, loopedTime, Formula, out (float loopedPlayedTime, float loopedTime) remaped))
                             return;
 
-                        if (remaped.loopedTime > remaped.loopedPlayedTime)
-                        {
-                            HandleChronolinesOnForwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                            if (lastChronoline == null || lastChronoline.Time != loopedTime)
-                                HandleUpdatePhases(remaped.loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
-                        }
-                        else
-                        {
-                            HandleChronolinesOnBackwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                            if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
-                                HandleUpdatePhases(remaped.loopedPlayedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
-                        }
+                        HandleForwardBackwardIntervals(remaped, remaped.loopedTime, remaped.loopedPlayedTime, forwardParentContinueLoopIndex, backwardParentContinueLoopIndex, ref lastChronoline);
                     }
                     else // Backward handling
                     {
@@ -1529,20 +1536,7 @@ namespace Tweens
                         if (!RemapTimes(loopedPlayedTime, loopedTime, Tweens.Formula.Invertion.WithFormula(Formula), out (float loopedPlayedTime, float loopedTime) remaped))
                             return;
 
-                        if (remaped.loopedTime > remaped.loopedPlayedTime)
-                        {
-                            HandleChronolinesOnBackwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                            if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
-                                HandleUpdatePhases(LoopDuration - remaped.loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
-                        }
-                        else
-                        {
-                            HandleChronolinesOnForwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                            if (lastChronoline == null || lastChronoline.Time != loopedTime)
-                                HandleUpdatePhases(LoopDuration - remaped.loopedPlayedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
-                        }
+                        HandleBackwardForwardIntervals(remaped, LoopDuration - remaped.loopedTime, LoopDuration - remaped.loopedPlayedTime, backwardParentContinueLoopIndex, forwardParentContinueLoopIndex, ref lastChronoline);
                     }
                 }
             }
@@ -1569,21 +1563,7 @@ namespace Tweens
                         return;
 
                     var (forwardParentContinueLoopIndex, backwardParentContinueLoopIndex) = direction == Direction.Forward ? (parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1) : (continueMaxLoopsCount - parentContinueLoopIndex - 1, parentContinueLoopIndex);
-
-                    if (remaped.loopedTime > remaped.loopedPlayedTime)
-                    {
-                        HandleChronolinesOnBackwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                        if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
-                            HandleUpdatePhases(LoopDuration - remaped.loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
-                    }
-                    else
-                    {
-                        HandleChronolinesOnForwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                        if (lastChronoline == null || lastChronoline.Time != loopedTime)
-                            HandleUpdatePhases(LoopDuration - remaped.loopedPlayedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
-                    }
+                    HandleBackwardForwardIntervals(remaped, LoopDuration - remaped.loopedTime, LoopDuration - remaped.loopedPlayedTime, backwardParentContinueLoopIndex, forwardParentContinueLoopIndex, ref lastChronoline);
                 }
                 else
                 {
@@ -1598,20 +1578,7 @@ namespace Tweens
                         if (!RemapTimes(loopedPlayedTime, loopedTime, Formula, out (float loopedPlayedTime, float loopedTime) remaped))
                             return;
 
-                        if (remaped.loopedTime > remaped.loopedPlayedTime)
-                        {
-                            HandleChronolinesOnForwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                            if (lastChronoline == null || lastChronoline.Time != loopedTime)
-                                HandleUpdatePhases(remaped.loopedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
-                        }
-                        else
-                        {
-                            HandleChronolinesOnBackwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                            if (lastChronoline == null || LoopDuration - lastChronoline.Time != loopedTime)
-                                HandleUpdatePhases(remaped.loopedPlayedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
-                        }
+                        HandleForwardBackwardIntervals(remaped, remaped.loopedTime, remaped.loopedPlayedTime, forwardParentContinueLoopIndex, backwardParentContinueLoopIndex, ref lastChronoline);
                     }
                     else // Backward handling
                     {
@@ -1621,20 +1588,7 @@ namespace Tweens
                         if (!RemapTimes(loopedPlayedTime, loopedTime, Tweens.Formula.Invertion.WithFormula(Formula), out (float loopedPlayedTime, float loopedTime) remaped))
                             return;
 
-                        if (remaped.loopedTime > remaped.loopedPlayedTime)
-                        {
-                            HandleChronolinesOnBackwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                            if (lastChronoline == null || lastChronoline.Time != loopedTime)
-                                HandleUpdatePhases(LoopDuration - remaped.loopedTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
-                        }
-                        else
-                        {
-                            HandleChronolinesOnForwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
-
-                            if (lastChronoline == null || lastChronoline.Time != loopedTime)
-                                HandleUpdatePhases(LoopDuration - remaped.loopedPlayedTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
-                        }
+                        HandleBackwardForwardIntervals(remaped, LoopDuration - remaped.loopedTime, LoopDuration - remaped.loopedPlayedTime, backwardParentContinueLoopIndex, forwardParentContinueLoopIndex, ref lastChronoline);
                     }
                 }
             }
