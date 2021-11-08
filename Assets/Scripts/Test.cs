@@ -60,19 +60,11 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            var tween0 = new Tween<float, TweakFloat>("tween0", 0f, 1f, _target0.SetPositionX, 1f, null, 2);
-            var tween1 = new Tween<float, TweakFloat>("tween1", 0f, 1f, _target1.SetPositionX, 1f, Formula.InOutBounce, 2);
+            var sequence = new Sequence(Formula.Linear, 2, LoopType.Continue);
+            sequence.Append(new Tween<Vector3, TweakVector3>(Vector3.zero, new Vector3(0f, 1f, 1f), pos => _target0.position = pos, 0.5f));
+            sequence.Append(new Tween<Vector3, TweakVector3>(new Vector3(0f, 1f, 1f), new Vector3(0f, 0f, 2f), pos => _target0.position = pos, 0.5f));
 
-            var sequence = new Sequence("sequence", Formula.InOutBounce, 2, LoopType.Reset, LoopResetBehaviour.Rewind, Direction.Forward);
-            
-            sequence.Append(tween0);
-            sequence.Append(tween1);
-
-            var seq = new Sequence(Formula.Linear, 2);
-            seq.Append(sequence);
-
-            yield return seq.Play().WaitForComplete();
-            yield return new WaitForSeconds(1f);
+            sequence.Play();
 
             //seq.PlayBackward();
         }

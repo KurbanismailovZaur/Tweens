@@ -1027,24 +1027,66 @@ namespace Tweens
 
         #region Adding callbacks
         /// <summary>
-        /// Wraps <see cref="Action"/> to <see cref="Callback"/>, then <see cref="Callback"/> to <see cref="Element"/> and adds it at leftmost position of sequence.
+        /// Wraps <paramref name="callback"/> to <see cref="Callback"/> class, then <see cref="Callback"/> to <see cref="Element"/> and adds it to leftmost position of sequence (moves all elements to right).
         /// </summary>
-        /// <param name="callback"><see cref="Action"/> to add.</param>
+        /// <param name="callback">Callback to add.</param>
         /// <returns>Created <see cref="Element"/>.</returns>
         public Element PrependCallback(Action callback) => PrependCallback(_nextOrder, callback);
 
+        /// <summary>
+        /// <inheritdoc cref="PrependCallback(Action)"/>
+        /// </summary>
+        /// <param name="order">Element's order.</param>
+        /// <param name="callback"><inheritdoc cref="PrependCallback(Action)"/></param>
+        /// <returns><inheritdoc cref="PrependCallback(Action)"/></returns>
         public Element PrependCallback(int order, Action callback) => PrependCallback(order, null, callback);
 
+        /// <summary>
+        /// <inheritdoc cref="PrependCallback(Action)"/>
+        /// </summary>
+        /// <param name="name">Name of the callback.</param>
+        /// <param name="callback"><inheritdoc cref="PrependCallback(Action)"/></param>
+        /// <returns><inheritdoc cref="PrependCallback(Action)"/></returns>
         public Element PrependCallback(string name, Action callback) => PrependCallback(_nextOrder, name, callback);
 
+        /// <summary>
+        /// <inheritdoc cref="PrependCallback(Action)"/>
+        /// </summary>
+        /// <param name="order"><inheritdoc cref="PrependCallback(int, Action)" path="/param[@name='order']"/></param>
+        /// <param name="name"><inheritdoc cref="PrependCallback(string, Action)" path="/param[@name='name']"/></param>
+        /// <param name="callback"><inheritdoc cref="PrependCallback(Action)"/></param>
+        /// <returns><inheritdoc cref="PrependCallback(Action)"/></returns>
         public Element PrependCallback(int order, string name, Action callback) => InsertCallback(GetLeftmostElement()?.StartTime ?? 0f, order, name, callback);
 
+        /// <summary>
+        /// Wraps <paramref name="callback"/> to <see cref="Callback"/> class, then <see cref="Callback"/> to <see cref="Element"/> and adds it to the end of sequence.
+        /// </summary>
+        /// <param name="callback">Callback to add.</param>
         public Element AppendCallback(Action callback) => AppendCallback(_nextOrder, callback);
 
+        /// <summary>
+        /// <inheritdoc cref="AppendCallback(Action)"/>
+        /// </summary>
+        /// <param name="order">Element's order.</param>
+        /// <param name="callback"><inheritdoc cref="AppendCallback(Action)"/></param>
+        /// <returns><inheritdoc cref="AppendCallback(Action)"/></returns>
         public Element AppendCallback(int order, Action callback) => AppendCallback(order, null, callback);
 
+        /// <summary>
+        /// <inheritdoc cref="AppendCallback(Action)"/>
+        /// </summary>
+        /// <param name="name">Name of the callback.</param>
+        /// <param name="callback"><inheritdoc cref="AppendCallback(Action)"/></param>
+        /// <returns><inheritdoc cref="AppendCallback(Action)"/></returns>
         public Element AppendCallback(string name, Action callback) => AppendCallback(_nextOrder, name, callback);
 
+        /// <summary>
+        /// <inheritdoc cref="AppendCallback(Action)"/>
+        /// </summary>
+        /// <param name="order"><inheritdoc cref="AppendCallback(int, Action)" path="/param[@name='order']"/></param>
+        /// <param name="name"><inheritdoc cref="AppendCallback(string, Action)" path="/param[@name='name']"/></param>
+        /// <param name="callback"><inheritdoc cref="AppendCallback(Action)"/></param>
+        /// <returns><inheritdoc cref="AppendCallback(Action)"/></returns>
         public Element AppendCallback(int order, string name, Action callback) => InsertCallback(LoopDuration, order, name, callback);
 
         public Element InsertCallback(float time, Action callback) => InsertCallback(time, _nextOrder, callback);
