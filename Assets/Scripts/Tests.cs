@@ -55,7 +55,7 @@ namespace Tweens
         #region Reset
         public void Tween0ResetRewind()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToEnd(true);
@@ -63,7 +63,7 @@ namespace Tweens
 
         public void Tween0ResetPlay()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
             SubscribeOnAllEvents(tween);
 
             tween.Play();
@@ -71,7 +71,7 @@ namespace Tweens
 
         public void Tween1ResetRewind()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToEnd(true);
@@ -79,7 +79,7 @@ namespace Tweens
 
         public void Tween1ResetPlay()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
             SubscribeOnAllEvents(tween);
 
             tween.Play();
@@ -89,7 +89,7 @@ namespace Tweens
         #region Continue
         public void Tween0ContinueRewind()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToEnd(true);
@@ -97,7 +97,7 @@ namespace Tweens
 
         public void Tween0ContinuePlay()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
             SubscribeOnAllEvents(tween);
 
             tween.Play();
@@ -105,7 +105,7 @@ namespace Tweens
 
         public void Tween1ContinueRewind()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToEnd(true);
@@ -113,7 +113,7 @@ namespace Tweens
 
         public void Tween1ContinuePlay()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
             SubscribeOnAllEvents(tween);
 
             tween.Play();
@@ -123,7 +123,7 @@ namespace Tweens
         #region Mirror
         public void Tween0MirrorRewind()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToEnd(true);
@@ -131,7 +131,7 @@ namespace Tweens
 
         public void Tween0MirrorPlay()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
             SubscribeOnAllEvents(tween);
 
             tween.Play();
@@ -139,7 +139,7 @@ namespace Tweens
 
         public void Tween1MirrorRewind()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToEnd(true);
@@ -147,7 +147,7 @@ namespace Tweens
 
         public void Tween1MirrorPlay()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
             SubscribeOnAllEvents(tween);
 
             tween.Play();
@@ -159,7 +159,7 @@ namespace Tweens
         #region Reset
         public void Tween0ResetRewindBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToStart(true);
@@ -167,7 +167,7 @@ namespace Tweens
 
         public void Tween0ResetPlayBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.Play();
@@ -175,7 +175,7 @@ namespace Tweens
 
         public void Tween1ResetRewindBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.SkipToEnd().RewindToStart(true);
@@ -183,7 +183,7 @@ namespace Tweens
 
         public void Tween1ResetPlayBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.SkipToEnd().Play();
@@ -193,7 +193,7 @@ namespace Tweens
         #region Continue
         public void Tween0ContinueRewindBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToStart(true);
@@ -201,7 +201,7 @@ namespace Tweens
 
         public void Tween0ContinuePlayBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.Play();
@@ -209,7 +209,7 @@ namespace Tweens
 
         public void Tween1ContinueRewindBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.SkipToEnd().RewindToStart(true);
@@ -217,7 +217,7 @@ namespace Tweens
 
         public void Tween1ContinuePlayBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.SkipToEnd().Play();
@@ -227,7 +227,7 @@ namespace Tweens
         #region Mirror
         public void Tween0MirrorRewindBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.RewindToStart(true);
@@ -235,7 +235,7 @@ namespace Tweens
 
         public void Tween0MirrorPlayBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.Play();
@@ -243,7 +243,7 @@ namespace Tweens
 
         public void Tween1MirrorRewindBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.SkipToEnd().RewindToStart(true);
@@ -251,7 +251,7 @@ namespace Tweens
 
         public void Tween1MirrorPlayBackward()
         {
-            var tween = new Tween<float, FloatTweak>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror, Direction.Backward);
+            var tween = new Tween<float, TweakFloat>(0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror, Direction.Backward);
             SubscribeOnAllEvents(tween);
 
             tween.SkipToEnd().Play();
@@ -303,7 +303,7 @@ namespace Tweens
         #region Reset
         public void SequenceResetRewindTween0Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -316,7 +316,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween0Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -329,7 +329,7 @@ namespace Tweens
 
         public void SequenceResetRewindTween1Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -342,7 +342,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween1Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -355,7 +355,7 @@ namespace Tweens
 
         public void SequenceResetRewindTween0Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -368,7 +368,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween0Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -381,7 +381,7 @@ namespace Tweens
 
         public void SequenceResetRewindTween1Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -394,7 +394,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween1Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -407,7 +407,7 @@ namespace Tweens
 
         public void SequenceResetRewindTween0Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -420,7 +420,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween0Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -433,7 +433,7 @@ namespace Tweens
 
         public void SequenceResetRewindTween1Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -446,7 +446,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween1Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -461,7 +461,7 @@ namespace Tweens
         #region Continue
         public void SequenceContinueRewindTween0Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -474,7 +474,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween0Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -487,7 +487,7 @@ namespace Tweens
 
         public void SequenceContinueRewindTween1Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -500,7 +500,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween1Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -513,7 +513,7 @@ namespace Tweens
 
         public void SequenceContinueRewindTween0Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -526,7 +526,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween0Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -539,7 +539,7 @@ namespace Tweens
 
         public void SequenceContinueRewindTween1Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -552,7 +552,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween1Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -565,7 +565,7 @@ namespace Tweens
 
         public void SequenceContinueRewindTween0Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -578,7 +578,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween0Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -591,7 +591,7 @@ namespace Tweens
 
         public void SequenceContinueRewindTween1Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -604,7 +604,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween1Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -619,7 +619,7 @@ namespace Tweens
         #region Mirror
         public void SequenceMirrorRewindTween0Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -632,7 +632,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween0Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -645,7 +645,7 @@ namespace Tweens
 
         public void SequenceMirrorRewindTween1Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -658,7 +658,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween1Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -671,7 +671,7 @@ namespace Tweens
 
         public void SequenceMirrorRewindTween0Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -684,7 +684,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween0Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -697,7 +697,7 @@ namespace Tweens
 
         public void SequenceMirrorRewindTween1Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -710,7 +710,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween1Continue()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -723,7 +723,7 @@ namespace Tweens
 
         public void SequenceMirrorRewindTween0Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -736,7 +736,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween0Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -749,7 +749,7 @@ namespace Tweens
 
         public void SequenceMirrorRewindTween1Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -762,7 +762,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween1Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -779,7 +779,7 @@ namespace Tweens
         #region Reset
         public void SequenceResetRewindTween0ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -792,7 +792,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween0ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -805,7 +805,7 @@ namespace Tweens
 
         public void SequenceResetRewindTween1ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -818,7 +818,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween1ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -831,7 +831,7 @@ namespace Tweens
 
         public void SequenceResetRewindTween0ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -844,7 +844,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween0ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -857,7 +857,7 @@ namespace Tweens
 
         public void SequenceResetRewindTween1ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -870,7 +870,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween1ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -883,7 +883,7 @@ namespace Tweens
 
         public void SequenceResetRewindTween0MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -896,7 +896,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween0MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -909,7 +909,7 @@ namespace Tweens
 
         public void SequenceResetRewindTween1MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -922,7 +922,7 @@ namespace Tweens
 
         public void SequenceResetPlayTween1MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2);
             sequence.Append(tween);
@@ -937,7 +937,7 @@ namespace Tweens
         #region Continue
         public void SequenceContinueRewindTween0ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -950,7 +950,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween0ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -963,7 +963,7 @@ namespace Tweens
 
         public void SequenceContinueRewindTween1ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -976,7 +976,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween1ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -989,7 +989,7 @@ namespace Tweens
 
         public void SequenceContinueRewindTween0ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -1002,7 +1002,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween0ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -1015,7 +1015,7 @@ namespace Tweens
 
         public void SequenceContinueRewindTween1ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -1028,7 +1028,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween1ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -1041,7 +1041,7 @@ namespace Tweens
 
         public void SequenceContinueRewindTween0MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -1054,7 +1054,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween0MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -1067,7 +1067,7 @@ namespace Tweens
 
         public void SequenceContinueRewindTween1MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -1080,7 +1080,7 @@ namespace Tweens
 
         public void SequenceContinuePlayTween1MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
             sequence.Append(tween);
@@ -1095,7 +1095,7 @@ namespace Tweens
         #region Mirror
         public void SequenceMirrorRewindTween0ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1108,7 +1108,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween0ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1121,7 +1121,7 @@ namespace Tweens
 
         public void SequenceMirrorRewindTween1ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1134,7 +1134,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween1ResetBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1147,7 +1147,7 @@ namespace Tweens
 
         public void SequenceMirrorRewindTween0ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1160,7 +1160,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween0ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1173,7 +1173,7 @@ namespace Tweens
 
         public void SequenceMirrorRewindTween1ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1186,7 +1186,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween1ContinueBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Continue);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1199,7 +1199,7 @@ namespace Tweens
 
         public void SequenceMirrorRewindTween0MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1212,7 +1212,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween0MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1225,7 +1225,7 @@ namespace Tweens
 
         public void SequenceMirrorRewindTween1MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1238,7 +1238,7 @@ namespace Tweens
 
         public void SequenceMirrorPlayTween1MirrorBackward()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Mirror);
             sequence.Append(tween);
@@ -1255,7 +1255,7 @@ namespace Tweens
         #region Sequence > Sequence > Tween
         public void SequenceResetRewindSequenceContinueTween0Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Continue);
             subsequence.Append(tween);
@@ -1272,7 +1272,7 @@ namespace Tweens
 
         public void SequenceResetPlaySequenceContinueTween0Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Mirror);
 
             var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Continue);
             subsequence.Append(tween);
@@ -1289,7 +1289,7 @@ namespace Tweens
 
         public void SequenceResetRewindSequenceContinueTween1Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Continue);
             subsequence.Append(tween);
@@ -1306,7 +1306,7 @@ namespace Tweens
 
         public void SequenceResetPlaySequenceContinueTween1Mirror()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Mirror);
 
             var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Continue);
             subsequence.Append(tween);
@@ -1323,7 +1323,7 @@ namespace Tweens
 
         public void SequenceContinueRewindSequenceMirrorTween0Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset);
 
             var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Mirror);
             subsequence.Append(tween);
@@ -1340,7 +1340,7 @@ namespace Tweens
 
         public void SequenceContinuePlaySequenceMirrorTween0Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 0f, null, 2, LoopType.Reset);
 
             var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Mirror);
             subsequence.Append(tween);
@@ -1357,7 +1357,7 @@ namespace Tweens
 
         public void SequenceContinueRewindSequenceMirrorTween1Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset);
 
             var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Mirror);
             subsequence.Append(tween);
@@ -1374,7 +1374,7 @@ namespace Tweens
 
         public void SequenceContinuePlaySequenceMirrorTween1Reset()
         {
-            var tween = new Tween<float, FloatTweak>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset);
 
             var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Mirror);
             subsequence.Append(tween);

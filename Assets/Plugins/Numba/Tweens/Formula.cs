@@ -10,70 +10,164 @@ using Tweens.Formulas;
 
 namespace Tweens
 {
+    /// <summary>
+    /// Ñontains all built-in formulas.
+    /// <para>See all formulas behaviours here: <seealso href="https://easings.net/en#">Easing functions</seealso></para>
+    /// </summary>
     public static class Formula
     {
         internal static InversionFormula Invertion { get; private set; } = new InversionFormula();
 
         public static LinearFormula Linear { get; private set; } = new LinearFormula();
 
-        public static QuadraticInFormula QuadIn { get; private set; } = new QuadraticInFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInQuad">See documentation here.</see>
+        /// </summary>
+        public static InQuadraticFormula InQuad { get; private set; } = new InQuadraticFormula();
 
-        public static QuadraticOutFormula QuadOut { get; private set; } = new QuadraticOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeOutQuad">See documentation here.</see>
+        /// </summary>
+        public static OutQuadraticFormula OutQuad { get; private set; } = new OutQuadraticFormula();
 
-        public static QuadraticInOutFormula QuadInOut { get; private set; } = new QuadraticInOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInOutQuad">See documentation here.</see>
+        /// </summary>
+        public static InOutQuadraticFormula InOutQuad { get; private set; } = new InOutQuadraticFormula();
 
-        public static CubicInFormula CubicIn { get; private set; } = new CubicInFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInCubic">See documentation here.</see>
+        /// </summary>
+        public static InCubicFormula InCubic { get; private set; } = new InCubicFormula();
 
-        public static CubicOutFormula CubicOut { get; private set; } = new CubicOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeOutCubic">See documentation here.</see>
+        /// </summary>
+        public static OutCubicFormula OutCubic { get; private set; } = new OutCubicFormula();
 
-        public static CubicInOutFormula CubicInOut { get; private set; } = new CubicInOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInOutCubic">See documentation here.</see>
+        /// </summary>
+        public static InOutCubicFormula InOutCubic { get; private set; } = new InOutCubicFormula();
 
-        public static QuarticInFormula QuartIn { get; private set; } = new QuarticInFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInQuart">See documentation here.</see>
+        /// </summary>
+        public static InQuarticFormula InQuart { get; private set; } = new InQuarticFormula();
 
-        public static QuarticOutFormula QuartOut { get; private set; } = new QuarticOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeOutQuart">See documentation here.</see>
+        /// </summary>
+        public static OutQuarticFormula OutQuart { get; private set; } = new OutQuarticFormula();
 
-        public static QuarticInOutFormula QuartInOut { get; private set; } = new QuarticInOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInOutQuart">See documentation here.</see>
+        /// </summary>
+        public static InOutQuarticFormula InOutQuart { get; private set; } = new InOutQuarticFormula();
 
-        public static QuinticInFormula QuintIn { get; private set; } = new QuinticInFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInQuint">See documentation here.</see>
+        /// </summary>
+        public static InQuinticFormula InQuint { get; private set; } = new InQuinticFormula();
 
-        public static QuinticOutFormula QuintOut { get; private set; } = new QuinticOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeOutQuint">See documentation here.</see>
+        /// </summary>
+        public static OutQuinticFormula OutQuint { get; private set; } = new OutQuinticFormula();
 
-        public static QuinticInOutFormula QuintInOut { get; private set; } = new QuinticInOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInOutQuint">See documentation here.</see>
+        /// </summary>
+        public static InOutQuinticFormula InOutQuint { get; private set; } = new InOutQuinticFormula();
 
-        public static SineInFormula SineIn { get; private set; } = new SineInFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInSine">See documentation here.</see>
+        /// </summary>
+        public static InSineFormula InSine { get; private set; } = new InSineFormula();
 
-        public static SineOutFormula SineOut { get; private set; } = new SineOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeOutSine">See documentation here.</see>
+        /// </summary>
+        public static OutSineFormula OutSine { get; private set; } = new OutSineFormula();
 
-        public static SineInOutFormula SineInOut { get; private set; } = new SineInOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInOutSine">See documentation here.</see>
+        /// </summary>
+        public static InOutSineFormula InOutSine { get; private set; } = new InOutSineFormula();
 
-        public static CircularInFormula CircIn { get; private set; } = new CircularInFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInCirc">See documentation here.</see>
+        /// </summary>
+        public static InCircularFormula InCirc { get; private set; } = new InCircularFormula();
 
-        public static CircularOutFormula CircOut { get; private set; } = new CircularOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeOutCirc">See documentation here.</see>
+        /// </summary>
+        public static OutCircularFormula OutCirc { get; private set; } = new OutCircularFormula();
 
-        public static CircularInOutFormula CircInOut { get; private set; } = new CircularInOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInOutCirc">See documentation here.</see>
+        /// </summary>
+        public static InOutCircularFormula InOutCirc { get; private set; } = new InOutCircularFormula();
 
-        public static ExponentialInFormula ExpoIn { get; private set; } = new ExponentialInFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInExpo">See documentation here.</see>
+        /// </summary>
+        public static InExponentialFormula InExpo { get; private set; } = new InExponentialFormula();
 
-        public static ExponentialOutFormula ExpoOut { get; private set; } = new ExponentialOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeOutExpo">See documentation here.</see>
+        /// </summary>
+        public static OutExponentialFormula OutExpo { get; private set; } = new OutExponentialFormula();
 
-        public static ExponentialInOutFormula ExpoInOut { get; private set; } = new ExponentialInOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInOutExpo">See documentation here.</see>
+        /// </summary>
+        public static InOutExponentialFormula InOutExpo { get; private set; } = new InOutExponentialFormula();
 
-        public static ElasticInFormula ElasticIn { get; private set; } = new ElasticInFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInElastic">See documentation here.</see>
+        /// </summary>
+        public static InElasticFormula InElastic { get; private set; } = new InElasticFormula();
 
-        public static ElasticOutFormula ElasticOut { get; private set; } = new ElasticOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeOutElastic">See documentation here.</see>
+        /// </summary>
+        public static OutElasticFormula OutElastic { get; private set; } = new OutElasticFormula();
 
-        public static ElasticInOutFormula ElasticInOut { get; private set; } = new ElasticInOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInOutElastic">See documentation here.</see>
+        /// </summary>
+        public static InOutElasticFormula InOutElastic { get; private set; } = new InOutElasticFormula();
 
-        public static BackInFormula BackIn { get; private set; } = new BackInFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInBack">See documentation here.</see>
+        /// </summary>
+        public static InBackFormula InBack { get; private set; } = new InBackFormula();
 
-        public static BackOutFormula BackOut { get; private set; } = new BackOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeOutBack">See documentation here.</see>
+        /// </summary>
+        public static OutBackFormula OutBack { get; private set; } = new OutBackFormula();
 
-        public static BackInOutFormula BackInOut { get; private set; } = new BackInOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInOutBack">See documentation here.</see>
+        /// </summary>
+        public static InOutBackFormula InOutBack { get; private set; } = new InOutBackFormula();
 
-        public static BounceInFormula BounceIn { get; private set; } = new BounceInFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInBounce">See documentation here.</see>
+        /// </summary>
+        public static InBounceFormula InBounce { get; private set; } = new InBounceFormula();
 
-        public static BounceOutFormula BounceOut { get; private set; } = new BounceOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeOutBounce">See documentation here.</see>
+        /// </summary>
+        public static OutBounceFormula OutBounce { get; private set; } = new OutBounceFormula();
 
-        public static BounceInOutFormula BounceInOut { get; private set; } = new BounceInOutFormula();
+        /// <summary>
+        /// <see href="https://easings.net/en#easeInOutBounce">See documentation here.</see>
+        /// </summary>
+        public static InOutBounceFormula InOutBounce { get; private set; } = new InOutBounceFormula();
     }
 }

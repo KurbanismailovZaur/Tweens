@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Tweens
 {
+    /// <summary>
+    /// Auxiliary class for linear interpolation of many data types.
+    /// </summary>
     public static class Lerp
     {
         public static byte Byte(byte from, byte to, float interpolation) => (byte)(from + (to - from) * interpolation);

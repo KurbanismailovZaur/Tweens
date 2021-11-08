@@ -13,27 +13,50 @@ using Tweens.Formulas;
 
 namespace Tweens
 {
+    /// <summary>
+    /// Represents a container class capable of storing lots of any <see cref="IPlayable"/> and animating them.
+    /// </summary>
     public sealed class Sequence : Playable<Sequence>
     {
         #region Inner types
+        /// <summary>
+        /// Represents sequence element.
+        /// </summary>
         public class Element
         {
+            /// <summary>
+            /// Sequence which contain the element.
+            /// </summary>
             public Sequence Sequence { get; internal set; }
 
             private float _startTime;
 
+            /// <summary>
+            /// Time at which the element is located in the sequence.
+            /// </summary>
             public float StartTime
             {
                 get => _startTime;
                 set => Sequence.ChangeElementStartTime(this, value);
             }
 
+            /// <summary>
+            /// Reference to <see cref="Playable"/>, which will be played when sequence start play.
+            /// </summary>
             public IPlayable Playable { get; internal set; }
 
+            /// <summary>
+            /// The time at which an element in the sequence completes playback.
+            /// </summary>
             public float EndTime => StartTime + Playable.Duration;
 
             private int _order;
 
+            /// <summary>
+            /// The sequence number of the element in the sequence. 
+            /// <para>Elements with a lower ordinal number will be processed by the sequencing before the current one, </para>
+            /// and elements with a higher ordinal number will be processed after it. 
+            /// </summary>
             public int Order
             {
                 get => _order;
@@ -51,12 +74,21 @@ namespace Tweens
 
             internal void SetOrder(int order) => _order = order;
 
+            /// <summary>
+            /// Sets new start time and order.
+            /// </summary>
+            /// <param name="startTime">New start time.</param>
+            /// <param name="order">New order.</param>
             public void SetStartTimeAndOrder(float startTime, int order)
             {
                 StartTime = startTime;
                 Order = order;
             }
 
+            /// <summary>
+            /// Overrides the default behavior to improve debugging.
+            /// </summary>
+            /// <returns><see cref="Playable"/>'s name.</returns>
             public override string ToString() => Playable.Name;
         }
 
@@ -374,10 +406,16 @@ namespace Tweens
         #region State
         public override Type Type => Type.Sequence;
 
+        /// <summary>
+        /// Behaviour which applied to sequence before every loop start event.
+        /// </summary>
         public LoopResetBehaviour LoopResetBehaviour { get; set; }
 
         private readonly List<Element> _elements = new List<Element>();
 
+        /// <summary>
+        /// Sequence elements.
+        /// </summary>
         public ReadOnlyCollection<Element> Elements { get; private set; }
 
         private int _nextOrder;
@@ -400,26 +438,67 @@ namespace Tweens
         #endregion
 
         #region Constructors
-        public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : this((string)null, formula, loopsCount, loopType, direction, loopResetBehaviour) { }
+        /// <summary>
+        /// Create sequence object.
+        /// </summary>
+        /// <param name="formula"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this((string)null, formula, loopsCount, loopType, loopResetBehaviour, direction) { }
 
-        public Sequence(string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : this(null, name, formula, loopsCount, loopType, direction, loopResetBehaviour) { }
+        /// <summary>
+        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, Direction, LoopResetBehaviour)"/>
+        /// </summary>
+        /// <param name="name">Name of the sequence (usefull for finding nested sequences and for debugging).</param>
+        /// <param name="formula"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(null, name, formula, loopsCount, loopType, loopResetBehaviour, direction) { }
 
-        public Sequence(GameObject owner, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : this(owner, null, formula, loopsCount, loopType, direction, loopResetBehaviour) { }
+        /// <summary>
+        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, Direction, LoopResetBehaviour)"/>
+        /// </summary>
+        /// <param name="owner">Game object to which this sequence will be attached.</param>
+        /// <param name="formula"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(GameObject owner, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(owner, null, formula, loopsCount, loopType, loopResetBehaviour, direction) { }
 
-        public Sequence(GameObject owner, string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind) : base(owner, name, 0f, formula, loopsCount, loopType, direction)
+        /// <summary>
+        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, Direction, LoopResetBehaviour)"/>
+        /// </summary>
+        /// <param name="owner"><inheritdoc cref="Sequence(GameObject, FormulaBase, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='owner']"/></param>
+        /// <param name="name"><inheritdoc cref="Sequence(string, FormulaBase, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='name']"/></param>
+        /// <param name="formula"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(GameObject owner, string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : base(owner, name, 0f, formula, loopsCount, loopType, direction)
         {
             Elements = _elements.AsReadOnly();
             LoopResetBehaviour = loopResetBehaviour;
         }
         #endregion
 
+        /// <summary>
+        /// Sets loop reset behaviour.
+        /// </summary>
+        /// <param name="loopResetBehaviour">New loop reset behaviour.</param>
+        /// <returns>The <see cref="Sequence"/></returns>
         public Sequence SetLoopResetBehaviour(LoopResetBehaviour loopResetBehaviour)
         {
             LoopResetBehaviour = loopResetBehaviour;
             return this;
         }
 
-        public bool CheckCyclicReference(Sequence other)
+        private bool CheckCyclicReference(Sequence other)
         {
             foreach (var element in other._elements)
             {
@@ -844,8 +923,19 @@ namespace Tweens
         #endregion
 
         #region Adding elements
+        /// <summary>
+        /// Wraps <see cref="IPlayable"/> to <see cref="Element"/> and adds it at leftmost position of sequence.
+        /// </summary>
+        /// <param name="playable"><see cref="IPlayable"/> to add.</param>
+        /// <returns>Created <see cref="Element"/>.</returns>
         public Element Prepend(IPlayable playable) => Prepend(_nextOrder, playable);
 
+        /// <summary>
+        /// <inheritdoc cref="Prepend(IPlayable)"/>
+        /// </summary>
+        /// <param name="order">Element's order.</param>
+        /// <param name="playable"><inheritdoc cref="Prepend(IPlayable)"/></param>
+        /// <returns><inheritdoc cref="Prepend(IPlayable)"/></returns>
         public Element Prepend(int order, IPlayable playable)
         {
             var leftmost = GetLeftmostElement();
@@ -866,12 +956,36 @@ namespace Tweens
                 return Insert(startTime, order, playable);
         }
 
+        /// <summary>
+        /// Wraps <see cref="IPlayable"/> to <see cref="Element"/> and adds it at the end of sequence.
+        /// </summary>
+        /// <param name="playable"><see cref="IPlayable"/> to add.</param>
+        /// <returns>Created <see cref="Element"/>.</returns>
         public Element Append(IPlayable playable) => Append(_nextOrder, playable);
 
+        /// <summary>
+        /// <inheritdoc cref="Append(IPlayable)"/>
+        /// </summary>
+        /// <param name="order">Element's order.</param>
+        /// <param name="playable"><inheritdoc cref="Append(IPlayable)"/></param>
+        /// <returns><inheritdoc cref="Append(IPlayable)"/></returns>
         public Element Append(int order, IPlayable playable) => Insert(LoopDuration, order, playable);
 
+        /// <summary>
+        /// Wraps <see cref="IPlayable"/> to <see cref="Element"/> and adds it at <paramref name="time"/> position of sequence.
+        /// </summary>
+        /// <param name="time">The time at which playback of the element begins.</param>
+        /// <param name="playable"><see cref="IPlayable"/> to add.</param>
+        /// <returns>Created <see cref="Element"/>.</returns>
         public Element Insert(float time, IPlayable playable) => Insert(time, _nextOrder, playable);
 
+        /// <summary>
+        /// <inheritdoc cref="Insert(float, IPlayable)"/>
+        /// </summary>
+        /// <param name="time"><inheritdoc cref="Insert(float, IPlayable)" path="/param[@name='time']"/></param>
+        /// <param name="order">Element's order.</param>
+        /// <param name="playable"><inheritdoc cref="Insert(float, IPlayable)" path="/param[@name='playable']"/></param>
+        /// <returns><inheritdoc cref="Insert(float, IPlayable)"/></returns>
         public Element Insert(float time, int order, IPlayable playable)
         {
             if (playable == this)
@@ -912,6 +1026,11 @@ namespace Tweens
         #endregion
 
         #region Adding callbacks
+        /// <summary>
+        /// Wraps <see cref="Action"/> to <see cref="Callback"/>, then <see cref="Callback"/> to <see cref="Element"/> and adds it at leftmost position of sequence.
+        /// </summary>
+        /// <param name="callback"><see cref="Action"/> to add.</param>
+        /// <returns>Created <see cref="Element"/>.</returns>
         public Element PrependCallback(Action callback) => PrependCallback(_nextOrder, callback);
 
         public Element PrependCallback(int order, Action callback) => PrependCallback(order, null, callback);
@@ -1269,7 +1388,7 @@ namespace Tweens
         {
             void FillBufferWithElementsOnInterval(float start, float end, Direction direction)
             {
-                // second expression in end of two methods below is for playables with zero duration and which placed at end of loop.
+                // second expression in end of two functions below is for playables with zero duration and which placed at end of loop.
                 bool CompareZeroForward(Element element, float start, float end) => (element.StartTime < end && element.EndTime >= start) || (end == LoopDuration && element.StartTime == end);
 
                 bool CompareZeroBackward(Element element, float start, float end) => (element.EndTime > end && element.StartTime <= start) || (end == 0 && element.StartTime == 0);
@@ -1277,7 +1396,6 @@ namespace Tweens
                 bool CompareForward(Element element, float start, float end) => element.StartTime < end && element.EndTime > start;
 
                 bool CompareBackward(Element element, float start, float end) => element.EndTime > end && element.StartTime < start;
-
 
                 if (direction == Direction.Forward)
                 {
@@ -1359,35 +1477,16 @@ namespace Tweens
 
         protected override void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            float Remap(float time, FormulaBase formula) => Mathf.Clamp(formula.Remap(time / LoopDuration) * LoopDuration, 0f, LoopDuration);
-
+            #region Local functions
             bool RemapTimes(float loopedPlayedTime, float loopedTime, FormulaBase formula, out (float loopedPlayedTime, float loopedTime) remaped)
             {
-                remaped.loopedPlayedTime = Remap(loopedPlayedTime, formula);
-                remaped.loopedTime = Remap(loopedTime, formula);
+                remaped.loopedPlayedTime = Mathf.Clamp(formula.Remap(loopedPlayedTime / LoopDuration) * LoopDuration, 0f, LoopDuration);
+                remaped.loopedTime = Mathf.Clamp(formula.Remap(loopedTime / LoopDuration) * LoopDuration, 0f, LoopDuration);
 
                 return remaped.loopedPlayedTime != remaped.loopedTime;
             }
 
-            void HandleUpdatePhases(float time, Direction direction, Func<float, Element, float> playedTimeCalcualtor, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
-            {
-                for (int i = 0; i < _elements.Count; i++)
-                {
-                    var element = _elements[i];
-
-                    if (element.Playable.Type == Type.Interval || time <= element.StartTime || time >= element.EndTime)
-                        continue;
-
-                    var playedTime = playedTimeCalcualtor(time, element);
-
-                    if (emitEvents)
-                        ((Playable)element.Playable).HandlePhaseLoopUpdate(playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration, direction, continueRepeatIndex, continueMaxLoopsCount);
-                    else
-                        ((Playable)element.Playable).HandlePhaseLoopUpdateNoEvents(playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration, direction, continueRepeatIndex, continueMaxLoopsCount);
-                }
-            }
-
-            static void HandleChronolinesOnForwardInterval(List<Chronoline> chronolines, float remapedLoopedPlayedTime, float remapedLoopedTime, float loopDuration, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
+            void HandleChronolinesOnForwardInterval(List<Chronoline> chronolines, float remapedLoopedPlayedTime, float remapedLoopedTime, float loopDuration, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
             {
                 for (int i = 0; i < chronolines.Count; i++)
                 {
@@ -1419,7 +1518,7 @@ namespace Tweens
                 }
             }
 
-            static void HandleChronolinesOnBackwardInterval(List<Chronoline> chronolines, float remapedLoopedPlayedTime, float remapedLoopedTime, float loopDuration, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
+            void HandleChronolinesOnBackwardInterval(List<Chronoline> chronolines, float remapedLoopedPlayedTime, float remapedLoopedTime, float loopDuration, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
             {
                 for (int i = chronolines.Count - 1; i >= 0; i--)
                 {
@@ -1449,6 +1548,24 @@ namespace Tweens
                         chronoline.Chains.Backward.CallAllEvents(Direction.Backward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
 
                     lastChronoline = chronoline;
+                }
+            }
+
+            void HandleUpdatePhases(float time, Direction direction, Func<float, Element, float> playedTimeCalcualtor, bool emitEvents, int continueRepeatIndex, int continueMaxLoopsCount)
+            {
+                for (int i = 0; i < _elements.Count; i++)
+                {
+                    var element = _elements[i];
+
+                    if (element.Playable.Type == Type.Interval || time <= element.StartTime || time >= element.EndTime)
+                        continue;
+
+                    var playedTime = playedTimeCalcualtor(time, element);
+
+                    if (emitEvents)
+                        ((Playable)element.Playable).HandlePhaseLoopUpdate(playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration, direction, continueRepeatIndex, continueMaxLoopsCount);
+                    else
+                        ((Playable)element.Playable).HandlePhaseLoopUpdateNoEvents(playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration, direction, continueRepeatIndex, continueMaxLoopsCount);
                 }
             }
 
@@ -1487,6 +1604,7 @@ namespace Tweens
                         HandleUpdatePhases(forwardUpdateTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
                 }
             }
+            #endregion
 
             if (direction == Direction.Forward)
             {

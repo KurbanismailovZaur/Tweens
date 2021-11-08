@@ -11,6 +11,9 @@ using Coroutine = Coroutines.Coroutine;
 
 namespace Tweens
 {
+	/// <summary>
+	/// Represent <c>Playable</c> type.
+	/// </summary>
 	public enum Type : byte
 	{
 		Tween,

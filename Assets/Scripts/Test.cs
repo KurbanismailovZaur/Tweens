@@ -10,6 +10,7 @@ using Object = UnityEngine.Object;
 using Coroutine = Coroutines.Coroutine;
 using Tweens.Tweaks;
 using Tweens;
+using Tweens.Formulas;
 
 namespace Tweens
 {
@@ -59,15 +60,15 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            var tween0 = new Tween<float, FloatTweak>("tween0", 0f, 1f, _target0.SetPositionX, 1f, null, 2);
-            var tween1 = new Tween<float, FloatTweak>("tween1", 0f, 1f, _target1.SetPositionX, 1f, Formula.BounceInOut, 2);
+            var tween0 = new Tween<float, TweakFloat>("tween0", 0f, 1f, _target0.SetPositionX, 1f, null, 2);
+            var tween1 = new Tween<float, TweakFloat>("tween1", 0f, 1f, _target1.SetPositionX, 1f, Formula.InOutBounce, 2);
 
-            var sequence = new Sequence("sequence", Formula.BounceInOut, 2, LoopType.Reset, Direction.Forward, LoopResetBehaviour.Rewind);
+            var sequence = new Sequence("sequence", Formula.InOutBounce, 2, LoopType.Reset, LoopResetBehaviour.Rewind, Direction.Forward);
             
             sequence.Append(tween0);
             sequence.Append(tween1);
 
-            var seq = new Sequence(Formula.BounceInOut);
+            var seq = new Sequence(Formula.Linear, 2);
             seq.Append(sequence);
 
             yield return seq.Play().WaitForComplete();
