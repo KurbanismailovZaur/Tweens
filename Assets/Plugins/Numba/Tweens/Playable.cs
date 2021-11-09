@@ -95,21 +95,21 @@ namespace Tweens
 
         #region Rewinds
         /// <summary>
-        /// Rewind playable to start time (0).
+        /// Rewind to start time (0).
         /// </summary>
         /// <param name="emitEvents">Shoud events be emitted?</param>
         /// <returns>The playable.</returns>
         Playable RewindToStart(bool emitEvents = true);
 
         /// <summary>
-        /// Rewind playable to end time (Duration).
+        /// Rewind to end time (Duration).
         /// </summary>
         /// <param name="emitEvents">Shoud events be emitted?</param>
         /// <returns>The playable.</returns>
         Playable RewindToEnd(bool emitEvents = true);
 
         /// <summary>
-        /// Rewind playable to passed time.
+        /// Rewind to the <paramref name="time"/>.
         /// </summary>
         /// <param name="time">The time up to which you need to rewind.</param>
         /// <param name="emitEvents">Shoud events be emitted?</param>
@@ -119,15 +119,14 @@ namespace Tweens
 
         #region Skips
         /// <summary>
-        /// Sets playable played time to start time (0).
-        /// <para>The method will ignore any events and callbacks.</para>
+        /// Skip playing to start time (0). The method will ignore any events and callbacks.
         /// </summary>
         /// <returns>The playable.</returns>
         Playable SkipToStart();
 
         /// <summary>
-        /// Sets playable played time to end time (Duration). The method will ignore any events and callbacks.
-        /// <para>Usefull when create playable and need to play in backward direction. Example:</para>
+        /// Skip playing to the end (Duration). The method will ignore any events and callbacks.
+        /// <para/>Usefull when create playable and need to play in backward direction. Example:
         /// <code>
         /// playable.SkipToEnd().PlayBackward();
         /// </code>
@@ -136,8 +135,7 @@ namespace Tweens
         Playable SkipToEnd();
 
         /// <summary>
-        /// Sets <see cref="PlayedTime"/> to passed time.
-        /// <para>The method will ignore any events and callbacks.</para>
+        /// Skip playing to <paramref name="time"/>. The method will ignore any events and callbacks.
         /// </summary>
         /// <param name="time">The time up to which you need to skip.</param>
         /// <returns>The playable.</returns>
@@ -160,14 +158,14 @@ namespace Tweens
         Playable PlayBackward(bool resetIfCompleted = true);
 
         /// <summary>
-        /// Starts playing in direction which setted in <c>Direction</c> property.
+        /// Starts playing in <see cref="Direction"/> direction.
         /// </summary>
         /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.PlayBackward(bool)" path="/param[@name='resetIfCompleted']"/></param>
         /// <returns><inheritdoc cref="IPlayable.PlayBackward(bool)"/></returns>
         Playable Play(bool resetIfCompleted = true);
 
         /// <summary>
-        /// Pause the playable if it in playing state.
+        /// Pause the playable. Can be continued later with <see cref="Play(bool)"/> method.
         /// </summary>
         /// <returns>The playble.</returns>
         Playable Pause();
@@ -182,7 +180,7 @@ namespace Tweens
         #region Repeat
         /// <summary>
         /// Create repeater for the playable. 
-        /// <para>Example:</para>
+        /// <br/>Example:
         /// <code>
         /// playable.GetRepeater().Play();
         /// </code>
@@ -192,7 +190,7 @@ namespace Tweens
 
         /// <summary>
         /// Create repeater for the playable and starts repeating playable's playing in <see cref="Playable.IRepeater{T}.Direction"/> property.
-        /// <para>Example:</para>
+        /// <br/>Example:
         /// <code>
         /// playable.Repeat();
         /// </code>
@@ -202,7 +200,7 @@ namespace Tweens
 
         /// <summary>
         /// Create repeater for the playable and starts repeating playable's playing in forward direction.
-        /// <para>Example:</para>
+        /// <br/>Example:
         /// <code>
         /// playable.RepeatForward();
         /// </code>
@@ -212,7 +210,7 @@ namespace Tweens
 
         /// <summary>
         /// Create repeater for the playable and starts repeating playable's playing in backward direction.
-        /// <para>Example:</para>
+        /// <br/>Example:
         /// <code>
         /// playable.RepeatBackward();
         /// </code>
@@ -224,7 +222,7 @@ namespace Tweens
         #region Awaiters
         /// <summary>
         /// Creates a special object that knows how to wait until playable is completed. Pausing playable will not stop awaiting.
-        /// <para>You can use the method in coroutines. Example:</para>
+        /// <br/>You can use the method in coroutines. Example:
         /// <example>
         /// <code>
         /// <see langword="yield return"/> playable.WaitForComplete();
@@ -236,7 +234,7 @@ namespace Tweens
 
         /// <summary>
         /// Creates a special object that knows how to wait until playable is paused. Reseting playable will stop awaiting too.
-        /// <para>You can use the method in coroutines. Example:</para>
+        /// <br/>You can use the method in coroutines. Example:
         /// <example>
         /// <code>
         /// <see langword="yield return"/> playable.WaitForPause();
@@ -248,7 +246,7 @@ namespace Tweens
 
         /// <summary>
         /// Creates a special object that knows how to wait until playable is playing.
-        /// <para>You can use the method in coroutines. Example:</para>
+        /// <br/>You can use the method in coroutines. Example:
         /// <example>
         /// <code>
         /// <see langword="yield return"/> playable.WaitForPlay();

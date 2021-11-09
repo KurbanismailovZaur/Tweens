@@ -28,12 +28,12 @@ namespace Tweens
         public U Tweak { get; set; }
 
         /// <summary>
-        /// Delegate which return <c><b>from</b></c> value.
+        /// Delegate which return <c><b>from</b></c> value. Tween starts from this value.
         /// </summary>
         public Func<T> From { get; set; }
 
         /// <summary>
-        /// Delegate which return <c><b>to</b></c> value.
+        /// Delegate which return <c><b>to</b></c> value. Tween completes on this value.
         /// </summary>
         public Func<T> To { get; set; }
 

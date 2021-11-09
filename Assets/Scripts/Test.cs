@@ -70,3 +70,17 @@ namespace Tweens
         }
     }
 }
+
+//public class Person : IComparable<Person>
+//{
+//    private DateTime _birthday;
+
+//    public int CompareTo(Person other) => _birthday.CompareTo(other._birthday);
+//}
+
+//public class PersonComparer : IComparer<Person>
+//{
+//    public int Compare(Person first, Person second) => first.CompareTo(second);
+//}
+
+//_students.Sort(new PersonComparer());

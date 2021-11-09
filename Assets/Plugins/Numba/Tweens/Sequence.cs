@@ -32,7 +32,7 @@ namespace Tweens
             private float _startTime;
 
             /// <summary>
-            /// Time at which the element is located in the sequence.
+            /// Time at which the element start playing.
             /// </summary>
             public float StartTime
             {
@@ -41,7 +41,7 @@ namespace Tweens
             }
 
             /// <summary>
-            /// Reference to <see cref="Playable"/>, which will be played when sequence start play.
+            /// Reference to playable, which will be played when sequence start play.
             /// </summary>
             public IPlayable Playable { get; internal set; }
 
@@ -53,9 +53,9 @@ namespace Tweens
             private int _order;
 
             /// <summary>
-            /// The sequence number of the element in the sequence. 
-            /// <para>Elements with a lower ordinal number will be processed by the sequencing before the current one, </para>
-            /// and elements with a higher ordinal number will be processed after it. 
+            /// Element's order in the sequence. Elements with a lower order will be processed 
+            /// <br/>by the sequencing before the current one, and elements with a higher order
+            /// <br/>will be processed after it. 
             /// </summary>
             public int Order
             {
@@ -449,7 +449,7 @@ namespace Tweens
         public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this((string)null, formula, loopsCount, loopType, loopResetBehaviour, direction) { }
 
         /// <summary>
-        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, Direction, LoopResetBehaviour)"/>
+        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, LoopResetBehaviour, Direction)"/>
         /// </summary>
         /// <param name="name">Name of the sequence (usefull for finding nested sequences and for debugging).</param>
         /// <param name="formula"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
@@ -460,7 +460,7 @@ namespace Tweens
         public Sequence(string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(null, name, formula, loopsCount, loopType, loopResetBehaviour, direction) { }
 
         /// <summary>
-        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, Direction, LoopResetBehaviour)"/>
+        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, LoopResetBehaviour, Direction)"/>
         /// </summary>
         /// <param name="owner">Game object to which this sequence will be attached.</param>
         /// <param name="formula"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
@@ -471,7 +471,7 @@ namespace Tweens
         public Sequence(GameObject owner, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(owner, null, formula, loopsCount, loopType, loopResetBehaviour, direction) { }
 
         /// <summary>
-        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, Direction, LoopResetBehaviour)"/>
+        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, LoopResetBehaviour, Direction)"/>
         /// </summary>
         /// <param name="owner"><inheritdoc cref="Sequence(GameObject, FormulaBase, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='owner']"/></param>
         /// <param name="name"><inheritdoc cref="Sequence(string, FormulaBase, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='name']"/></param>
@@ -924,14 +924,14 @@ namespace Tweens
 
         #region Adding elements
         /// <summary>
-        /// Wraps <see cref="IPlayable"/> to <see cref="Element"/> and adds it at leftmost position of sequence.
+        /// Adds a <paramref name="playable"/> to the left of all elements in the sequence.
         /// </summary>
-        /// <param name="playable"><see cref="IPlayable"/> to add.</param>
-        /// <returns>Created <see cref="Element"/>.</returns>
+        /// <param name="playable">Playable to add.</param>
+        /// <returns><see cref="Element"/> which represent added <paramref name="playable"/>.</returns>
         public Element Prepend(IPlayable playable) => Prepend(_nextOrder, playable);
 
         /// <summary>
-        /// <inheritdoc cref="Prepend(IPlayable)"/>
+        /// <inheritdoc cref="Prepend(IPlayable)"/> Uses passed <paramref name="order"/> for <paramref name="playable"/>.
         /// </summary>
         /// <param name="order">Element's order.</param>
         /// <param name="playable"><inheritdoc cref="Prepend(IPlayable)"/></param>
@@ -957,14 +957,14 @@ namespace Tweens
         }
 
         /// <summary>
-        /// Wraps <see cref="IPlayable"/> to <see cref="Element"/> and adds it at the end of sequence.
+        /// Adds a <paramref name="playable"/> to the right of all elements in the sequence.
         /// </summary>
-        /// <param name="playable"><see cref="IPlayable"/> to add.</param>
-        /// <returns>Created <see cref="Element"/>.</returns>
+        /// <param name="playable">Playable to add.</param>
+        /// <returns><see cref="Element"/> which represent added <paramref name="playable"/>.</returns>
         public Element Append(IPlayable playable) => Append(_nextOrder, playable);
 
         /// <summary>
-        /// <inheritdoc cref="Append(IPlayable)"/>
+        /// <inheritdoc cref="Append(IPlayable)"/> Uses passed <paramref name="order"/> for <paramref name="playable"/>.
         /// </summary>
         /// <param name="order">Element's order.</param>
         /// <param name="playable"><inheritdoc cref="Append(IPlayable)"/></param>
@@ -972,15 +972,15 @@ namespace Tweens
         public Element Append(int order, IPlayable playable) => Insert(LoopDuration, order, playable);
 
         /// <summary>
-        /// Wraps <see cref="IPlayable"/> to <see cref="Element"/> and adds it at <paramref name="time"/> position of sequence.
+        /// Inserts a <paramref name="playable"/> into the specified <paramref name="time"/> of the sequence
         /// </summary>
         /// <param name="time">The time at which playback of the element begins.</param>
-        /// <param name="playable"><see cref="IPlayable"/> to add.</param>
-        /// <returns>Created <see cref="Element"/>.</returns>
+        /// <param name="playable">Playable to add.</param>
+        /// <returns><see cref="Element"/> which represent added <paramref name="playable"/>.</returns>
         public Element Insert(float time, IPlayable playable) => Insert(time, _nextOrder, playable);
 
         /// <summary>
-        /// <inheritdoc cref="Insert(float, IPlayable)"/>
+        /// <inheritdoc cref="Insert(float, IPlayable)"/> Uses passed <paramref name="order"/> for <paramref name="playable"/>.
         /// </summary>
         /// <param name="time"><inheritdoc cref="Insert(float, IPlayable)" path="/param[@name='time']"/></param>
         /// <param name="order">Element's order.</param>
@@ -1027,14 +1027,14 @@ namespace Tweens
 
         #region Adding callbacks
         /// <summary>
-        /// Wraps <paramref name="callback"/> to <see cref="Callback"/> class, then <see cref="Callback"/> to <see cref="Element"/> and adds it to leftmost position of sequence (moves all elements to right).
+        /// Adds a <paramref name="callback"/> to the left of all elements in a sequence.
         /// </summary>
         /// <param name="callback">Callback to add.</param>
-        /// <returns>Created <see cref="Element"/>.</returns>
+        /// <returns><see cref="Element"/> which represent added <paramref name="callback"/>.</returns>
         public Element PrependCallback(Action callback) => PrependCallback(_nextOrder, callback);
 
         /// <summary>
-        /// <inheritdoc cref="PrependCallback(Action)"/>
+        /// <inheritdoc cref="PrependCallback(Action)"/> Uses passed <paramref name="order"/> for <paramref name="callback"/>.
         /// </summary>
         /// <param name="order">Element's order.</param>
         /// <param name="callback"><inheritdoc cref="PrependCallback(Action)"/></param>
@@ -1044,13 +1044,13 @@ namespace Tweens
         /// <summary>
         /// <inheritdoc cref="PrependCallback(Action)"/>
         /// </summary>
-        /// <param name="name">Name of the callback.</param>
+        /// <param name="name">Callback's name.</param>
         /// <param name="callback"><inheritdoc cref="PrependCallback(Action)"/></param>
         /// <returns><inheritdoc cref="PrependCallback(Action)"/></returns>
         public Element PrependCallback(string name, Action callback) => PrependCallback(_nextOrder, name, callback);
 
         /// <summary>
-        /// <inheritdoc cref="PrependCallback(Action)"/>
+        /// <inheritdoc cref="PrependCallback(Action)"/> Uses passed <paramref name="order"/> for <paramref name="callback"/>.
         /// </summary>
         /// <param name="order"><inheritdoc cref="PrependCallback(int, Action)" path="/param[@name='order']"/></param>
         /// <param name="name"><inheritdoc cref="PrependCallback(string, Action)" path="/param[@name='name']"/></param>
@@ -1059,13 +1059,14 @@ namespace Tweens
         public Element PrependCallback(int order, string name, Action callback) => InsertCallback(GetLeftmostElement()?.StartTime ?? 0f, order, name, callback);
 
         /// <summary>
-        /// Wraps <paramref name="callback"/> to <see cref="Callback"/> class, then <see cref="Callback"/> to <see cref="Element"/> and adds it to the end of sequence.
+        /// Adds a <paramref name="callback"/> to the right of all items in a sequence.
         /// </summary>
         /// <param name="callback">Callback to add.</param>
+        /// <returns><see cref="Element"/> which represent added <paramref name="callback"/>.</returns>
         public Element AppendCallback(Action callback) => AppendCallback(_nextOrder, callback);
 
         /// <summary>
-        /// <inheritdoc cref="AppendCallback(Action)"/>
+        /// <inheritdoc cref="AppendCallback(Action)"/> Uses passed <paramref name="order"/> for <paramref name="callback"/>.
         /// </summary>
         /// <param name="order">Element's order.</param>
         /// <param name="callback"><inheritdoc cref="AppendCallback(Action)"/></param>
@@ -1075,13 +1076,13 @@ namespace Tweens
         /// <summary>
         /// <inheritdoc cref="AppendCallback(Action)"/>
         /// </summary>
-        /// <param name="name">Name of the callback.</param>
+        /// <param name="name">Callback's name.</param>
         /// <param name="callback"><inheritdoc cref="AppendCallback(Action)"/></param>
         /// <returns><inheritdoc cref="AppendCallback(Action)"/></returns>
         public Element AppendCallback(string name, Action callback) => AppendCallback(_nextOrder, name, callback);
 
         /// <summary>
-        /// <inheritdoc cref="AppendCallback(Action)"/>
+        /// <inheritdoc cref="AppendCallback(Action)"/> Uses passed <paramref name="order"/> for <paramref name="callback"/>.
         /// </summary>
         /// <param name="order"><inheritdoc cref="AppendCallback(int, Action)" path="/param[@name='order']"/></param>
         /// <param name="name"><inheritdoc cref="AppendCallback(string, Action)" path="/param[@name='name']"/></param>
@@ -1089,26 +1090,89 @@ namespace Tweens
         /// <returns><inheritdoc cref="AppendCallback(Action)"/></returns>
         public Element AppendCallback(int order, string name, Action callback) => InsertCallback(LoopDuration, order, name, callback);
 
+        /// <summary>
+        /// Inserts a <paramref name="callback"/> into the specified <paramref name="time"/> of the sequence.
+        /// </summary>
+        /// <param name="time">Time where to insert.</param>
+        /// <param name="callback">Callback to add.</param>
+        /// <returns><see cref="Element"/> which represent inserted <paramref name="callback"/>.</returns>
         public Element InsertCallback(float time, Action callback) => InsertCallback(time, _nextOrder, callback);
 
+        /// <summary>
+        /// <inheritdoc cref="InsertCallback(float, Action)"/> Uses passed <paramref name="order"/> for <paramref name="callback"/>.
+        /// </summary>
+        /// <param name="time"><inheritdoc cref="InsertCallback(float, Action)" path="/param[@name='time']"/></param>
+        /// <param name="order">Element's order.</param>
+        /// <param name="callback"><inheritdoc cref="InsertCallback(float, Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="InsertCallback(float, Action)"/></returns>
         public Element InsertCallback(float time, int order, Action callback) => InsertCallback(time, order, null, callback);
 
+        /// <summary>
+        /// <inheritdoc cref="InsertCallback(float, Action)"/>
+        /// </summary>
+        /// <param name="time"><inheritdoc cref="InsertCallback(float, Action)" path="/param[@name='time']"/></param>
+        /// <param name="name">Callback's name</param>
+        /// <param name="callback"><inheritdoc cref="InsertCallback(float, Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="InsertCallback(float, Action)"/></returns>
         public Element InsertCallback(float time, string name, Action callback) => InsertCallback(time, _nextOrder, name, callback);
 
+        /// <summary>
+        /// <inheritdoc cref="InsertCallback(float, Action)"/> Uses passed <paramref name="order"/> for <paramref name="callback"/>.
+        /// </summary>
+        /// <param name="time"><inheritdoc cref="InsertCallback(float, Action)" path="/param[@name='time']"/></param>
+        /// <param name="order"><inheritdoc cref="InsertCallback(float, int, Action)" path="/param[@name='order']"/></param>
+        /// <param name="name"><inheritdoc cref="InsertCallback(float, string, Action)" path="/param[@name='name']"/></param>
+        /// <param name="callback"><inheritdoc cref="InsertCallback(float, Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="InsertCallback(float, Action)"/></returns>
         public Element InsertCallback(float time, int order, string name, Action callback) => Insert(time, order, new Callback(name, callback));
         #endregion
 
         #region Adding intervals
+        /// <summary>
+        /// Adds an empty <see cref="Interval"/> to the left of all elements in the sequence.
+        /// </summary>
+        /// <param name="duration">Interval length in seconds.</param>
+        /// <returns><see cref="Element"/> which represent the interval.</returns>
         public Element PrependInterval(float duration) => PrependInterval(null, duration);
 
+        /// <summary>
+        /// <inheritdoc cref="PrependInterval(float)"/>
+        /// </summary>
+        /// <param name="name">Interval's name.</param>
+        /// <param name="duration"><inheritdoc cref="PrependInterval(float)"/></param>
+        /// <returns><inheritdoc cref="PrependInterval(float)"/></returns>
         public Element PrependInterval(string name, float duration) => Prepend(new Interval(name, duration));
 
+        /// <summary>
+        /// Adds an empty <see cref="Interval"/> to the right of all elements in the sequence.
+        /// </summary>
+        /// <param name="duration">Interval length in seconds.</param>
+        /// <returns><see cref="Element"/> which represent the interval.</returns>
         public Element AppendInterval(float duration) => AppendInterval(null, duration);
 
+        /// <summary>
+        /// <inheritdoc cref="AppendInterval(float)"/>
+        /// </summary>
+        /// <param name="name">Interval's name.</param>
+        /// <param name="duration"><inheritdoc cref="AppendInterval(float)"/></param>
+        /// <returns><inheritdoc cref="AppendInterval(float)"/></returns>
         public Element AppendInterval(string name, float duration) => Append(new Interval(name, duration));
 
+        /// <summary>
+        /// Inserts an empty <see cref="Interval"/> into the specified <paramref name="time"/> of the sequence.
+        /// </summary>
+        /// <param name="time">Time where to insert.</param>
+        /// <param name="duration">Interval length in seconds.</param>
+        /// <returns><see cref="Element"/> which represent the interval.</returns>
         public Element InsertInterval(float time, float duration) => InsertInterval(time, null, duration);
 
+        /// <summary>
+        /// <inheritdoc cref="InsertInterval(float, float)"/>
+        /// </summary>
+        /// <param name="time"><inheritdoc cref="InsertInterval(float, float)" path="/param[@name='time']"/></param>
+        /// <param name="name">Interval's name.</param>
+        /// <param name="duration"><inheritdoc cref="InsertInterval(float, float)" path="/param[@name='duration']"/></param>
+        /// <returns><inheritdoc cref="InsertInterval(float, float)"/></returns>
         public Element InsertInterval(float time, string name, float duration) => Insert(time, new Interval(name, duration));
         #endregion
 
@@ -1126,18 +1190,39 @@ namespace Tweens
         }
 
         #region Containing elements
+        /// <summary>
+        /// Checks if there is an element containing a playable with the specified <paramref name="name"/> in the sequence.
+        /// </summary>
+        /// <param name="name">Playable name.</param>
+        /// <returns><see langword="true"/> if element containing a playable with given <paramref name="name"/> exists.</returns>
         public bool Contains(string name) => GetElement(name) != null;
 
+        /// <summary>
+        /// Checks if there is an element containing the specified <paramref name="playable"/> in the sequence.
+        /// </summary>
+        /// <param name="playable">The playable you are looking for.</param>
+        /// <returns><see langword="true"/> if element containing a playable exists.</returns>
         public bool Contains(IPlayable playable) => GetElement(playable) != null;
 
+        /// <summary>
+        /// Checks if the specified <paramref name="element"/> is in the sequence.
+        /// </summary>
+        /// <param name="element">The element you are looking for.</param>
+        /// <returns><see langword="true"/> if element exists.</returns>
         public bool Contains(Element element) => _elements.Contains(element);
         #endregion
 
         #region Geting elements
-        public List<Element> GetElementsAtTime(float time) => _elements.Where(el => time >= el.StartTime && time <= el.EndTime).ToList();
-
+        /// <summary>
+        /// Finds the leftmost element in the sequence.
+        /// </summary>
+        /// <returns>The leftmost element in the sequence.</returns>
         public Element GetLeftmostElement() => _elements.FirstOrDefault(el => el.StartTime == _elements.Min(el => el.StartTime));
 
+        /// <summary>
+        /// Finds the leftmost elements in the sequence.
+        /// </summary>
+        /// <returns>The leftmost elements in the sequence.</returns>
         public List<Element> GetLeftmostElements()
         {
             if (_elements.Count == 0)
@@ -1146,8 +1231,16 @@ namespace Tweens
             return _elements.Where(el => el.StartTime == _elements.Min(el => el.StartTime)).ToList();
         }
 
+        /// <summary>
+        /// Finds the rightmost element in the sequence.
+        /// </summary>
+        /// <returns>Thertightmost element in the sequence.</returns>
         public Element GetRightmostElement() => _elements.FirstOrDefault(el => el.EndTime == _elements.Max(el => el.EndTime));
 
+        /// <summary>
+        /// Finds the rightmost elements in the sequence.
+        /// </summary>
+        /// <returns>The rightmost elements in the sequence.</returns>
         public List<Element> GetRightmostElements()
         {
             if (_elements.Count == 0)
@@ -1156,18 +1249,48 @@ namespace Tweens
             return _elements.Where(el => el.EndTime == _elements.Max(el => el.EndTime)).ToList();
         }
 
+        /// <summary>
+        /// Finds the first element that contains the specified <paramref name="playable"/>.
+        /// </summary>
+        /// <param name="playable">The playable you are looking for.</param>
+        /// <returns>Element that contains the specified playable.</returns>
         public Element GetElement(IPlayable playable) => _elements.FirstOrDefault(el => el.Playable == playable);
 
+        /// <summary>
+        /// Finds all elements that contains the specified <paramref name="playable"/>.
+        /// </summary>
+        /// <param name="playable">The playable you are looking for.</param>
+        /// <returns>Elements that contains the specified playable.</returns>
         public List<Element> GetElements(IPlayable playable) => _elements.Where(el => el.Playable == playable).ToList();
 
+        /// <summary>
+        /// Finds the first element that contains playable with the specified <paramref name="name"/>. 
+        /// </summary>
+        /// <param name="name">Playable name.</param>
+        /// <returns>Element that contains playable with the specified <paramref name="name"/>.</returns>
         public Element GetElement(string name) => _elements.FirstOrDefault(el => el.Playable.Name == name);
 
+        /// <summary>
+        /// Finds all elements that contains playable with the specified <paramref name="name"/>. 
+        /// </summary>
+        /// <param name="name">Playable name.</param>
+        /// <returns>Elements that contains playable with the specified <paramref name="name"/>.</returns>
         public List<Element> GetElements(string name) => _elements.Where(el => el.Playable.Name == name).ToList();
 
+        /// <summary>
+        /// Finds an element with the specified <paramref name="order"/>.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns>Element with the specified <paramref name="order"/>.</returns>
         public Element GetElement(int order) => _elements[order];
         #endregion
 
         #region Removing elements
+        /// <summary>
+        /// Deletes all elements with the specified <paramref name="playable"/>.
+        /// </summary>
+        /// <param name="playable">The playable you want to delete.</param>
+        /// <returns>Number of deleted elements.</returns>
         public int Remove(IPlayable playable)
         {
             var elements = GetElements(playable);
@@ -1176,6 +1299,11 @@ namespace Tweens
             return elements.Count;
         }
 
+        /// <summary>
+        /// Deletes all elements with the specified <paramref name="playables"/>.
+        /// </summary>
+        /// <param name="playables">The playables you want to delete.</param>
+        /// <returns>Number of deleted elements.</returns>
         public int Remove(IEnumerable<IPlayable> playables)
         {
             var count = 0;
@@ -1186,8 +1314,18 @@ namespace Tweens
             return count;
         }
 
+        /// <summary>
+        /// <inheritdoc cref="Remove(IEnumerable{IPlayable})"/>
+        /// </summary>
+        /// <param name="playables"><inheritdoc cref="Remove(IEnumerable{IPlayable})"/></param>
+        /// <returns><inheritdoc cref="Remove(IEnumerable{IPlayable})"/></returns>
         public int Remove(params IPlayable[] playables) => Remove((IEnumerable<IPlayable>)playables);
 
+        /// <summary>
+        /// Deletes all elements containings a playable with the specified <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">Playable's name you want to delete.</param>
+        /// <returns>Number of deleted elements.</returns>
         public int Remove(string name)
         {
             var elements = GetElements(name);
@@ -1196,6 +1334,11 @@ namespace Tweens
             return elements.Count;
         }
 
+        /// <summary>
+        /// Deletes all elements containings a playables with the specified <paramref name="names"/>.
+        /// </summary>
+        /// <param name="names">Playables names you want to delete.</param>
+        /// <returns>Number of deleted elements.</returns>
         public int Remove(IEnumerable<string> names)
         {
             var count = 0;
@@ -1206,10 +1349,24 @@ namespace Tweens
             return count;
         }
 
+        /// <summary>
+        /// <inheritdoc cref="Remove(IEnumerable{string})"/>
+        /// </summary>
+        /// <param name="names"><inheritdoc cref="Remove(IEnumerable{string})"/></param>
+        /// <returns><inheritdoc cref="Remove(IEnumerable{string})"/></returns>
         public int Remove(params string[] names) => Remove((IEnumerable<string>)names);
 
+        /// <summary>
+        /// Deletes the element with the specified order.
+        /// </summary>
+        /// <param name="order">Element's order you want to delete.</param>
         public void Remove(int order) => RemoveElement(GetElement(order));
 
+        /// <summary>
+        /// Deletes the element.
+        /// </summary>
+        /// <param name="element">Element you want to delete.</param>
+        /// <exception cref="ArgumentException">Throwed when element not exist in sequence.</exception>
         public void Remove(Element element)
         {
             if (!_elements.Contains(element))
@@ -1218,14 +1375,27 @@ namespace Tweens
             RemoveElement(element);
         }
 
+        /// <summary>
+        /// Deletes elements.
+        /// </summary>
+        /// <param name="elements">Elements you want to delete.</param>
         public void Remove(IEnumerable<Element> elements)
         {
             foreach (var element in elements)
                 Remove(element);
         }
 
+        /// <summary>
+        /// <inheritdoc cref="Remove(IEnumerable{Element})"/>
+        /// </summary>
+        /// <param name="elements"><inheritdoc cref="Remove(IEnumerable{Element})"/></param>
         public void Remove(params Element[] elements) => Remove((IEnumerable<Element>)elements);
 
+        /// <summary>
+        /// Deletes elements that satisfy the condition.
+        /// </summary>
+        /// <param name="predicate">The condition.</param>
+        /// <returns>Number of deleted elements.</returns>
         public int RemoveAll(Predicate<Element> predicate)
         {
             var count = 0;
@@ -1245,6 +1415,10 @@ namespace Tweens
             return count;
         }
 
+        /// <summary>
+        /// Delete all elements.
+        /// </summary>
+        /// <returns>Number of deleted elements</returns>
         public int Clear()
         {
             var removed = _elements.Count;
