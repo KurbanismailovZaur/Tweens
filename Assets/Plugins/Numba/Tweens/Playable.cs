@@ -263,6 +263,7 @@ namespace Tweens
     /// </summary>
     public abstract class Playable : IPlayable
     {
+        #region Repeater
         /// <summary>
         /// Represent repeater for any playable.
         /// </summary>
@@ -474,6 +475,7 @@ namespace Tweens
 
             public YieldAwaiter WaitForPlay() => new PlayAwaiter(this);
         }
+        #endregion
 
         #region State
         public abstract Type Type { get; }
@@ -741,219 +743,6 @@ namespace Tweens
         #endregion
 
         protected virtual void BeforeStarting(Direction direction, int loop, int parentContinueLoopIndex, int continueMaxLoopsCount) { }
-
-        #region Phase events partial handlers
-        private void RewindZeroHandlerAndUnlock(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            RewindZeroHandler(loop, loopedNormalizedTime, direction, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
-            _locked = false;
-        }
-
-        private void RewindHandlerAndUnlock(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            RewindHandler(loop, loopedNormalizedTime, direction, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
-            _locked = false;
-        }
-
-        #region Zero duration
-        internal void HandlePhaseStartZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseStarting(direction);
-            RewindZeroHandlerAndUnlock(0, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseStarted(direction);
-        }
-
-        internal void HandlePhaseFirstLoopStartZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            CallPhaseLoopStarting(0, direction);
-            RewindZeroHandlerAndUnlock(0, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseLoopStarted(0, direction);
-        }
-
-        internal void HandlePhaseLoopCompleteZeroed(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            CallPhaseLoopCompleting(loop, direction);
-            RewindZeroHandlerAndUnlock(loop, 1f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseLoopCompleted(loop, direction);
-        }
-
-        internal void HandlePhaseLoopStartZeroed(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseLoopStarting(loop, direction);
-            RewindZeroHandlerAndUnlock(loop, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseLoopStarted(loop, direction);
-        }
-
-        internal void HandlePhaseLoopUpdateZeroed(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            CallPhaseUpdating(loop + 0.5f, direction);
-            CallPhaseLoopUpdating(loop, 0.5f, direction);
-            RewindZeroHandlerAndUnlock(loop, 0.5f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseLoopUpdated(loop, 0.5f, direction);
-            CallPhaseUpdated(loop + 0.5f, direction);
-        }
-
-        internal void HandlePhaseCompleteZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            CallPhaseCompleting(direction);
-            RewindZeroHandlerAndUnlock(LoopsCount - 1, 1f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseCompleted(direction);
-        }
-        #endregion
-
-        #region Zero duration, no events
-        internal void HandlePhaseStartZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
-            RewindZeroHandlerAndUnlock(0, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-        }
-
-        internal void HandlePhaseFirstLoopStartZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            RewindZeroHandlerAndUnlock(0, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-        }
-
-        internal void HandlePhaseLoopCompleteZeroedNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            RewindZeroHandlerAndUnlock(loop, 1f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-        }
-
-        internal void HandlePhaseLoopStartZeroedNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
-            RewindZeroHandlerAndUnlock(loop, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-        }
-
-        internal void HandlePhaseLoopUpdateZeroedNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            RewindZeroHandlerAndUnlock(loop, 0.5f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-        }
-
-        internal void HandlePhaseCompleteZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            RewindZeroHandlerAndUnlock(LoopsCount - 1, 1f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-        }
-        #endregion
-
-        #region Non zero duration
-        internal void HandlePhaseStart(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseStarting(direction);
-            RewindHandlerAndUnlock(0, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseStarted(direction);
-        }
-
-        internal void HandlePhaseFirstLoopStart(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            CallPhaseLoopStarting(0, direction);
-            RewindHandlerAndUnlock(0, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseLoopStarted(0, direction);
-        }
-
-        internal void HandlePhaseLoopComplete(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            CallPhaseLoopCompleting(loop, direction);
-            RewindHandlerAndUnlock(loop, LoopDuration, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-
-            PlayedTime = loop * LoopDuration + LoopDuration;
-            if (direction == Direction.Backward)
-                PlayedTime = Duration - PlayedTime;
-
-            CallPhaseLoopCompleted(loop, direction);
-        }
-
-        internal void HandlePhaseLoopStart(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseLoopStarting(loop, direction);
-            RewindHandlerAndUnlock(loop, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseLoopStarted(loop, direction);
-        }
-
-        internal void HandlePhaseLoopUpdate(float endTime, int loop, float loopedTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            CallPhaseUpdating(endTime, direction);
-            CallPhaseLoopUpdating(loop, loopedTime, direction);
-            RewindHandlerAndUnlock(loop, loopedTime, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            PlayedTime = direction == Direction.Forward ? endTime : Duration - endTime;
-            CallPhaseLoopUpdated(loop, loopedTime, direction);
-            CallPhaseUpdated(endTime, direction);
-        }
-
-        internal void HandlePhaseComplete(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            CallPhaseCompleting(direction);
-            RewindHandlerAndUnlock(LoopsCount - 1, LoopDuration, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
-            CallPhaseCompleted(direction);
-        }
-        #endregion
-
-        #region Non zero duration, no events
-        internal void HandlePhaseStartNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
-            RewindHandlerAndUnlock(0, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-        }
-
-        internal void HandlePhaseFirstLoopStartNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            RewindHandlerAndUnlock(0, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-        }
-
-        internal void HandlePhaseLoopCompleteNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            RewindHandlerAndUnlock(loop, LoopDuration, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-
-            PlayedTime = loop * LoopDuration + LoopDuration;
-            if (direction == Direction.Backward)
-                PlayedTime = Duration - PlayedTime;
-        }
-
-        internal void HandlePhaseLoopStartNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
-            RewindHandlerAndUnlock(loop, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-        }
-
-        internal void HandlePhaseLoopUpdateNoEvents(float endTime, int loop, float loopedTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            RewindHandlerAndUnlock(loop, loopedTime, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-            PlayedTime = direction == Direction.Forward ? endTime : Duration - endTime;
-        }
-
-        internal void HandlePhaseCompleteNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
-        {
-            TryLock();
-            RewindHandlerAndUnlock(LoopsCount - 1, LoopDuration, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
-        }
-        #endregion
-        #endregion
 
         #region Rewinds
         public Playable RewindToStart(bool emitEvents = true) => RewindToStart(0, 1, emitEvents);
@@ -1259,6 +1048,219 @@ namespace Tweens
         protected virtual void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount) { }
 
         protected virtual void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount) { }
+        #endregion
+
+        #region Phase events partial handlers
+        private void RewindZeroHandlerAndUnlock(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            RewindZeroHandler(loop, loopedNormalizedTime, direction, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
+            _locked = false;
+        }
+
+        private void RewindHandlerAndUnlock(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            RewindHandler(loop, loopedNormalizedTime, direction, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
+            _locked = false;
+        }
+
+        #region Zero duration
+        internal void HandlePhaseStartZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseStarting(direction);
+            RewindZeroHandlerAndUnlock(0, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseStarted(direction);
+        }
+
+        internal void HandlePhaseFirstLoopStartZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            CallPhaseLoopStarting(0, direction);
+            RewindZeroHandlerAndUnlock(0, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseLoopStarted(0, direction);
+        }
+
+        internal void HandlePhaseLoopCompleteZeroed(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            CallPhaseLoopCompleting(loop, direction);
+            RewindZeroHandlerAndUnlock(loop, 1f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseLoopCompleted(loop, direction);
+        }
+
+        internal void HandlePhaseLoopStartZeroed(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseLoopStarting(loop, direction);
+            RewindZeroHandlerAndUnlock(loop, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseLoopStarted(loop, direction);
+        }
+
+        internal void HandlePhaseLoopUpdateZeroed(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            CallPhaseUpdating(loop + 0.5f, direction);
+            CallPhaseLoopUpdating(loop, 0.5f, direction);
+            RewindZeroHandlerAndUnlock(loop, 0.5f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseLoopUpdated(loop, 0.5f, direction);
+            CallPhaseUpdated(loop + 0.5f, direction);
+        }
+
+        internal void HandlePhaseCompleteZeroed(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            CallPhaseCompleting(direction);
+            RewindZeroHandlerAndUnlock(LoopsCount - 1, 1f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseCompleted(direction);
+        }
+        #endregion
+
+        #region Zero duration, no events
+        internal void HandlePhaseStartZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindZeroHandlerAndUnlock(0, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+
+        internal void HandlePhaseFirstLoopStartZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            RewindZeroHandlerAndUnlock(0, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+
+        internal void HandlePhaseLoopCompleteZeroedNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            RewindZeroHandlerAndUnlock(loop, 1f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+
+        internal void HandlePhaseLoopStartZeroedNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindZeroHandlerAndUnlock(loop, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+
+        internal void HandlePhaseLoopUpdateZeroedNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            RewindZeroHandlerAndUnlock(loop, 0.5f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+
+        internal void HandlePhaseCompleteZeroedNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            RewindZeroHandlerAndUnlock(LoopsCount - 1, 1f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+        #endregion
+
+        #region Non zero duration
+        internal void HandlePhaseStart(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseStarting(direction);
+            RewindHandlerAndUnlock(0, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseStarted(direction);
+        }
+
+        internal void HandlePhaseFirstLoopStart(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            CallPhaseLoopStarting(0, direction);
+            RewindHandlerAndUnlock(0, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseLoopStarted(0, direction);
+        }
+
+        internal void HandlePhaseLoopComplete(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            CallPhaseLoopCompleting(loop, direction);
+            RewindHandlerAndUnlock(loop, LoopDuration, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+
+            PlayedTime = loop * LoopDuration + LoopDuration;
+            if (direction == Direction.Backward)
+                PlayedTime = Duration - PlayedTime;
+
+            CallPhaseLoopCompleted(loop, direction);
+        }
+
+        internal void HandlePhaseLoopStart(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseLoopStarting(loop, direction);
+            RewindHandlerAndUnlock(loop, 0f, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseLoopStarted(loop, direction);
+        }
+
+        internal void HandlePhaseLoopUpdate(float endTime, int loop, float loopedTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            CallPhaseUpdating(endTime, direction);
+            CallPhaseLoopUpdating(loop, loopedTime, direction);
+            RewindHandlerAndUnlock(loop, loopedTime, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            PlayedTime = direction == Direction.Forward ? endTime : Duration - endTime;
+            CallPhaseLoopUpdated(loop, loopedTime, direction);
+            CallPhaseUpdated(endTime, direction);
+        }
+
+        internal void HandlePhaseComplete(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            CallPhaseCompleting(direction);
+            RewindHandlerAndUnlock(LoopsCount - 1, LoopDuration, direction, true, parentContinueLoopIndex, continueMaxLoopsCount);
+            CallPhaseCompleted(direction);
+        }
+        #endregion
+
+        #region Non zero duration, no events
+        internal void HandlePhaseStartNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            BeforeStarting(direction, 0, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindHandlerAndUnlock(0, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+
+        internal void HandlePhaseFirstLoopStartNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            RewindHandlerAndUnlock(0, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+
+        internal void HandlePhaseLoopCompleteNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            RewindHandlerAndUnlock(loop, LoopDuration, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+
+            PlayedTime = loop * LoopDuration + LoopDuration;
+            if (direction == Direction.Backward)
+                PlayedTime = Duration - PlayedTime;
+        }
+
+        internal void HandlePhaseLoopStartNoEvents(int loop, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            BeforeStarting(direction, loop, parentContinueLoopIndex, continueMaxLoopsCount);
+            RewindHandlerAndUnlock(loop, 0f, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+
+        internal void HandlePhaseLoopUpdateNoEvents(float endTime, int loop, float loopedTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            RewindHandlerAndUnlock(loop, loopedTime, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+            PlayedTime = direction == Direction.Forward ? endTime : Duration - endTime;
+        }
+
+        internal void HandlePhaseCompleteNoEvents(Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
+        {
+            TryLock();
+            RewindHandlerAndUnlock(LoopsCount - 1, LoopDuration, direction, false, parentContinueLoopIndex, continueMaxLoopsCount);
+        }
+        #endregion
         #endregion
 
         #region Skips

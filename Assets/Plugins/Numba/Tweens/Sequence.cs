@@ -1652,6 +1652,15 @@ namespace Tweens
         #endregion
 
         #region Rewind
+        private void CheckAndIncreaseContinueParameters(ref int parentContinueLoopIndex, ref int continueMaxLoopsCount, int loop)
+        {
+            if (LoopType != LoopType.Continue)
+                return;
+
+            parentContinueLoopIndex = parentContinueLoopIndex * LoopsCount + loop;
+            continueMaxLoopsCount *= LoopsCount;
+        }
+
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             // This is avoid situation when we jump to the same position.
@@ -1667,11 +1676,7 @@ namespace Tweens
             // If sequence is empty, than there is nothing to handle.
             if (_chronolines.Count != 0)
             {
-                if (LoopType == LoopType.Continue)
-                {
-                    parentContinueLoopIndex = parentContinueLoopIndex * LoopsCount + loop;
-                    continueMaxLoopsCount *= LoopsCount;
-                }
+                CheckAndIncreaseContinueParameters(ref parentContinueLoopIndex, ref continueMaxLoopsCount, loop);
 
                 if (LoopType != LoopType.Mirror)
                     // It is not matter what chain (forward or backward) we use when sequence is zeroed.
@@ -1822,6 +1827,8 @@ namespace Tweens
             }
             #endregion
 
+            Chronoline lastChronoline = null;
+
             if (direction == Direction.Forward)
             {
                 var nextPlayedTime = loop * LoopDuration + loopedTime;
@@ -1830,15 +1837,10 @@ namespace Tweens
                 if (nextPlayedTime == PlayedTime)
                     return;
 
-                if (LoopType == LoopType.Continue)
-                {
-                    parentContinueLoopIndex = parentContinueLoopIndex * LoopsCount + loop;
-                    continueMaxLoopsCount *= LoopsCount;
-                }
+                CheckAndIncreaseContinueParameters(ref parentContinueLoopIndex, ref continueMaxLoopsCount, loop);
 
                 var loopedPlayedTime = PlayedTime % LoopDuration;
-                Chronoline lastChronoline = null;
-
+                
                 if (LoopType != LoopType.Mirror)
                 {
                     if (!RemapTimes(loopedPlayedTime, loopedTime, Formula, out (float loopedPlayedTime, float loopedTime) remaped))
@@ -1882,14 +1884,9 @@ namespace Tweens
                 if (nextPlayedTime == PlayedTime)
                     return;
 
-                if (LoopType == LoopType.Continue)
-                {
-                    parentContinueLoopIndex = parentContinueLoopIndex * LoopsCount + loop;
-                    continueMaxLoopsCount *= LoopsCount;
-                }
+                CheckAndIncreaseContinueParameters(ref parentContinueLoopIndex, ref continueMaxLoopsCount, loop);
 
                 var loopedPlayedTime = LoopDuration - LoopTime(PlayedTime);
-                Chronoline lastChronoline = null;
 
                 if (LoopType != LoopType.Mirror)
                 {
