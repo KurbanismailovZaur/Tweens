@@ -1493,6 +1493,54 @@ namespace Tweens
         }
         #endregion
 
+        #region Swaping elements
+        /// <summary>
+        /// Swaps two elements by theys orders.
+        /// </summary>
+        /// <param name="orderA">Order of first element.</param>
+        /// <param name="orderB">Order of second element.</param>
+        public void Swap(int orderA, int orderB)
+        {
+            if (orderA == orderB)
+                return;
+
+            if (orderA > orderB)
+                (orderA, orderB) = (orderB, orderA);
+
+            var (elementA, elementB) = (GetElement(orderA), GetElement(orderB));
+
+            RemoveElement(elementA);
+            RemoveElement(elementB);
+
+            (elementA.Order, elementB.Order) = (orderB, orderA);
+
+            InsertElement(elementB);
+            InsertElement(elementA);
+        }
+
+        /// <summary>
+        /// Swaps two elements.
+        /// </summary>
+        /// <param name="elementA">First element.</param>
+        /// <param name="elementB">Second element.</param>
+        public void Swap(Element elementA, Element elementB)
+        {
+            if (elementA == elementB)
+                return;
+
+            if (elementA.Order > elementB.Order)
+                (elementA, elementB) = (elementB, elementA);
+
+            Remove(elementA);
+            Remove(elementB);
+
+            (elementA.Order, elementB.Order) = (elementB.Order, elementA.Order);
+
+            InsertElement(elementB);
+            InsertElement(elementA);
+        }
+        #endregion
+
         #region Before loop starting
         protected override void BeforeStarting(Direction direction, int loop, int parentContinueLoopIndex, int continueMaxLoopsCount) => BeforeStarting(direction, LoopResetBehaviour, loop, parentContinueLoopIndex, continueMaxLoopsCount);
 
@@ -1840,7 +1888,7 @@ namespace Tweens
                 CheckAndIncreaseContinueParameters(ref parentContinueLoopIndex, ref continueMaxLoopsCount, loop);
 
                 var loopedPlayedTime = PlayedTime % LoopDuration;
-                
+
                 if (LoopType != LoopType.Mirror)
                 {
                     if (!RemapTimes(loopedPlayedTime, loopedTime, Formula, out (float loopedPlayedTime, float loopedTime) remaped))

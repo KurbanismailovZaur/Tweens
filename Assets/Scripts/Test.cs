@@ -56,17 +56,22 @@ namespace Tweens
             playable.OnPhaseCompleted((p, dir) => print($"[{p.Name}] Phase completed in {dir} direction"));
         }
 
-        IEnumerator Start()
+        void Start()
         {
-            yield return new WaitForSeconds(1f);
+            Coroutine.Run(RotateEnumerable());
+        }
 
-            var sequence = new Sequence(Formula.Linear, 2, LoopType.Continue);
-            sequence.Append(new Tween<Vector3, TweakVector3>(Vector3.zero, new Vector3(0f, 1f, 1f), pos => _target0.position = pos, 0.5f));
-            sequence.Append(new Tween<Vector3, TweakVector3>(new Vector3(0f, 1f, 1f), new Vector3(0f, 0f, 2f), pos => _target0.position = pos, 0.5f));
+        IEnumerable RotateEnumerable()
+        {
+            var targetZ = transform.eulerAngles.z + 180f;
 
-            sequence.Play();
+            while (transform.eulerAngles.z < targetZ)
+            {
+                transform.Rotate(0f, 0f, 90f * Time.deltaTime);
+                yield return null;
+            }
 
-            //seq.PlayBackward();
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, targetZ);
         }
     }
 }
