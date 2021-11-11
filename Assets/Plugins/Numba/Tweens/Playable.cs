@@ -15,6 +15,11 @@ namespace Tweens
     {
         #region State
         /// <summary>
+        /// The object that owns this playable.
+        /// </summary>
+        GameObject Owner { get; }
+
+        /// <summary>
         /// Type of the playable.
         /// </summary>
         Type Type { get; }
@@ -478,6 +483,8 @@ namespace Tweens
         #endregion
 
         #region State
+        public GameObject Owner => _playingCoroutine.Owner;
+
         public abstract Type Type { get; }
 
         public string Name { get; protected set; }

@@ -4019,7 +4019,7 @@ namespace Tweens
                 if (loopedMirroredNormalizedTime > 1f)
                     loopedMirroredNormalizedTime = 2f - loopedMirroredNormalizedTime;
 
-                Tweak.Apply(from, to, loopedMirroredNormalizedTime, Action, InvertIfRequiredAndGetFormula(direction));
+                Tweak.Apply(from, to, loopedMirroredNormalizedTime, Action, Formula);
             }
         }
     }
