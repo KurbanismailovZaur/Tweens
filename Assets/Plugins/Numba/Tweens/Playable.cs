@@ -1,10 +1,9 @@
-using Coroutines;
-using Coroutines.Exceptions;
+using Moroutines;
+using Moroutines.Exceptions;
 using System;
 using System.Collections;
 using Tweens.Formulas;
 using UnityEngine;
-using Coroutine = Coroutines.Coroutine;
 
 namespace Tweens
 {
@@ -392,7 +391,7 @@ namespace Tweens
             }
             #endregion
 
-            private Coroutine _playingCoroutine;
+            private Moroutine _playingMoroutine;
 
             public T Target { get; private set; }
 
@@ -406,7 +405,7 @@ namespace Tweens
             /// Create repeater.
             /// </summary>
             /// <param name="playable">Target playable.</param>
-            public Repeater(T playable) : this(CoroutinesOwner.Instance.gameObject, playable) { }
+            public Repeater(T playable) : this(MoroutinesOwner.Instance.gameObject, playable) { }
 
             /// <summary>
             /// <inheritdoc cref="Repeater{T}.Repeater(T)"/>
@@ -415,7 +414,7 @@ namespace Tweens
             /// <param name="playable"><inheritdoc cref="Repeater{T}.Repeater(T)" path="/param[@name='playable']"/></param>
             public Repeater(GameObject owner, T playable)
             {
-                _playingCoroutine = Coroutine.Create(owner, PlayRoutine());
+                _playingMoroutine = Moroutine.Create(owner, PlayRoutine());
 
                 Target = playable;
             }
@@ -444,7 +443,7 @@ namespace Tweens
                 else
                 {
                     IsPlaying = true;
-                    _playingCoroutine.Run();
+                    _playingMoroutine.Run();
 
                     _stateCode++;
                 }
@@ -470,7 +469,7 @@ namespace Tweens
                 IsPlaying = false;
                 _stateCode++;
 
-                _playingCoroutine.Reset();
+                _playingMoroutine.Reset();
                 Target.Pause();
 
                 return this;
@@ -483,7 +482,7 @@ namespace Tweens
         #endregion
 
         #region State
-        public GameObject Owner => _playingCoroutine.Owner;
+        public GameObject Owner => _playingMoroutine.Owner;
 
         public abstract Type Type { get; }
 
@@ -617,7 +616,7 @@ namespace Tweens
         #endregion
 
         #region Routines
-        private Coroutine _playingCoroutine;
+        private Moroutine _playingMoroutine;
 
         private float _startTime;
 
@@ -643,7 +642,7 @@ namespace Tweens
             LoopType = loopType;
             Direction = direction;
 
-            _playingCoroutine = Coroutine.Create(owner, PlayRoutine());
+            _playingMoroutine = Moroutine.Create(owner, PlayRoutine());
         }
 
         protected void RecalculateDuration()
@@ -1326,18 +1325,18 @@ namespace Tweens
             if (!IsPlaying)
             {
                 State = State.Playing;
-                _playingCoroutine.Run();
+                _playingMoroutine.Run();
 
                 // It is needed to listen coroutine reseted event,
                 // because someone can turn off or destroy owner object.
                 // In this case Playable need correct handling of self state.
-                _playingCoroutine.Reseted += CoroutineResetObserver;
+                _playingMoroutine.Stoped += MoroutineStopObserver;
             }
 
             return this;
         }
 
-        private void CoroutineResetObserver(Coroutine coroutine) => Reset(false);
+        private void MoroutineStopObserver(Moroutine coroutine) => Pause();
 
         private IEnumerable PlayRoutine()
         {
@@ -1366,9 +1365,9 @@ namespace Tweens
                 throw new PlayControlException($"{Type} \"{Name}\": Can't be paused while not playing");
 
             // Unsubscribe coroutine reseted observer, because it not needed when paused.
-            _playingCoroutine.Reseted -= CoroutineResetObserver;
+            _playingMoroutine.Reseted -= MoroutineStopObserver;
 
-            _playingCoroutine.Stop();
+            _playingMoroutine.Stop();
             State = State.Paused;
 
             return this;
@@ -1385,10 +1384,10 @@ namespace Tweens
             // If Playable in pause state, then it means that observer already unsubscribed.
             // Otherwise we unsubscribe observer.
             if (IsPlaying || IsCompleted)
-                _playingCoroutine.Reseted -= CoroutineResetObserver;
+                _playingMoroutine.Reseted -= MoroutineStopObserver;
 
             if (resetCoroutine)
-                _playingCoroutine.Reset();
+                _playingMoroutine.Reset();
 
             PlayedTime = Direction == Direction.Forward ? 0f : Duration;
             State = State.Reseted;
@@ -1410,11 +1409,11 @@ namespace Tweens
         #endregion
 
         #region Awaiters
-        public YieldAwaiter WaitForComplete() => _playingCoroutine.WaitForComplete();
+        public YieldAwaiter WaitForComplete() => _playingMoroutine.WaitForComplete();
 
-        public YieldAwaiter WaitForPause() => _playingCoroutine.WaitForStop();
+        public YieldAwaiter WaitForPause() => _playingMoroutine.WaitForStop();
 
-        public YieldAwaiter WaitForPlay() => _playingCoroutine.WaitForRun();
+        public YieldAwaiter WaitForPlay() => _playingMoroutine.WaitForRun();
         #endregion
     }
 

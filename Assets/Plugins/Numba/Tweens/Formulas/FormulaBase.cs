@@ -1,18 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using Extensions;
-using Object = UnityEngine.Object;
-using Coroutine = Coroutines.Coroutine;
 
 namespace Tweens.Formulas
 {
-	/// <summary>
-	/// Base class for all formulas
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// Base class for all formulas
+    /// </summary>
+    [Serializable]
 	public abstract class FormulaBase
 	{
 		/// <summary>

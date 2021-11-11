@@ -1,15 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using Extensions;
-using Coroutines;
-using Coroutines.Extensions;
-using Object = UnityEngine.Object;
-using Coroutine = Coroutines.Coroutine;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Tweens.Formulas;
+using UnityEngine;
 
 namespace Tweens
 {

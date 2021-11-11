@@ -1,19 +1,11 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 using Extensions;
-using Coroutines;
-using Coroutines.Extensions;
-using Object = UnityEngine.Object;
-using Coroutine = Coroutines.Coroutine;
-using Tweens.Tweaks;
 using Tweens.Formulas;
+using Tweens.Tweaks;
+using UnityEngine;
 
 namespace Tweens
 {
-	public static class TransformExtensions
+    public static class TransformExtensions
 	{
 		public static Tween<float, TweakFloat> DoMoveX(this Transform transform, float x, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
 		{

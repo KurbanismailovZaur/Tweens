@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Coroutines
+namespace Moroutines
 {
     public abstract class YieldAwaiter : YieldInstruction, IEnumerator
     {

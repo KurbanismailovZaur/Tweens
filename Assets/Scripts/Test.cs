@@ -1,16 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+using Moroutines;
 using UnityEngine;
-using Extensions;
-using Coroutines;
-using Coroutines.Extensions;
-using Object = UnityEngine.Object;
-using Coroutine = Coroutines.Coroutine;
-using Tweens.Tweaks;
-using Tweens;
-using Tweens.Formulas;
 
 namespace Tweens
 {
@@ -29,7 +18,7 @@ namespace Tweens
         {
             var tween = _target.DoMoveX(3f, 3f, Formula.InBounce, 2, LoopType.Mirror).Play();
 
-            Coroutine.Run(Routines.Delay(5f, () => tween.Play()));
+            Moroutine.Run(Routines.Delay(5f, () => tween.Play()));
         }
     }
 }
