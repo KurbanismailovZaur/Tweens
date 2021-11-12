@@ -66,7 +66,7 @@ namespace Tweens
             return matrix;
         }
 
-        public static Quaternion Quaternion(Quaternion from, Quaternion to, float interpolation) => UnityEngine.Quaternion.LerpUnclamped(from, to, interpolation);
+        public static Quaternion Quaternion(Quaternion from, Quaternion to, float interpolation) => UnityEngine.Quaternion.SlerpUnclamped(from, to, interpolation);
 
         public static Rect Rect(Rect from, Rect to, float interpolation) => new Rect(Vector2(from.position, to.position, interpolation), Vector2(from.size, to.size, interpolation));
     }
