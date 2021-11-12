@@ -14,7 +14,7 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            _target.DoRotation(Quaternion.LookRotation(Vector3.right, Vector3.back), 1f, Formula.InBounce, 2, LoopType.Continue).Play();
+            _target.DoRotation(Quaternion.LookRotation(Vector3.right, Vector3.back), 1f, Formula.InBounce, 2, LoopType.Continue).SetTweakInterpolationType(InterpolationType.Spherical).Play();
         }
     }
 }

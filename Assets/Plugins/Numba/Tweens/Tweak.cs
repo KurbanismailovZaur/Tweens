@@ -31,4 +31,16 @@ namespace Tweens
         /// <param name="formula"><inheritdoc cref="Tweak{T}.Evaluate" path="/param[@name='formula']"/></param>
         public void Apply(T from, T to, float interpolation, Action<T> action, FormulaBase formula = null) => action(Evaluate(from, to, interpolation, formula));
     }
+
+    /// <summary>
+    /// Gives control around what type of interpolation need to use when tweaks values.
+    /// </summary>
+    /// <typeparam name="T">Type which represent direction.</typeparam>
+    public abstract class TweakDirectional<T> : Tweak<T> where T : struct
+    {
+        /// <summary>
+        /// Interpolation type which will used when tweak values.
+        /// </summary>
+        public InterpolationType InterpolationType { get; set; }
+    }
 }

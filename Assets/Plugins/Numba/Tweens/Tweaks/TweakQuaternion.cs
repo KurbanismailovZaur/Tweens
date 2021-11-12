@@ -6,8 +6,10 @@ using UnityEngine;
 
 namespace Tweens.Tweaks
 {
-    public sealed class TweakQuaternion : Tweak<Quaternion>
+    public sealed class TweakQuaternion : TweakDirectional<Quaternion>
     {
-        protected override Quaternion Interpolate(Quaternion from, Quaternion to, float interpolation) => Lerp.Quaternion(from, to, interpolation);
+        public TweakQuaternion() => InterpolationType = InterpolationType.Spherical;
+
+        protected override Quaternion Interpolate(Quaternion from, Quaternion to, float interpolation) => Lerp.Quaternion(from, to, interpolation, InterpolationType);
     }
 }

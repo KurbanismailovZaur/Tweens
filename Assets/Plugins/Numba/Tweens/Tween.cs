@@ -3939,6 +3939,19 @@ namespace Tweens
         }
         #endregion
 
+        /// <summary>
+        /// Set tweak interpolation type if tweak inherited by TweakDirectional<![CDATA[<]]>T<![CDATA[>]]>.
+        /// </summary>
+        /// <param name="type">Interpolation type to set.</param>
+        /// <returns>The tween.</returns>
+        public Tween<T, U> SetTweakInterpolationType(InterpolationType type)
+        {
+            if (Tweak is TweakDirectional<T> tweak)
+                tweak.InterpolationType = type;
+
+            return this;
+        }
+
         private FormulaBase InvertIfRequiredAndGetFormula(Direction direction) => direction == Direction.Forward ? Formula : Tweens.Formula.Invertion.WithFormula(Formula);
 
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
