@@ -1298,6 +1298,11 @@ namespace Tweens
         }
         #endregion
 
+        private PlayControlException WrapMoroutineException(PlayControlException exception)
+        {
+            return new PlayControlException($"{Type} \"{Name}\": {exception.Message}");
+        }
+
         #region Playing
         public Playable PlayForward(bool resetIfCompleted = true) => Play(resetIfCompleted, Direction.Forward);
 
@@ -1325,18 +1330,26 @@ namespace Tweens
             if (!IsPlaying)
             {
                 State = State.Playing;
-                _playingMoroutine.Run();
 
-                // It is needed to listen coroutine reseted event,
+                try
+                {
+                    _playingMoroutine.Run();
+                }
+                catch (PlayControlException ex)
+                {
+                    throw WrapMoroutineException(ex);
+                }
+
+                // It is needed to listen moroutine reseted event,
                 // because someone can turn off or destroy owner object.
                 // In this case Playable need correct handling of self state.
-                _playingMoroutine.Stoped += MoroutineStopObserver;
+                _playingMoroutine.Stopped += MoroutineStopObserver;
             }
 
             return this;
         }
 
-        private void MoroutineStopObserver(Moroutine coroutine) => Pause();
+        private void MoroutineStopObserver(Moroutine coroutine) => Pause(false);
 
         private IEnumerable PlayRoutine()
         {
@@ -1359,15 +1372,28 @@ namespace Tweens
             State = State.Completed;
         }
 
-        public Playable Pause()
+        public Playable Pause() => Pause(true);
+
+        public Playable Pause(bool stopMoroutine)
         {
             if (!IsPlaying)
                 throw new PlayControlException($"{Type} \"{Name}\": Can't be paused while not playing");
 
-            // Unsubscribe coroutine reseted observer, because it not needed when paused.
-            _playingMoroutine.Reseted -= MoroutineStopObserver;
+            // Unsubscribe moroutine reseted observer, because it not needed when paused.
+            _playingMoroutine.Stopped -= MoroutineStopObserver;
 
-            _playingMoroutine.Stop();
+            if (stopMoroutine)
+            {
+                try
+                {
+                    _playingMoroutine.Stop();
+                }
+                catch (PlayControlException ex)
+                {
+                    throw WrapMoroutineException(ex);
+                }
+            }
+
             State = State.Paused;
 
             return this;
@@ -1375,19 +1401,28 @@ namespace Tweens
 
         public Playable Reset() => Reset(true);
 
-        private Playable Reset(bool resetCoroutine)
+        private Playable Reset(bool resetMoroutine)
         {
             if (IsReseted)
                 throw new PlayControlException($"{Type} \"{Name}\": Already reseted");
 
-            // Check playing state and remove coroutine reseted observer.
+            // Check playing state and remove moroutine reseted observer.
             // If Playable in pause state, then it means that observer already unsubscribed.
             // Otherwise we unsubscribe observer.
             if (IsPlaying || IsCompleted)
-                _playingMoroutine.Reseted -= MoroutineStopObserver;
+                _playingMoroutine.Stopped -= MoroutineStopObserver;
 
-            if (resetCoroutine)
-                _playingMoroutine.Reset();
+            if (resetMoroutine)
+            {
+                try
+                {
+                    _playingMoroutine.Reset();
+                }
+                catch (PlayControlException ex)
+                {
+                    throw WrapMoroutineException(ex);
+                }
+            }
 
             PlayedTime = Direction == Direction.Forward ? 0f : Duration;
             State = State.Reseted;

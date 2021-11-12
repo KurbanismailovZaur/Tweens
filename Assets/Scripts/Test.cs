@@ -1,4 +1,5 @@
 using Moroutines;
+using System.Collections;
 using UnityEngine;
 
 namespace Tweens
@@ -14,11 +15,16 @@ namespace Tweens
         [SerializeField]
         private Transform _target2;
 
-        void Start()
+        IEnumerator Start()
         {
             var tween = _target.DoMoveX(3f, 3f, Formula.InBounce, 2, LoopType.Mirror).Play();
 
-            Moroutine.Run(Routines.Delay(5f, () => tween.Play()));
+            yield return new WaitForSeconds(1f);
+            _target.gameObject.SetActive(false);
+
+            yield return new WaitForSeconds(1f);
+            _target.gameObject.SetActive(true);
+            tween.Play();
         }
     }
 }

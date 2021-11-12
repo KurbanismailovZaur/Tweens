@@ -56,7 +56,7 @@ namespace Moroutines
         {
             Reseted,
             Running,
-            Stoped,
+            Stopped,
             Completed
         }
 
@@ -86,7 +86,7 @@ namespace Moroutines
                 {
                     State.Reseted => Reseted,
                     State.Running => Running,
-                    State.Stoped => Stoped,
+                    State.Stopped => Stopped,
                     State.Completed => Completed,
                     _ => throw new PlayControlException("Wrong moroutine state.")
                 };
@@ -99,7 +99,7 @@ namespace Moroutines
 
         public bool IsRunning => CurrentState == State.Running;
 
-        public bool IsStoped => CurrentState == State.Stoped;
+        public bool IsStopped => CurrentState == State.Stopped;
 
         public bool IsCompleted => CurrentState == State.Completed;
 
@@ -113,7 +113,7 @@ namespace Moroutines
 
         public event Action<Moroutine> Running;
 
-        public event Action<Moroutine> Stoped;
+        public event Action<Moroutine> Stopped;
 
         public event Action<Moroutine> Completed;
         #endregion
@@ -166,7 +166,7 @@ namespace Moroutines
                 throw new PlayControlException($"The moroutine's owner object was destroyed, but you try to run moroutine.");
 
             if (!_owner.gameObject.activeInHierarchy)
-                throw new PlayControlException($"Moroutine couldn't be started because the the game object '{_owner.name}' is deactivated.");
+                throw new PlayControlException($"Moroutine couldn't be started because the game object '{_owner.name}' is deactivated.");
 
             CurrentState = State.Running;
             _coroutine = MoroutinesOwner.Instance.StartCoroutine(RunEnumerator());
@@ -197,10 +197,10 @@ namespace Moroutines
                 throw new PlayControlException("Calling moroutine methods not allowed in moroutine enumerator.");
 
             if (!IsRunning)
-                throw new PlayControlException("Moroutine not running and can not be stoped.");
+                throw new PlayControlException("Moroutine not running and can not be stopped.");
 
             MoroutinesOwner.Instance.StopCoroutine(_coroutine);
-            CurrentState = State.Stoped;
+            CurrentState = State.Stopped;
 
             return this;
         }
@@ -250,7 +250,7 @@ namespace Moroutines
 
         public Moroutine OnRunning(Action<Moroutine> action) => OnSubscribe(Running, action);
 
-        public Moroutine OnStoped(Action<Moroutine> action) => OnSubscribe(Stoped, action);
+        public Moroutine OnStopped(Action<Moroutine> action) => OnSubscribe(Stopped, action);
 
         public Moroutine OnCompleted(Action<Moroutine> action) => OnSubscribe(Completed, action);
         #endregion
