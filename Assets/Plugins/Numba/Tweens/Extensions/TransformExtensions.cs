@@ -7,6 +7,13 @@ namespace Tweens
 {
     public static class TransformExtensions
     {
+        private static void SetPosition(this Transform transform, int axis, float position)
+        {
+            var pos = transform.position;
+            pos[axis] = position;
+            transform.position = pos;
+        }
+
         #region DoPositionOneAxis
         private static Tween<float, TweakFloat> DoPositionOneAxis(this Transform transform, int axis, float position, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
@@ -67,6 +74,13 @@ namespace Tweens
             return Tween.Vector3(transform.gameObject, transform.name, transform.position, position, p => transform.position = p, duration, formula, loopsCount, loopType, direction);
         }
         #endregion
+
+        private static void SetLocalPosition(this Transform transform, int axis, float position)
+        {
+            var pos = transform.localPosition;
+            pos[axis] = position;
+            transform.localPosition = pos;
+        }
 
         #region DoLocalPositionOneAxis
         private static Tween<float, TweakFloat> DoLocalPositionOneAxis(this Transform transform, int axis, float position, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
@@ -129,6 +143,13 @@ namespace Tweens
         }
         #endregion
 
+        private static void SetEulerAngle(this Transform transform, int axis, float angle)
+        {
+            var angles = transform.eulerAngles;
+            angles[axis] = angle;
+            transform.eulerAngles = angles;
+        }
+
         #region DoEulerAnglesOneAxis
         private static Tween<float, TweakFloat> DoEulerAnglesOneAxis(this Transform transform, int axis, float angle, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
@@ -189,6 +210,13 @@ namespace Tweens
             return Tween.Vector3(transform.gameObject, transform.name, transform.eulerAngles, angles, a => transform.eulerAngles = a, duration, formula, loopsCount, loopType, direction);
         }
         #endregion
+
+        private static void SetLocalEulerAngle(this Transform transform, int axis, float angle)
+        {
+            var angles = transform.localEulerAngles;
+            angles[axis] = angle;
+            transform.localEulerAngles = angles;
+        }
 
         #region DoLocalEulerAnglesOneAxis
         private static Tween<float, TweakFloat> DoLocalEulerAnglesOneAxis(this Transform transform, int axis, float angle, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
@@ -251,7 +279,6 @@ namespace Tweens
         }
         #endregion
 
-        #region DoRotation and DoLocalRotation
         public static Tween<Quaternion, TweakQuaternion> DoRotation(this Transform transform, Quaternion rotation, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return Tween.Quaternion(transform.gameObject, transform.name, transform.rotation, rotation, r => transform.rotation = r, duration, formula, loopsCount, loopType, direction);
@@ -261,7 +288,13 @@ namespace Tweens
         {
             return Tween.Quaternion(transform.gameObject, transform.name, transform.localRotation, rotation, r => transform.localRotation = r, duration, formula, loopsCount, loopType, direction);
         }
-        #endregion
+
+        private static void SetLocalScale(this Transform transform, int axis, float scale)
+        {
+            var locScale = transform.localScale;
+            locScale[axis] = scale;
+            transform.localScale = locScale;
+        }
 
         #region DoLocalScaleOneAxis
         private static Tween<float, TweakFloat> DoLocalScaleOneAxis(this Transform transform, int axis, float scale, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)

@@ -1,13 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using Extensions;
-
 namespace Tweens
 {
-	public enum InterpolationType : byte
+	/// <summary>
+	/// Represent type of interpolation which will be used in tweaks.
+	/// </summary>
+    public enum InterpolationType : byte
 	{
 		/// <summary>
 		/// Use linear formula.
@@ -15,7 +11,7 @@ namespace Tweens
 		Linear,
 
 		/// <summary>
-		/// Use spherical formula (useful for tweak directions).
+		/// Use spherical formula (useful for tweaking directions).
 		/// </summary>
 		Spherical
 	}

@@ -8,28 +8,11 @@ namespace Extensions
 {
     public static class TransformExtensions
     {
-        public static void SetPosition(this Transform transform, int axis, float position)
-        {
-            var pos = transform.position;
-            pos[axis] = position;
-            transform.position = pos;
-        }
-
         public static void SetPositionX(this Transform transform, float x) => transform.position = transform.position.WithX(x);
 
         public static void SetPositionY(this Transform transform, float y) => transform.position = transform.position.WithY(y);
 
         public static void SetPositionZ(this Transform transform, float z) => transform.position = transform.position.WithZ(z);
-
-        public static void SetPosition(this Transform transform, int axis1, int axis2, float value1, float value2)
-        {
-            var position = transform.position;
-            
-            position[axis1] = value1;
-            position[axis2] = value2;
-            
-            transform.position = position;
-        }
 
         public static void SetPositionXY(this Transform transform, float x, float y) => transform.position = transform.position.WithXY(x, y);
 
@@ -37,41 +20,17 @@ namespace Extensions
 
         public static void SetPositionYZ(this Transform transform, float y, float z) => transform.position = transform.position.WithYZ(y, z);
 
-        public static void SetLocalPosition(this Transform transform, int axis, float position)
-        {
-            var pos = transform.localPosition;
-            pos[axis] = position;
-            transform.localPosition = pos;
-        }
-
         public static void SetLocalPositionX(this Transform transform, float x) => transform.localPosition = transform.localPosition.WithX(x);
 
         public static void SetLocalPositionY(this Transform transform, float y) => transform.localPosition = transform.localPosition.WithY(y);
 
         public static void SetLocalPositionZ(this Transform transform, float z) => transform.localPosition = transform.localPosition.WithZ(z);
 
-        public static void SetLocalPosition(this Transform transform, int axis1, int axis2, float value1, float value2)
-        {
-            var localPosition = transform.localPosition;
-
-            localPosition[axis1] = value1;
-            localPosition[axis2] = value2;
-
-            transform.localPosition = localPosition;
-        }
-
         public static void SetLocalPositionXY(this Transform transform, float x, float y) => transform.localPosition = transform.localPosition.WithXY(x, y);
 
         public static void SetLocalPositionXZ(this Transform transform, float x, float z) => transform.localPosition = transform.localPosition.WithXZ(x, z);
 
         public static void SetLocalPositionYZ(this Transform transform, float y, float z) => transform.localPosition = transform.localPosition.WithYZ(y, z);
-
-        public static void SetEulerAngle(this Transform transform, int axis, float angle)
-        {
-            var angles = transform.eulerAngles;
-            angles[axis] = angle;
-            transform.eulerAngles = angles;
-        }
 
         public static void SetEulerAnglesX(this Transform transform, float x) => transform.eulerAngles = transform.eulerAngles.WithX(x);
 
@@ -85,13 +44,6 @@ namespace Extensions
 
         public static void SetEulerAnglesYZ(this Transform transform, float y, float z) => transform.eulerAngles = transform.eulerAngles.WithYZ(y, z);
 
-        public static void SetLocalEulerAngle(this Transform transform, int axis, float angle)
-        {
-            var angles = transform.localEulerAngles;
-            angles[axis] = angle;
-            transform.localEulerAngles = angles;
-        }
-
         public static void SetLocalEulerAnglesX(this Transform transform, float x) => transform.localEulerAngles = transform.localEulerAngles.WithX(x);
 
         public static void SetLocalEulerAnglesY(this Transform transform, float y) => transform.localEulerAngles = transform.localEulerAngles.WithY(y);
@@ -103,13 +55,6 @@ namespace Extensions
         public static void SetLocalEulerAnglesXZ(this Transform transform, float x, float z) => transform.localEulerAngles = transform.localEulerAngles.WithXZ(x, z);
 
         public static void SetLocalEulerAnglesYZ(this Transform transform, float y, float z) => transform.localEulerAngles = transform.localEulerAngles.WithYZ(y, z);
-
-        public static void SetLocalScale(this Transform transform, int axis, float scale)
-        {
-            var locScale = transform.localScale;
-            locScale[axis] = scale;
-            transform.localScale = locScale;
-        }
 
         public static void SetLocalScaleX(this Transform transform, float x) => transform.localScale = transform.localScale.WithX(x);
 
