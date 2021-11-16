@@ -95,5 +95,17 @@ namespace Extensions
         public static void SetSensorSizeX(this Camera camera, float x) => camera.sensorSize = camera.sensorSize.WithX(x);
 
         public static void SetSensorSizeY(this Camera camera, float y) => camera.sensorSize = camera.sensorSize.WithY(y);
+
+        public static void SetTransparencySortAxisX(this Camera camera, float x) => camera.transparencySortAxis = camera.transparencySortAxis.WithX(x);
+
+        public static void SetTransparencySortAxisY(this Camera camera, float y) => camera.transparencySortAxis = camera.transparencySortAxis.WithY(y);
+
+        public static void SetTransparencySortAxisZ(this Camera camera, float z) => camera.transparencySortAxis = camera.transparencySortAxis.WithZ(z);
+
+        public static void SetTransparencySortAxisXY(this Camera camera, float x, float y) => camera.transparencySortAxis = camera.transparencySortAxis.WithXY(x, y);
+
+        public static void SetTransparencySortAxisXZ(this Camera camera, float x, float z) => camera.transparencySortAxis = camera.transparencySortAxis.WithXZ(x, z);
+
+        public static void SetTransparencySortAxisYZ(this Camera camera, float y, float z) => camera.transparencySortAxis = camera.transparencySortAxis.WithYZ(y, z);
     }
 }

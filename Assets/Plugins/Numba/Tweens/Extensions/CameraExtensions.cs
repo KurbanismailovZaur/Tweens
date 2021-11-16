@@ -72,7 +72,7 @@ namespace Tweens
             return DoBackgroundColorTwoAxes(camera, 0, 3, r, a, duration, formula, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorGb(this Camera camera, float g, float b, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Sequence DoBackgroundColorGB(this Camera camera, float g, float b, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoBackgroundColorTwoAxes(camera, 1, 2, g, b, duration, formula, loopsCount, loopType, loopResetBehaviour, direction);
         }
@@ -255,8 +255,67 @@ namespace Tweens
             return Tween.Float(camera.gameObject, camera.name, camera.stereoSeparation, separation, s => camera.stereoSeparation = s, duration, formula, loopsCount, loopType, direction);
         }
 
+        private static void SetTransparencySortAxisOneAxis(this Camera camera, int axis, float value)
+        {
+            var transparencySortAxis = camera.transparencySortAxis;
+            transparencySortAxis[axis] = value;
+            camera.transparencySortAxis = transparencySortAxis;
+        }
 
-        // TODO: добавить к нему методы тут и в обычных расширени€х
+        #region DoTransparencySortAxisOneAxis
+        private static Tween<float, TweakFloat> DoTransparencySortAxisOneAxis(this Camera camera, int axis, float value, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        {
+            return Tween.Float(camera.gameObject, camera.name, camera.transparencySortAxis[axis], value, v => camera.SetTransparencySortAxisOneAxis(axis, v), duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoTransparencySortAxisX(this Camera camera, float r, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoTransparencySortAxisOneAxis(camera, 0, r, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoTransparencySortAxisY(this Camera camera, float g, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoTransparencySortAxisOneAxis(camera, 1, g, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoTransparencySortAxisZ(this Camera camera, float b, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoTransparencySortAxisOneAxis(camera, 2, b, duration, formula, loopsCount, loopType, direction);
+        }
+        #endregion
+
+        #region DoTransparencySortAxisTwoAxes
+        private static Sequence DoTransparencySortAxisTwoAxes(this Camera camera, int axis1, int axis2, float value1, float value2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        {
+            var sequence = new Sequence(camera.gameObject, camera.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
+
+            sequence.Insert(0f, Tween.Float(camera.gameObject, camera.name, camera.transparencySortAxis[axis1], value1, c => camera.SetTransparencySortAxisOneAxis(axis1, c), duration, formula, loopsCount, loopType, direction));
+            sequence.Insert(0f, Tween.Float(camera.gameObject, camera.name, camera.transparencySortAxis[axis2], value2, c => camera.SetTransparencySortAxisOneAxis(axis2, c), duration, formula, loopsCount, loopType, direction));
+
+            return sequence;
+        }
+
+        public static Sequence DoTransparencySortAxisXY(this Camera camera, float x, float y, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        {
+            return DoTransparencySortAxisTwoAxes(camera, 0, 1, x, y, duration, formula, loopsCount, loopType, loopResetBehaviour, direction);
+        }
+
+        public static Sequence DoTransparencySortAxisXZ(this Camera camera, float x, float z, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        {
+            return DoTransparencySortAxisTwoAxes(camera, 0, 2, x, z, duration, formula, loopsCount, loopType, loopResetBehaviour, direction);
+        }
+
+        public static Sequence DoTransparencySortAxisYZ(this Camera camera, float y, float z, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        {
+            return DoTransparencySortAxisTwoAxes(camera, 1, 2, y, z, duration, formula, loopsCount, loopType, loopResetBehaviour, direction);
+        }
+        #endregion
+
+        public static Tween<Vector3, TweakVector3> DoTransparencySortAxis(this Camera camera, float x, float y, float z, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoTransparencySortAxis(camera, new Vector3(x, y, z), duration, formula, loopsCount, loopType, direction);
+        }
+
         public static Tween<Vector3, TweakVector3> DoTransparencySortAxis(this Camera camera, Vector3 axis, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return Tween.Vector3(camera.gameObject, camera.name, camera.transparencySortAxis, axis, a => camera.transparencySortAxis = a, duration, formula, loopsCount, loopType, direction);
