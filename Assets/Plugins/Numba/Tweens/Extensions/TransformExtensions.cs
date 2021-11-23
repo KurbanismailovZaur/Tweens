@@ -15,7 +15,7 @@ namespace Tweens
         }
 
         #region DoPositionOneAxis
-        private static Tween<float, TweakFloat> DoPositionOneAxis(this Transform transform, int axis, float position, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoPositionOneAxis(Transform transform, int axis, float position, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(transform.gameObject, transform.name, transform.position[axis], position, p => transform.SetPosition(axis, p), duration, formula, loopsCount, loopType, direction);
         }
@@ -37,7 +37,7 @@ namespace Tweens
         #endregion
 
         #region DoPositionTwoAxes
-        private static Sequence DoPositionTwoAxes(this Transform transform, int axis1, int axis2, float position1, float position2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoPositionTwoAxes(Transform transform, int axis1, int axis2, float position1, float position2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(transform.gameObject, transform.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 
@@ -83,7 +83,7 @@ namespace Tweens
         }
 
         #region DoLocalPositionOneAxis
-        private static Tween<float, TweakFloat> DoLocalPositionOneAxis(this Transform transform, int axis, float position, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoLocalPositionOneAxis(Transform transform, int axis, float position, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(transform.gameObject, transform.name, transform.localPosition[axis], position, p => transform.SetLocalPosition(axis, p), duration, formula, loopsCount, loopType, direction);
         }
@@ -105,7 +105,7 @@ namespace Tweens
         #endregion
 
         #region DoLocalPositionTwoAxes
-        private static Sequence DoLocalPositionTwoAxes(this Transform transform, int axis1, int axis2, float position1, float position2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoLocalPositionTwoAxes(Transform transform, int axis1, int axis2, float position1, float position2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(transform.gameObject, transform.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 
@@ -151,7 +151,7 @@ namespace Tweens
         }
 
         #region DoEulerAnglesOneAxis
-        private static Tween<float, TweakFloat> DoEulerAnglesOneAxis(this Transform transform, int axis, float angle, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoEulerAnglesOneAxis(Transform transform, int axis, float angle, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(transform.gameObject, transform.name, transform.eulerAngles[axis], angle, a => transform.SetEulerAngle(axis, a), duration, formula, loopsCount, loopType, direction);
         }
@@ -173,7 +173,7 @@ namespace Tweens
         #endregion
 
         #region DoEulerAnglesTwoAxes
-        private static Sequence DoEulerAnglesTwoAxis(this Transform transform, int axis1, int axis2, float angle1, float angle2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoEulerAnglesTwoAxis(Transform transform, int axis1, int axis2, float angle1, float angle2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(transform.gameObject, transform.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 
@@ -219,7 +219,7 @@ namespace Tweens
         }
 
         #region DoLocalEulerAnglesOneAxis
-        private static Tween<float, TweakFloat> DoLocalEulerAnglesOneAxis(this Transform transform, int axis, float angle, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoLocalEulerAnglesOneAxis(Transform transform, int axis, float angle, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(transform.gameObject, transform.name, transform.localEulerAngles[axis], angle, a => transform.SetLocalEulerAngle(axis, a), duration, formula, loopsCount, loopType, direction);
         }
@@ -241,7 +241,7 @@ namespace Tweens
         #endregion
 
         #region DoLocalEulerAnglesTwoAxes
-        private static Sequence DoLocalEulerAnglesTwoAxis(this Transform transform, int axis1, int axis2, float angle1, float angle2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoLocalEulerAnglesTwoAxis(Transform transform, int axis1, int axis2, float angle1, float angle2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(transform.gameObject, transform.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 
@@ -297,7 +297,7 @@ namespace Tweens
         }
 
         #region DoLocalScaleOneAxis
-        private static Tween<float, TweakFloat> DoLocalScaleOneAxis(this Transform transform, int axis, float scale, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoLocalScaleOneAxis(Transform transform, int axis, float scale, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(transform.gameObject, transform.name, transform.localScale[axis], scale, s => transform.SetLocalScale(axis, s), duration, formula, loopsCount, loopType, direction);
         }
@@ -319,7 +319,7 @@ namespace Tweens
         #endregion
 
         #region DoLocalPositionTwoAxes
-        private static Sequence DoLocalScaleTwoAxes(this Transform transform, int axis1, int axis2, float scale1, float scale2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoLocalScaleTwoAxes(Transform transform, int axis1, int axis2, float scale1, float scale2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(transform.gameObject, transform.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 

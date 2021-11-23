@@ -20,7 +20,7 @@ namespace Tweens
         }
 
         #region DoBackgroundColorOneAxis
-        private static Tween<float, TweakFloat> DoBackgroundColorOneAxis(this Camera camera, int axis, float color, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoBackgroundColorOneAxis(Camera camera, int axis, float color, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(camera.gameObject, camera.name, camera.backgroundColor[axis], color, c => camera.SetBackgroundColor(axis, c), duration, formula, loopsCount, loopType, direction);
         }
@@ -47,7 +47,7 @@ namespace Tweens
         #endregion
 
         #region DoBackgroundColorTwoAxes
-        private static Sequence DoBackgroundColorTwoAxes(this Camera camera, int axis1, int axis2, float color1, float color2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoBackgroundColorTwoAxes(Camera camera, int axis1, int axis2, float color1, float color2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(camera.gameObject, camera.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 
@@ -89,7 +89,7 @@ namespace Tweens
         #endregion
 
         #region DoBackgroundColorThreeAxes
-        private static Sequence DoBackgroundColorThreeAxes(this Camera camera, int axis1, int axis2, int axis3, float color1, float color2, float color3, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoBackgroundColorThreeAxes(Camera camera, int axis1, int axis2, int axis3, float color1, float color2, float color3, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(camera.gameObject, camera.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 
@@ -160,7 +160,7 @@ namespace Tweens
             camera.lensShift = lensShift;
         }
 
-        private static Tween<float, TweakFloat> DoLensShiftOneAxis(this Camera camera, int axis, float shift, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoLensShiftOneAxis(Camera camera, int axis, float shift, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(camera.gameObject, camera.name, camera.lensShift[axis], shift, ls => camera.SetLensShift(axis, ls), duration, formula, loopsCount, loopType, direction);
         }
@@ -263,7 +263,7 @@ namespace Tweens
         }
 
         #region DoTransparencySortAxisOneAxis
-        private static Tween<float, TweakFloat> DoTransparencySortAxisOneAxis(this Camera camera, int axis, float value, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoTransparencySortAxisOneAxis(Camera camera, int axis, float value, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(camera.gameObject, camera.name, camera.transparencySortAxis[axis], value, v => camera.SetTransparencySortAxisOneAxis(axis, v), duration, formula, loopsCount, loopType, direction);
         }
@@ -285,7 +285,7 @@ namespace Tweens
         #endregion
 
         #region DoTransparencySortAxisTwoAxes
-        private static Sequence DoTransparencySortAxisTwoAxes(this Camera camera, int axis1, int axis2, float value1, float value2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoTransparencySortAxisTwoAxes(Camera camera, int axis1, int axis2, float value1, float value2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(camera.gameObject, camera.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 

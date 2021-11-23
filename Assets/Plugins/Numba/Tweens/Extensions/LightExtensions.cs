@@ -19,7 +19,7 @@ namespace Tweens
         }
 
         #region DoColorOneAxis
-        private static Tween<float, TweakFloat> DoColorOneAxis(this Light light, int axis, float color, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoColorOneAxis(Light light, int axis, float color, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(light.gameObject, light.name, light.color[axis], color, c => light.SetColor(axis, c), duration, formula, loopsCount, loopType, direction);
         }
@@ -46,7 +46,7 @@ namespace Tweens
         #endregion
 
         #region DoColorTwoAxes
-        private static Sequence DoColorTwoAxes(this Light light, int axis1, int axis2, float color1, float color2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoColorTwoAxes(Light light, int axis1, int axis2, float color1, float color2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(light.gameObject, light.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 
@@ -88,7 +88,7 @@ namespace Tweens
         #endregion
 
         #region DoColorThreeAxes
-        private static Sequence DoColorThreeAxes(this Light light, int axis1, int axis2, int axis3, float color1, float color2, float color3, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoColorThreeAxes(Light light, int axis1, int axis2, int axis3, float color1, float color2, float color3, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(light.gameObject, light.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 
@@ -140,6 +140,21 @@ namespace Tweens
         public static Tween<float, TweakFloat> DoInnerSpotAngle(this Light light, float angle, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return Tween.Float(light.gameObject, light.name, light.innerSpotAngle, angle, a => light.innerSpotAngle = a, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoSpotAngle(this Light light, float angle, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return Tween.Float(light.gameObject, light.name, light.spotAngle, angle, a => light.spotAngle = a, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoIntensity(this Light light, float intensity, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return Tween.Float(light.gameObject, light.name, light.intensity, intensity, i => light.intensity = i, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoRange(this Light light, float range, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return Tween.Float(light.gameObject, light.name, light.range, range, r => light.range = r, duration, formula, loopsCount, loopType, direction);
         }
     }
 }

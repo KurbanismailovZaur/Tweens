@@ -15,7 +15,7 @@ namespace Tweens
         }
 
         #region DoAnchoredPositionOneAxis
-        private static Tween<float, TweakFloat> DoAnchoredPositionOneAxis(this RectTransform rectTransform, int axis, float position, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoAnchoredPositionOneAxis(RectTransform rectTransform, int axis, float position, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(rectTransform.gameObject, rectTransform.name, rectTransform.anchoredPosition[axis], position, p => rectTransform.SetAnchoredPosition(axis, p), duration, formula, loopsCount, loopType, direction);
         }
@@ -51,7 +51,7 @@ namespace Tweens
         }
 
         #region DoAnchoredPosition3DOneAxis
-        private static Tween<float, TweakFloat> DoAnchoredPosition3DOneAxis(this RectTransform rectTransform, int axis, float position, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoAnchoredPosition3DOneAxis(RectTransform rectTransform, int axis, float position, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(rectTransform.gameObject, rectTransform.name, rectTransform.anchoredPosition3D[axis], position, p => rectTransform.SetAnchoredPosition3D(axis, p), duration, formula, loopsCount, loopType, direction);
         }
@@ -73,7 +73,7 @@ namespace Tweens
         #endregion
 
         #region DoAnchoredPosition3DTwoAxis
-        private static Sequence DoAnchoredPosition3DTwoAxis(this RectTransform rectTransform, int axis1, int axis2, float position1, float position2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Sequence DoAnchoredPosition3DTwoAxis(RectTransform rectTransform, int axis1, int axis2, float position1, float position2, float duration, FormulaBase formula, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
             var sequence = new Sequence(rectTransform.gameObject, rectTransform.name, formula, loopsCount, loopType, loopResetBehaviour, direction);
 
@@ -112,7 +112,7 @@ namespace Tweens
         #endregion
 
         #region DoAnchoreMaxOneAxis
-        private static Tween<float, TweakFloat> DoAnchoreMaxOneAxis(this RectTransform rectTransform, int axis, float normalizedPosition, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoAnchoreMaxOneAxis(RectTransform rectTransform, int axis, float normalizedPosition, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(rectTransform.gameObject, rectTransform.name, rectTransform.anchorMax[axis], normalizedPosition, np => rectTransform.SetAnchoreMax(axis, np), duration, formula, loopsCount, loopType, direction);
         }
@@ -148,7 +148,7 @@ namespace Tweens
         #endregion
 
         #region DoAnchoreMinOneAxis
-        private static Tween<float, TweakFloat> DoAnchoreMinOneAxis(this RectTransform rectTransform, int axis, float normalizedPosition, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoAnchoreMinOneAxis(RectTransform rectTransform, int axis, float normalizedPosition, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(rectTransform.gameObject, rectTransform.name, rectTransform.anchorMin[axis], normalizedPosition, np => rectTransform.SetAnchoreMin(axis, np), duration, formula, loopsCount, loopType, direction);
         }
@@ -184,7 +184,7 @@ namespace Tweens
         #endregion
 
         #region DoOffsetMaxOneAxis
-        private static Tween<float, TweakFloat> DoOffsetMaxOneAxis(this RectTransform rectTransform, int axis, float offset, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoOffsetMaxOneAxis(RectTransform rectTransform, int axis, float offset, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(rectTransform.gameObject, rectTransform.name, rectTransform.offsetMax[axis], offset, o => rectTransform.SetOffsetMax(axis, o), duration, formula, loopsCount, loopType, direction);
         }
@@ -220,7 +220,7 @@ namespace Tweens
         #endregion
 
         #region DoOffsetMinOneAxis
-        private static Tween<float, TweakFloat> DoOffsetMinOneAxis(this RectTransform rectTransform, int axis, float offset, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoOffsetMinOneAxis(RectTransform rectTransform, int axis, float offset, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(rectTransform.gameObject, rectTransform.name, rectTransform.offsetMin[axis], offset, o => rectTransform.SetOffsetMin(axis, o), duration, formula, loopsCount, loopType, direction);
         }
@@ -263,7 +263,7 @@ namespace Tweens
         }
 
         #region DoPivotOneAxis
-        private static Tween<float, TweakFloat> DoPivotOneAxis(this RectTransform rectTransform, int axis, float normalizedPosition, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoPivotOneAxis(RectTransform rectTransform, int axis, float normalizedPosition, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(rectTransform.gameObject, rectTransform.name, rectTransform.pivot[axis], normalizedPosition, np => rectTransform.SetPivot(axis, np), duration, formula, loopsCount, loopType, direction);
         }
@@ -299,7 +299,7 @@ namespace Tweens
         }
 
         #region DoPivotOnlyOneAxis
-        private static Tween<float, TweakFloat> DoPivotOnlyOneAxis(this RectTransform rectTransform, int axis, float normalizedPosition, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoPivotOnlyOneAxis(RectTransform rectTransform, int axis, float normalizedPosition, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(rectTransform.gameObject, rectTransform.name, rectTransform.pivot[axis], normalizedPosition, np => rectTransform.SetPivotOnly(axis, np), duration, formula, loopsCount, loopType, direction);
         }
@@ -335,7 +335,7 @@ namespace Tweens
         }
 
         #region DoSizeDeltaOneAxis
-        private static Tween<float, TweakFloat> DoSizeDeltaOneAxis(this RectTransform rectTransform, int axis, float size, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoSizeDeltaOneAxis(RectTransform rectTransform, int axis, float size, float duration, FormulaBase formula, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Float(rectTransform.gameObject, rectTransform.name, rectTransform.sizeDelta[axis], size, s => rectTransform.SetSizeDelta(axis, s), duration, formula, loopsCount, loopType, direction);
         }
