@@ -11,6 +11,7 @@ namespace Tweens
 {
     public static class MaterialExtensions
     {
+        #region DoColor
         private static void SetColor(this Material material, int axis, float color)
         {
             var col = material.color;
@@ -211,11 +212,91 @@ namespace Tweens
             return Tween.Color(owner, owner?.name, material.color, color, c => material.color = color, duration, formula, loopsCount, loopType, direction);
         }
         #endregion
+        #endregion
 
-        //public static Tween<float, TweakFloat> DoColorTemperature(this Material material, float temperature, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
-        //{
-        //    return Tween.Float(material.gameObject, material.name, material.colorTemperature, temperature, t => material.colorTemperature = t, duration, formula, loopsCount, loopType, direction);
-        //}
+        #region DoMainTextureOffset
+        public static Tween<float, TweakFloat> DoMainTextureOffsetX(this Material material, float x, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoMainTextureOffsetX(material, null, x, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoMainTextureOffsetX(this Material material, GameObject owner, float x, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return Tween.Float(owner, owner?.name, material.mainTextureOffset.x, x, ox => material.mainTextureOffset = material.mainTextureOffset.WithX(ox), duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoMainTextureOffsetY(this Material material, float y, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoMainTextureOffsetY(material, null, y, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoMainTextureOffsetY(this Material material, GameObject owner, float y, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return Tween.Float(owner, owner?.name, material.mainTextureOffset.y, y, oy => material.mainTextureOffset = material.mainTextureOffset.WithY(oy), duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Vector2, TweakVector2> DoMainTextureOffset(this Material material, float x, float y, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoMainTextureOffset(material, new Vector2(x, y), duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Vector2 , TweakVector2> DoMainTextureOffset(this Material material, Vector2 offset, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoMainTextureOffset(material, null, offset, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Vector2, TweakVector2> DoMainTextureOffset(this Material material, GameObject owner, float x, float y, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoMainTextureOffset(material, owner, new Vector2(x, y), duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Vector2, TweakVector2> DoMainTextureOffset(this Material material, GameObject owner, Vector2 offset, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return Tween.Vector2(owner, owner?.name, material.mainTextureOffset, offset, o => material.mainTextureOffset = o, duration, formula, loopsCount, loopType, direction);
+        }
+        #endregion
+
+        #region DoMainTextureScale
+        public static Tween<float, TweakFloat> DoMainTextureScaleX(this Material material, float x, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoMainTextureScaleX(material, null, x, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoMainTextureScaleX(this Material material, GameObject owner, float x, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return Tween.Float(owner, owner?.name, material.mainTextureScale.x, x, ox => material.mainTextureScale = material.mainTextureScale.WithX(ox), duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoMainTextureScaleY(this Material material, float y, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoMainTextureScaleY(material, null, y, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<float, TweakFloat> DoMainTextureScaleY(this Material material, GameObject owner, float y, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return Tween.Float(owner, owner?.name, material.mainTextureScale.y, y, oy => material.mainTextureScale = material.mainTextureScale.WithY(oy), duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Vector2, TweakVector2> DoMainTextureScale(this Material material, float x, float y, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoMainTextureScale(material, new Vector2(x, y), duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Vector2, TweakVector2> DoMainTextureScale(this Material material, Vector2 scale, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoMainTextureScale(material, null, scale, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Vector2, TweakVector2> DoMainTextureScale(this Material material, GameObject owner, float x, float y, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoMainTextureScale(material, owner, new Vector2(x, y), duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Vector2, TweakVector2> DoMainTextureScale(this Material material, GameObject owner, Vector2 scale, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return Tween.Vector2(owner, owner?.name, material.mainTextureScale, scale, s => material.mainTextureScale = s, duration, formula, loopsCount, loopType, direction);
+        }
+        #endregion
 
         //public static Tween<float, TweakFloat> DoInnerSpotAngle(this Material material, float angle, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         //{
