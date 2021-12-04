@@ -18,6 +18,14 @@ namespace Tweens
                 return Float(UnityEngine.AudioListener.volume, volume, v => UnityEngine.AudioListener.volume = v, duration, formula, loopsCount, loopType, direction);
             }
         }
+
+        public static class Time
+        {
+            public static Tween<float, TweakFloat> DoTimeScale(float timeScale, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+            {
+                return Float(UnityEngine.Time.timeScale, timeScale, ts => UnityEngine.Time.timeScale = ts, duration, formula, loopsCount, loopType, direction);
+            }
+        }
         #endregion
 
         #region Byte

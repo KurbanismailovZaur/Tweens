@@ -1815,6 +1815,13 @@ namespace Tweens
 
         #region Playing
         /// <summary>
+        /// <inheritdoc cref="IPlayable.SetTimeType(TimeType)"/>   
+        /// </summary>
+        /// <param name="type"><inheritdoc cref="IPlayable.SetTimeType(TimeType)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetTimeType(TimeType)"/></returns>
+        new T SetTimeType(TimeType type);
+
+        /// <summary>
         /// <inheritdoc cref="IPlayable.PlayForward(bool)"/>
         /// </summary>
         /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.PlayForward(bool)"/></param>
@@ -2124,6 +2131,8 @@ namespace Tweens
         #endregion
 
         #region Playing
+        public new T SetTimeType(TimeType type) => (T)base.SetTimeType(type);
+
         public new T PlayForward(bool resetIfCompleted = true) => (T)base.PlayForward(resetIfCompleted);
 
         public new T PlayBackward(bool resetIfCompleted = true) => (T)base.PlayBackward(resetIfCompleted);

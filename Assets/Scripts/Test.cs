@@ -2,6 +2,7 @@ using Extensions;
 using Moroutines;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Tweens
 {
@@ -15,16 +16,10 @@ namespace Tweens
         IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
-
-            var tween = Tween.Float(0f, 10f, _target.SetPositionX, 1f).Play();
+            _target.DoPositionX(10f, 2f, Formula.InBounce).Play();
 
             yield return new WaitForSeconds(0.5f);
-
-            tween.TimeType = TimeType.Unscaled;
-
-            yield return new WaitForSecondsRealtime(0.25f);
-
-            tween.TimeType = TimeType.Scaled;
+            Tween.Time.DoTimeScale(0.25f, 2f).SetTimeType(TimeType.Unscaled).Play();
 
             //_target.DoRotation(Quaternion.LookRotation(Vector3.right, Vector3.back), 1f, Formula.InBounce, 2, LoopType.Continue).SetTweakInterpolationType(InterpolationType.Spherical).Play();
         }
