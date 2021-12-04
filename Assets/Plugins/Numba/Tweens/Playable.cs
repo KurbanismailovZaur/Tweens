@@ -88,6 +88,11 @@ namespace Tweens
         /// Direction which used when playable starts play by default.
         /// </summary>
         Direction Direction { get; set; }
+
+        /// <summary>
+        /// <inheritdoc cref="Tweens.TimeType"/>
+        /// </summary>
+        TimeType TimeType { get; set; }
         #endregion
 
         /// <summary>
@@ -147,6 +152,14 @@ namespace Tweens
         #endregion
 
         #region Playing
+        /// <summary>
+        /// Sets time type for playing methods. <br/>If you want to play the animation independently
+        /// of the <see cref="Time.timeScale"/> multiplier, use <see cref="TimeType.Unscaled"/>.        
+        /// </summary>
+        /// <param name="type">The type of time used in the playback methods.</param>
+        /// <returns>The playable.</returns>
+        Playable SetTimeType(TimeType type);
+
         /// <summary>
         /// Starts playing in forward direction.
         /// </summary>
@@ -603,6 +616,29 @@ namespace Tweens
             }
         }
 
+        private Func<float> _timeSelector = () => Time.time;
+
+        private TimeType _timeType;
+
+        public TimeType TimeType
+        {
+            get => _timeType;
+            set
+            {
+                if (_timeType == value)
+                    return;
+
+                _timeType = value;
+                
+                if (_timeType == TimeType.Scaled)
+                    _timeSelector = () => Time.time;
+                else
+                    _timeSelector = () => Time.unscaledTime;
+
+                RecalculatePlayTimes();
+            }
+        }
+
         /// <summary>
         /// Used in sequences for rebuilding its phase events state.
         /// Will be called after <see cref="LoopDuration"/>, <see cref="LoopsCount"/> or <see cref="LoopType"/> changed.
@@ -655,7 +691,7 @@ namespace Tweens
 
         protected void RecalculatePlayTimes()
         {
-            _startTime = Direction == Direction.Forward ? Time.time - PlayedTime : Time.time - (Duration - PlayedTime);
+            _startTime = Direction == Direction.Forward ? _timeSelector() - PlayedTime : _timeSelector() - (Duration - PlayedTime);
             _endTime = _startTime + Duration;
         }
 
@@ -1304,6 +1340,12 @@ namespace Tweens
         }
 
         #region Playing
+        public Playable SetTimeType(TimeType type)
+        {
+            TimeType = type;
+            return this;
+        }
+
         public Playable PlayForward(bool resetIfCompleted = true) => Play(resetIfCompleted, Direction.Forward);
 
         public Playable PlayBackward(bool resetIfCompleted = true) => Play(resetIfCompleted, Direction.Backward);
@@ -1361,9 +1403,9 @@ namespace Tweens
                 yield break;
             }
 
-            while (Time.time < _endTime)
+            while (_timeSelector() < _endTime)
             {
-                var timePassed = Direction == Direction.Forward ? Time.time - _startTime : _endTime - Time.time;
+                var timePassed = Direction == Direction.Forward ? _timeSelector() - _startTime : _endTime - _timeSelector();
                 RewindTo(timePassed, 0, 1, true);
                 yield return null;
             }

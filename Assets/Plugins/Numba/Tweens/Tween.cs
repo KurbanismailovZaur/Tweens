@@ -15,7 +15,7 @@ namespace Tweens
         {
             public static Tween<float, TweakFloat> DoVolume(float volume, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
             {
-                return Tween.Float(UnityEngine.AudioListener.volume, volume, v => UnityEngine.AudioListener.volume = v, duration, formula, loopsCount, loopType, direction);
+                return Float(UnityEngine.AudioListener.volume, volume, v => UnityEngine.AudioListener.volume = v, duration, formula, loopsCount, loopType, direction);
             }
         }
         #endregion
