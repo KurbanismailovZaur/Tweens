@@ -580,5 +580,10 @@ namespace Tweens
             return Tween.Vector3(owner, owner.name, transform.localScale, scale, s => transform.localScale = s, duration, formula, loopsCount, loopType, direction);
         }
         #endregion
+
+        //Sequence Shake(this Transform transform, GameObject owner, string name, float duration, int count, float strenght, float randomness)
+        //{
+            
+        //}
     }
 }

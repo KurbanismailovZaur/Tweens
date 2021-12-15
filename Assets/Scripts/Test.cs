@@ -11,17 +11,20 @@ namespace Tweens
         [SerializeField]
         private Transform _target;
 
+        [SerializeField]
+        [Range(2, 50)]
+        private int _count;
+
         public int MyProperty { get; set; }
 
         IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
-            _target.DoPositionX(10f, 2f, Formula.InBounce).Play();
 
-            yield return new WaitForSeconds(0.5f);
-            Tween.Time.DoTimeScale(0.25f, 2f).SetTimeType(TimeType.Unscaled).Play();
-
-            //_target.DoRotation(Quaternion.LookRotation(Vector3.right, Vector3.back), 1f, Formula.InBounce, 2, LoopType.Continue).SetTweakInterpolationType(InterpolationType.Spherical).Play();
+            Tween.Shake(null, null, 0, 1f, _count, 0.5f, 0.5f, x => { _target.SetPositionX(x); print($"SETTED TO {x}"); })
+                .OnPhaseUpdated(() => print("Updated"))
+                .OnCompleted(() => print("Completed"))
+                .Play();
         }
     }
 }

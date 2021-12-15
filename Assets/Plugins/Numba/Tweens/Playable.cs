@@ -1,3 +1,4 @@
+using Extensions;
 using Moroutines;
 using Moroutines.Exceptions;
 using System;
@@ -511,7 +512,7 @@ namespace Tweens
                 if (value < 0f)
                     throw new ArgumentException($"{Type} \"{Name}\": Loop duration can't be less than 0 ({value} passed)");
 
-                if (value == _loopDuration)
+                if (value.NearlyEquals(_loopDuration))
                     return;
 
                 _loopDuration = value;
@@ -629,7 +630,7 @@ namespace Tweens
                     return;
 
                 _timeType = value;
-                
+
                 if (_timeType == TimeType.Scaled)
                     _timeSelector = () => Time.time;
                 else
@@ -704,33 +705,33 @@ namespace Tweens
         #region Loops
         protected float LoopTime(float time)
         {
-            if (time == 0f)
+            if (time.NearlyEquals(0f))
                 return 0f;
 
             time %= LoopDuration;
-            return time == 0f ? LoopDuration : time;
+            return time.NearlyEquals(0f) ? LoopDuration : time;
         }
 
         protected int LoopIndex(float time)
         {
-            if (time == 0f)
+            if (time.NearlyEquals(0f))
                 return 0;
 
             var loopIndex = (int)(time / LoopDuration);
             time %= LoopDuration;
 
-            return time == 0f ? loopIndex - 1 : loopIndex;
+            return time.NearlyEquals(0f) ? loopIndex - 1 : loopIndex;
         }
 
         protected (int loopIndex, float loopedTime) LoopIndexTime(float time)
         {
-            if (time == 0f)
+            if (time.NearlyEquals(0f))
                 return (0, 0f);
 
             var loopIndex = (int)(time / LoopDuration);
             time %= LoopDuration;
 
-            return time == 0f ? (loopIndex - 1, LoopDuration) : (loopIndex, time);
+            return time.NearlyEquals(0f) ? (loopIndex - 1, LoopDuration) : (loopIndex, time);
         }
         #endregion
 
@@ -789,19 +790,19 @@ namespace Tweens
         #region Rewinds
         public Playable RewindToStart(bool emitEvents = true) => RewindToStart(0, 1, emitEvents);
 
-        internal Playable RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => Duration == 0f ? RewindTo(-1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(0f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+        internal Playable RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => Duration.NearlyEquals(0f) ? RewindTo(-1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(0f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
         public Playable RewindToEnd(bool emitEvents = true) => RewindToEnd(0, 1, emitEvents);
 
-        internal Playable RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => Duration == 0f ? RewindTo(1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(Duration, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+        internal Playable RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => Duration.NearlyEquals(0f) ? RewindTo(1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(Duration, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
         public Playable RewindTo(float time, bool emitEvents = true) => RewindTo(time, 0, 1, emitEvents);
 
         internal Playable RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents)
         {
-            if (LoopDuration == 0f)
+            if (LoopDuration.NearlyEquals(0f))
             {
-                if (time == 0f)
+                if (time.NearlyEquals(0f))
                     return this;
 
                 var direction = time > 0f ? Direction.Forward : Direction.Backward;
@@ -815,7 +816,7 @@ namespace Tweens
             {
                 time = Mathf.Clamp(time, 0f, Duration);
 
-                if (time == PlayedTime)
+                if (time.NearlyEquals(PlayedTime))
                     return this;
 
                 if (LoopType != LoopType.Mirror)
@@ -844,7 +845,7 @@ namespace Tweens
                         var playedLoop = (int)(PlayedTime / LoopDuration);
                         var timeLoop = (int)(time / LoopDuration);
 
-                        if (time % LoopDuration == 0f)
+                        if ((time % LoopDuration).NearlyEquals(0f))
                             --timeLoop;
 
                         if (emitEvents)
@@ -877,7 +878,7 @@ namespace Tweens
                         var playedLoop = (int)(PlayedTime / LoopDuration);
                         var timeLoop = (int)(time / LoopDuration);
 
-                        if (PlayedTime % LoopDuration == 0f)
+                        if ((PlayedTime % LoopDuration).NearlyEquals(0f))
                             --playedLoop;
 
                         if (emitEvents)
@@ -984,18 +985,18 @@ namespace Tweens
         private void RewindWithEvents(float startTime, float endTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             // Global started phase
-            if (startTime == 0f)
+            if (startTime.NearlyEquals(0f))
                 HandlePhaseStart(direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             var playedLoop = (int)(startTime / LoopDuration);
             var timeLoop = (int)(endTime / LoopDuration);
 
             // Loop started phase.
-            if (startTime == playedLoop * LoopDuration)
+            if (startTime.NearlyEquals(playedLoop * LoopDuration))
             {
                 // If all elements already handled in global start phase (BeforeStarting method was called previously),
                 // than we don't need handle elements.
-                if (startTime == 0f)
+                if (startTime.NearlyEquals(0f))
                     HandlePhaseFirstLoopStart(direction, parentContinueLoopIndex, continueMaxLoopsCount);
                 else
                     HandlePhaseLoopStart(playedLoop, direction, parentContinueLoopIndex, continueMaxLoopsCount);
@@ -1011,7 +1012,7 @@ namespace Tweens
             }
 
             // Loop completed phase.
-            if (endTime == timeLoop * LoopDuration)
+            if (endTime.NearlyEquals(timeLoop * LoopDuration))
                 HandlePhaseLoopComplete(timeLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             else // Global and loop update phases.
             {
@@ -1025,30 +1026,29 @@ namespace Tweens
 
                 // Update phase.
                 var loopedTime = LoopTime(endTime);
-
                 HandlePhaseLoopUpdate(endTime, timeLoop, loopedTime, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             }
 
             // Global complete phase.
-            if (endTime == Duration)
+            if (endTime.NearlyEquals(Duration))
                 HandlePhaseComplete(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
         private void RewindWithoutEvents(float startTime, float endTime, Direction direction, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             // Global started phase
-            if (startTime == 0f)
+            if (startTime.NearlyEquals(0f))
                 HandlePhaseStartNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
 
             var playedLoop = (int)(startTime / LoopDuration);
             var timeLoop = (int)(endTime / LoopDuration);
 
             // Loop started phase.
-            if (startTime == playedLoop * LoopDuration)
+            if (startTime.NearlyEquals(playedLoop * LoopDuration))
             {
                 // If all elements already handled in global start phase (BeforeStarting method was called previously),
                 // than we don't need handle elements.
-                if (startTime == 0f)
+                if (startTime.NearlyEquals(0f))
                     HandlePhaseFirstLoopStartNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
                 else
                     HandlePhaseLoopStartNoEvents(playedLoop, direction, parentContinueLoopIndex, continueMaxLoopsCount);
@@ -1064,7 +1064,7 @@ namespace Tweens
             }
 
             // Loop completed phase.
-            if (endTime == timeLoop * LoopDuration)
+            if (endTime.NearlyEquals(timeLoop * LoopDuration))
                 HandlePhaseLoopCompleteNoEvents(timeLoop - 1, direction, parentContinueLoopIndex, continueMaxLoopsCount);
             else // Global and loop update phases.
             {
@@ -1083,7 +1083,7 @@ namespace Tweens
             }
 
             // Global complete phase.
-            if (endTime == Duration)
+            if (endTime.NearlyEquals(Duration))
                 HandlePhaseCompleteNoEvents(direction, parentContinueLoopIndex, continueMaxLoopsCount);
         }
 
@@ -1326,7 +1326,7 @@ namespace Tweens
         {
             // if loop duration is zero, then played time will also always be zero,
             // so there is no point in assigning to it.
-            if (time == PlayedTime || LoopDuration == 0f)
+            if (time.NearlyEquals(PlayedTime) || LoopDuration.NearlyEquals(0f))
                 return this;
 
             PlayedTime = Mathf.Clamp(time, 0f, Duration);
@@ -1395,7 +1395,7 @@ namespace Tweens
 
         private IEnumerable PlayRoutine()
         {
-            if (Duration == 0f)
+            if (Duration .NearlyEquals(0f) )
             {
                 RewindTo(Direction == Direction.Forward ? 1f : -1f, 0, 1, true);
                 State = State.Completed;

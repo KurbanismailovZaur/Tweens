@@ -1,3 +1,4 @@
+using Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -341,7 +342,7 @@ namespace Tweens
                     // If we have pre-events, than we need to check it type on non update event.
                     for (int i = 0; i < PrePostPoint; i++)
                     {
-                        if (!(_events[i] is PhaseLoopUpdate @event) || @event.Element.Playable.LoopType == LoopType.Mirror && @event.LoopedTime % (@event.Element.Playable.LoopDuration / 2f) == 0f)
+                        if (!(_events[i] is PhaseLoopUpdate @event) || @event.Element.Playable.LoopType == LoopType.Mirror && (@event.LoopedTime % (@event.Element.Playable.LoopDuration / 2f)).NearlyEquals(0f))
                             return true;
                     }
 
@@ -525,7 +526,7 @@ namespace Tweens
         {
             for (int i = 0; i < _chronolines.Count; i++)
             {
-                if (_chronolines[i].Time == time)
+                if (_chronolines[i].Time.NearlyEquals(time))
                     return true;
             }
 
@@ -534,11 +535,11 @@ namespace Tweens
 
         private IntersectionType GetIntersectionType(Element element, float playedTime)
         {
-            if (playedTime == 0f)
+            if (playedTime.NearlyEquals(0f))
                 return IntersectionType.Start;
-            else if (playedTime == element.Playable.Duration)
+            else if (playedTime.NearlyEquals(element.Playable.Duration))
                 return IntersectionType.Complete;
-            else if (playedTime % element.Playable.LoopDuration == 0f)
+            else if ((playedTime % element.Playable.LoopDuration).NearlyEquals(0f))
                 return IntersectionType.Loop;
             else
                 return IntersectionType.Update;
@@ -561,7 +562,7 @@ namespace Tweens
                 if (chronoline.Time < element.StartTime || chronoline.Time > element.EndTime)
                     continue;
 
-                if (element.Playable.Duration == 0f)
+                if (element.Playable.Duration.NearlyEquals(0f))
                 {
                     // For zero duration playables we call all phases events at once.
                     chronoline.Chains.AppendEvent(new PhaseStartZeroed(element));
@@ -577,24 +578,29 @@ namespace Tweens
                     void GenerateEvents(float playedTime, Chronoline.Chain chain)
                     {
                         // Start phase.
-                        if (playedTime == 0f)
+                        if (playedTime.NearlyEquals(0f))
                         {
                             chain.AppendEvent(new PhaseStart(element));
                             chain.AppendEvent(new PhaseFirstLoopStart(element));
                         }
-                        else if (playedTime % element.Playable.LoopDuration == 0f && playedTime != element.Playable.Duration) // Intermediate loop phase (end not included).
+                        else if ((playedTime % element.Playable.LoopDuration).NearlyEquals(0f) && !playedTime.NearlyEquals(element.Playable.Duration)) // Intermediate loop phase (end not included).
                         {
                             var loop = (int)(playedTime / element.Playable.LoopDuration);
                             chain.InsertEvent(chain.PrePostPoint++, new PhaseLoopComplete(element, loop - 1));
                             chain.AppendEvent(new PhaseLoopStart(element, loop));
                         }
-                        else if (playedTime == element.Playable.Duration) // Complete phase
+                        else if (playedTime.NearlyEquals(element.Playable.Duration)) // Complete phase
                         {
                             chain.InsertEvent(chain.PrePostPoint++, new PhaseLoopComplete(element, element.Playable.LoopsCount - 1));
                             chain.InsertEvent(chain.PrePostPoint++, new PhaseComplete(element));
                         }
                         else // Update phase (for elements on which chrono-line hitted not at phase times)
+                        {
+                            float x = playedTime;
+                            float y = element.Playable.Duration;
+
                             chain.InsertEvent(chain.PrePostPoint++, new PhaseLoopUpdate(element, playedTime, (int)(playedTime / element.Playable.LoopDuration), playedTime % element.Playable.LoopDuration));
+                        }
                     }
 
                     // Generate forward and backward events.
@@ -681,7 +687,7 @@ namespace Tweens
                         return false;
                     }
 
-                    if (element.Playable.Duration == 0f)
+                    if (element.Playable.Duration.NearlyEquals(0f))
                     {
                         var insertIndex = 0;
 
@@ -713,7 +719,7 @@ namespace Tweens
                                 ++insertIndex;
 
                             // Remember zeroed element for handle it later.
-                            if (oldElement.Playable.Duration == 0f)
+                            if (oldElement.Playable.Duration.NearlyEquals(0f))
                                 _elementsBuffer.Add(oldElement);
                         }
 
@@ -785,7 +791,7 @@ namespace Tweens
                     }
                     else
                     {
-                        if (playedTime == 0f) // Start phase.
+                        if (playedTime.NearlyEquals(0f)) // Start phase.
                         {
                             var insertIndex = 0;
 
@@ -808,7 +814,7 @@ namespace Tweens
                         }
                         else
                         {
-                            if (playedTime % element.Playable.LoopDuration == 0f && playedTime != element.Playable.Duration) // Intermediate phase.
+                            if ((playedTime % element.Playable.LoopDuration).NearlyEquals(0f) && !playedTime.NearlyEquals(element.Playable.Duration)) // Intermediate phase.
                             {
                                 var preInsertIndex = 0;
                                 var postInsertIndex = 0;
@@ -818,7 +824,7 @@ namespace Tweens
                                     if (ElementNotIntersectsOrSelf(chronoline, j, out Element oldElement))
                                         continue;
 
-                                    if (element.Playable.Duration == 0f)
+                                    if (element.Playable.Duration.NearlyEquals(0f))
                                         postInsertIndex += 2;
                                     else
                                     {
@@ -864,7 +870,7 @@ namespace Tweens
                                         insertIndex += 2;
                                 }
 
-                                if (playedTime == element.Playable.Duration) // Complete phase
+                                if (playedTime.NearlyEquals(element.Playable.Duration)) // Complete phase
                                 {
                                     chain.InsertEvent(insertIndex++, new PhaseLoopComplete(element, element.Playable.LoopsCount - 1));
                                     chain.InsertEvent(insertIndex, new PhaseComplete(element));
@@ -886,7 +892,7 @@ namespace Tweens
             }
 
             // Handle new chronolines.
-            if (element.Playable.Duration == 0f)
+            if (element.Playable.Duration.NearlyEquals(0f))
             {
                 // Handle all phase events at once.
                 if (!ChronolineExist(element.StartTime))
@@ -1211,7 +1217,7 @@ namespace Tweens
         /// Finds the leftmost element in the sequence.
         /// </summary>
         /// <returns>The leftmost element in the sequence.</returns>
-        public Element GetLeftmostElement() => _elements.FirstOrDefault(el => el.StartTime == _elements.Min(el => el.StartTime));
+        public Element GetLeftmostElement() => _elements.FirstOrDefault(el => el.StartTime.NearlyEquals(_elements.Min(el => el.StartTime)));
 
         /// <summary>
         /// Finds the leftmost elements in the sequence.
@@ -1222,14 +1228,14 @@ namespace Tweens
             if (_elements.Count == 0)
                 return new List<Element>(0);
 
-            return _elements.Where(el => el.StartTime == _elements.Min(el => el.StartTime)).ToList();
+            return _elements.Where(el => el.StartTime.NearlyEquals(_elements.Min(el => el.StartTime))).ToList();
         }
 
         /// <summary>
         /// Finds the rightmost element in the sequence.
         /// </summary>
         /// <returns>Thertightmost element in the sequence.</returns>
-        public Element GetRightmostElement() => _elements.FirstOrDefault(el => el.EndTime == _elements.Max(el => el.EndTime));
+        public Element GetRightmostElement() => _elements.FirstOrDefault(el => el.EndTime.NearlyEquals(_elements.Max(el => el.EndTime)));
 
         /// <summary>
         /// Finds the rightmost elements in the sequence.
@@ -1240,7 +1246,7 @@ namespace Tweens
             if (_elements.Count == 0)
                 return new List<Element>(0);
 
-            return _elements.Where(el => el.EndTime == _elements.Max(el => el.EndTime)).ToList();
+            return _elements.Where(el => el.EndTime.NearlyEquals(_elements.Max(el => el.EndTime))).ToList();
         }
 
         /// <summary>
@@ -1466,7 +1472,7 @@ namespace Tweens
         {
             startTime = Mathf.Max(startTime, 0f);
 
-            if (element.StartTime == startTime)
+            if (element.StartTime.NearlyEquals(startTime))
                 return;
 
             RemoveElement(element);
@@ -1565,7 +1571,7 @@ namespace Tweens
                 {
                     var element = _elements[i];
 
-                    var (backwardTime, forwardTime) = element.Playable.Duration == 0f ? (-1f, 1f) : (0f, element.Playable.Duration);
+                    var (backwardTime, forwardTime) = element.Playable.Duration.NearlyEquals(0f) ? (-1f, 1f) : (0f, element.Playable.Duration);
                     var time = direction == Direction.Forward ? backwardTime : forwardTime;
 
                     ((Playable)element.Playable).RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, false);
@@ -1577,7 +1583,7 @@ namespace Tweens
                 {
                     var element = _elements[i];
 
-                    var time = element.Playable.Duration == 0f ? -1f : 0f;
+                    var time = element.Playable.Duration.NearlyEquals(0f) ? -1f : 0f;
                     ((Playable)element.Playable).RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, false);
                 }
             }
@@ -1591,7 +1597,7 @@ namespace Tweens
         {
             // if loop duration is zero, then played time will also always be zero,
             // so there is no point in assigning to it.
-            if (time == PlayedTime || LoopDuration == 0f)
+            if (time.NearlyEquals(PlayedTime) || LoopDuration.NearlyEquals(0f))
                 return this;
 
             var (startTime, endTime, direction) = time > PlayedTime ? (PlayedTime, time, Direction.Forward) : (Duration - PlayedTime, Duration - time, Direction.Backward);
@@ -1601,7 +1607,7 @@ namespace Tweens
             var timeLoop = (int)(endTime / LoopDuration);
 
             // Loop started phase
-            if (startTime == playedLoop * LoopDuration)
+            if (startTime.NearlyEquals(playedLoop * LoopDuration))
             {
                 BeforeStarting(direction, LoopResetBehaviour.Skip, playedLoop, 0, 1);
                 loopedPlayedTime = 0f;
@@ -1617,7 +1623,7 @@ namespace Tweens
             }
 
             // Loop completed phase.
-            if (endTime == timeLoop * LoopDuration)
+            if (endTime.NearlyEquals(timeLoop * LoopDuration))
                 SkipHandler(loopedPlayedTime, LoopDuration, direction);
             else // Loop update phases.
             {
@@ -1647,9 +1653,9 @@ namespace Tweens
             void FillBufferWithElementsOnInterval(float start, float end, Direction direction)
             {
                 // second expression in end of two functions below is for playables with zero duration and which placed at end of loop.
-                bool CompareZeroForward(Element element, float start, float end) => (element.StartTime < end && element.EndTime >= start) || (end == LoopDuration && element.StartTime == end);
+                bool CompareZeroForward(Element element, float start, float end) => (element.StartTime < end && element.EndTime >= start) || (end.NearlyEquals(LoopDuration) && element.StartTime.NearlyEquals(end));
 
-                bool CompareZeroBackward(Element element, float start, float end) => (element.EndTime > end && element.StartTime <= start) || (end == 0 && element.StartTime == 0);
+                bool CompareZeroBackward(Element element, float start, float end) => (element.EndTime > end && element.StartTime <= start) || (end.NearlyEquals(0f) && element.StartTime.NearlyEquals(0f));
 
                 bool CompareForward(Element element, float start, float end) => element.StartTime < end && element.EndTime > start;
 
@@ -1661,9 +1667,9 @@ namespace Tweens
                     {
                         var element = _elements[i];
 
-                        if (element.Playable.Duration == 0f && CompareZeroForward(element, start, end))
+                        if (element.Playable.Duration.NearlyEquals(0f) && CompareZeroForward(element, start, end))
                             _elementsBuffer.Add(element);
-                        else if (element.Playable.Duration != 0f && CompareForward(element, start, end))
+                        else if (!element.Playable.Duration.NearlyEquals(0f) && CompareForward(element, start, end))
                             _elementsBuffer.Add(element);
                     }
                 }
@@ -1673,9 +1679,9 @@ namespace Tweens
                     {
                         var element = _elements[i];
 
-                        if (element.Playable.Duration == 0f && CompareZeroBackward(element, start, end))
+                        if (element.Playable.Duration.NearlyEquals(0f) && CompareZeroBackward(element, start, end))
                             _elementsBuffer.Add(element);
-                        else if (element.Playable.Duration != 0f && CompareBackward(element, start, end))
+                        else if (!element.Playable.Duration.NearlyEquals(0f) && CompareBackward(element, start, end))
                             _elementsBuffer.Add(element);
                     }
                 }
@@ -1706,10 +1712,10 @@ namespace Tweens
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             // This is avoid situation when we jump to the same position.
-            if (_lastLoopedNormalizedTime == loopedNormalizedTime)
+            if (_lastLoopedNormalizedTime.NearlyEquals(loopedNormalizedTime))
                 return;
 
-            if (_lastLoopedNormalizedTime == 1f && loopedNormalizedTime == 0)
+            if (_lastLoopedNormalizedTime.NearlyEquals(1f) && loopedNormalizedTime.NearlyEquals(0f))
             {
                 _lastLoopedNormalizedTime = 0;
                 return;
@@ -1728,7 +1734,7 @@ namespace Tweens
                     var (forwardParentContinueLoopIndex, backwardParentContinueLoopIndex) = direction == Direction.Forward ? (parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1) : (continueMaxLoopsCount - parentContinueLoopIndex - 1, parentContinueLoopIndex);
 
                     // If it is first half of mirror mode, than we move forward.
-                    if (loopedNormalizedTime == 0.5f)
+                    if (loopedNormalizedTime.NearlyEquals(0.5f))
                         _chronolines[0].Chains.Forward.CallAllEvents(Direction.Forward, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
                     else // else - backward.
                         _chronolines[0].Chains.Backward.CallAllEvents(Direction.Backward, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
@@ -1746,7 +1752,7 @@ namespace Tweens
                 remaped.loopedPlayedTime = Mathf.Clamp(formula.Remap(loopedPlayedTime / LoopDuration) * LoopDuration, 0f, LoopDuration);
                 remaped.loopedTime = Mathf.Clamp(formula.Remap(loopedTime / LoopDuration) * LoopDuration, 0f, LoopDuration);
 
-                return remaped.loopedPlayedTime != remaped.loopedTime;
+                return !remaped.loopedPlayedTime.NearlyEquals(remaped.loopedTime);
             }
 
             void HandleChronolinesOnForwardInterval(List<Chronoline> chronolines, float remapedLoopedPlayedTime, float remapedLoopedTime, float loopDuration, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount, ref Chronoline lastChronoline)
@@ -1764,12 +1770,12 @@ namespace Tweens
                         break;
 
                     // If chronoline stay at start time, than we need handle only post events.
-                    if (chronoline.Time == remapedLoopedPlayedTime)
+                    if (chronoline.Time.NearlyEquals(remapedLoopedPlayedTime))
                         chronoline.Chains.Forward.CallPostEvents(Direction.Forward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
-                    else if (chronoline.Time == remapedLoopedTime)
+                    else if (chronoline.Time.NearlyEquals(remapedLoopedTime))
                     {
                         // If chronoline stay at end of loop, than we need call all events.
-                        if (remapedLoopedTime == loopDuration)
+                        if (remapedLoopedTime.NearlyEquals(loopDuration))
                             chronoline.Chains.Forward.CallAllEvents(Direction.Forward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
                         else
                             chronoline.Chains.Forward.CallPreEvents(Direction.Forward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
@@ -1797,12 +1803,12 @@ namespace Tweens
                         break;
 
                     // If chronoline stay at start time, than we need handle only post events.
-                    if (backwardChronolineTime == remapedLoopedPlayedTime)
+                    if (backwardChronolineTime.NearlyEquals(remapedLoopedPlayedTime))
                         chronoline.Chains.Backward.CallPostEvents(Direction.Backward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
-                    else if (backwardChronolineTime == remapedLoopedTime)
+                    else if (backwardChronolineTime.NearlyEquals(remapedLoopedTime))
                     {
                         // If chronoline stay at end of loop, than we need call all events.
-                        if (remapedLoopedTime == loopDuration)
+                        if (remapedLoopedTime.NearlyEquals(loopDuration))
                             chronoline.Chains.Backward.CallAllEvents(Direction.Backward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
                         else
                             chronoline.Chains.Backward.CallPreEvents(Direction.Backward, emitEvents, parentContinueLoopIndex, continueMaxLoopsCount);
@@ -1838,14 +1844,14 @@ namespace Tweens
                 {
                     HandleChronolinesOnForwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
 
-                    if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                    if (lastChronoline == null || !lastChronoline.Time.NearlyEquals(loopedTime))
                         HandleUpdatePhases(forwardUpdateTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
                 }
                 else
                 {
                     HandleChronolinesOnBackwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
 
-                    if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                    if (lastChronoline == null || !lastChronoline.Time.NearlyEquals(loopedTime))
                         HandleUpdatePhases(backwardUpdateTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
                 }
             }
@@ -1856,14 +1862,14 @@ namespace Tweens
                 {
                     HandleChronolinesOnBackwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
 
-                    if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                    if (lastChronoline == null || !lastChronoline.Time.NearlyEquals(loopedTime))
                         HandleUpdatePhases(backwardUpdateTime, Direction.Backward, _backwardPlayedTimeCalcualtor, emitEvents, backwardParentContinueLoopIndex, continueMaxLoopsCount);
                 }
                 else
                 {
                     HandleChronolinesOnForwardInterval(_chronolines, remaped.loopedPlayedTime, remaped.loopedTime, LoopDuration, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount, ref lastChronoline);
 
-                    if (lastChronoline == null || lastChronoline.Time != loopedTime)
+                    if (lastChronoline == null || !lastChronoline.Time.NearlyEquals(loopedTime))
                         HandleUpdatePhases(forwardUpdateTime, Direction.Forward, _forwardPlayedTimeCalcualtor, emitEvents, forwardParentContinueLoopIndex, continueMaxLoopsCount);
                 }
             }
@@ -1876,7 +1882,7 @@ namespace Tweens
                 var nextPlayedTime = loop * LoopDuration + loopedTime;
 
                 // If we jump to the same position, than we don't need handle this situation.
-                if (nextPlayedTime == PlayedTime)
+                if (nextPlayedTime.NearlyEquals(PlayedTime))
                     return;
 
                 CheckAndIncreaseContinueParameters(ref parentContinueLoopIndex, ref continueMaxLoopsCount, loop);
@@ -1923,7 +1929,7 @@ namespace Tweens
                 var nextPlayedTime = Duration - (loop * LoopDuration + loopedTime);
 
                 // If we jump to the same position, than we don't need handle this situation.
-                if (nextPlayedTime == PlayedTime)
+                if (nextPlayedTime.NearlyEquals(PlayedTime))
                     return;
 
                 CheckAndIncreaseContinueParameters(ref parentContinueLoopIndex, ref continueMaxLoopsCount, loop);

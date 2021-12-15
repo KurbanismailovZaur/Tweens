@@ -26,8 +26,30 @@ namespace Tweens
                 return Float(UnityEngine.Time.timeScale, timeScale, ts => UnityEngine.Time.timeScale = ts, duration, formula, loopsCount, loopType, direction);
             }
         }
+
+        public static class Physics
+        {
+            public static Tween<Vector3, TweakVector3> DoGravity(Vector3 gravity, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+            {
+                return Vector3(UnityEngine.Physics.gravity, gravity, g => UnityEngine.Physics.gravity = g, duration, formula, loopsCount, loopType, direction);
+            }
+
+            public static Tween<Vector3, TweakVector3> DoClothGravity(Vector3 gravity, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+            {
+                return Vector3(UnityEngine.Physics.clothGravity, gravity, g => UnityEngine.Physics.clothGravity = g, duration, formula, loopsCount, loopType, direction);
+            }
+        }
+
+        public static class Physics2D
+        {
+            public static Tween<Vector2, TweakVector2> DoGravity(Vector2 gravity, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+            {
+                return Vector2(UnityEngine.Physics2D.gravity, gravity, g => UnityEngine.Physics2D.gravity = g, duration, formula, loopsCount, loopType, direction);
+            }
+        }
         #endregion
 
+        #region Types
         #region Byte
         /// <summary>
         /// Create byte tween.
@@ -3677,6 +3699,34 @@ namespace Tweens
             return new Tween<BoundingSphere, TweakBoundingSphere>(owner, name, new TweakBoundingSphere(), from, to, action, loopDuration, formula, loopsCount, loopType, direction);
         }
         #endregion
+        #endregion
+
+        public static Sequence Shake(GameObject owner, string name, float value, float duration, int count, float strenght, float randomness, Action<float> action)
+        {
+            duration = Mathf.Max(duration, 0f);
+            count = Mathf.Max(count, 2);
+            strenght = Mathf.Abs(strenght);
+            randomness = Mathf.Clamp(randomness, 0, strenght);
+
+            var tweenDuration = duration / count;
+            var sign = UnityEngine.Random.Range(0, 2) % 2 == 0 ? 1f : -1f;
+            var from = value;
+
+            var sequence = new Sequence(owner, name);
+
+            for (int i = 0; i < count - 1; i++)
+            {
+                var to = value + strenght * sign + UnityEngine.Random.Range(0f, randomness) * -sign;
+                sequence.Append(Float(owner, name, from, to, action, tweenDuration));
+
+                from = to;
+                sign *= -1;
+            }
+
+            sequence.Append(Float(owner, $"{count - 1}", from, value, action, tweenDuration));
+
+            return sequence;
+        }
     }
 
     /// <summary>

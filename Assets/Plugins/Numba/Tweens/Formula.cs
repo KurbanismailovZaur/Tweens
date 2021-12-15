@@ -10,6 +10,12 @@ namespace Tweens
     {
         internal static InversionFormula Invertion { get; private set; } = new InversionFormula();
 
+        /// <summary>
+        /// Represent custom curve formula. Each call creates a new instance.
+        /// <br/>Use <see cref="CurveFormula.With(UnityEngine.AnimationCurve)"/> method to set animation curve.
+        /// </summary>
+        public static CurveFormula Curve => new CurveFormula();
+
         public static LinearFormula Linear { get; private set; } = new LinearFormula();
 
         /// <summary>
