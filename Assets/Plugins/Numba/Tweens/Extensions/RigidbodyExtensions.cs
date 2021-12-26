@@ -126,5 +126,37 @@ namespace Tweens
             return Tween.Quaternion(owner, owner.name, rigidbody.rotation, rotation, r => rigidbody.rotation = r, duration, formula, loopsCount, loopType, direction);
         }
         #endregion
+
+        #region DoLookAt
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Rigidbody rigidbody, GameObject gameObject, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoLookAt(rigidbody, rigidbody.gameObject, gameObject.transform.position, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Rigidbody rigidbody, GameObject owner, GameObject gameObject, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoLookAt(rigidbody, owner, gameObject.transform.position, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Rigidbody rigidbody, Transform target, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoLookAt(rigidbody, rigidbody.gameObject, target.position, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Rigidbody rigidbody, GameObject owner, Transform target, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoLookAt(rigidbody, owner, target.position, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Rigidbody rigidbody, Vector3 point, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoLookAt(rigidbody, rigidbody.gameObject, point, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Rigidbody rigidbody, GameObject owner, Vector3 point, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoRotation(rigidbody, owner, Quaternion.LookRotation(point - rigidbody.position), duration, formula, loopsCount, loopType, direction);
+        }
+        #endregion
     }
 }

@@ -562,5 +562,135 @@ namespace Tweens
             return Tween.Vector2(owner, owner.name, rectTransform.sizeDelta, size, size => rectTransform.sizeDelta = size, duration, formula, loopsCount, loopType, direction);
         }
         #endregion
+
+        #region DoShakeAnchoredPosition
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, int count = 10, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, (int x, int y) count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, int count, (float x, float y) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, (int x, int y) count, (float x, float y) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, int count = 10, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition(rectTransform, owner, (count, count), (strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, (int x, int y) count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition(rectTransform, owner, count, (strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, int count, (float x, float y) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition(rectTransform, owner, (count, count), strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, (int x, int y) count, (float x, float y) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rectTransform.anchoredPosition.x, count.x, strenght.x, duration, x => rectTransform.anchoredPosition = rectTransform.anchoredPosition.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rectTransform.anchoredPosition.y, count.y, strenght.y, duration, y => rectTransform.anchoredPosition = rectTransform.anchoredPosition.WithY(y), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoShakeAnchoredPosition3D
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, int count = 10, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition3D(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, (int x, int y, int z) count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition3D(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, int count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition3D(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, (int x, int y, int z) count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition3D(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, int count = 10, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition3D(rectTransform, owner, (count, count, count), (strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, (int x, int y, int z) count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition3D(rectTransform, owner, count, (strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, int count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeAnchoredPosition3D(rectTransform, owner, (count, count, count), strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, (int x, int y, int z) count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rectTransform.anchoredPosition3D.x, count.x, strenght.x, duration, x => rectTransform.anchoredPosition3D = rectTransform.anchoredPosition3D.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rectTransform.anchoredPosition3D.y, count.y, strenght.y, duration, y => rectTransform.anchoredPosition3D = rectTransform.anchoredPosition3D.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rectTransform.anchoredPosition3D.z, count.z, strenght.z, duration, z => rectTransform.anchoredPosition3D = rectTransform.anchoredPosition3D.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoPunchAnchoredPosition
+        public static Sequence DoPunchAnchoredPosition(this RectTransform rectTransform, Vector2 vector, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchAnchoredPosition(rectTransform, rectTransform.gameObject, vector, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchAnchoredPosition(this RectTransform rectTransform, GameObject owner, Vector2 vector, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rectTransform.anchoredPosition.x, count, vector.x, duration, x => rectTransform.anchoredPosition = rectTransform.anchoredPosition.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rectTransform.anchoredPosition.y, count, vector.y, duration, y => rectTransform.anchoredPosition = rectTransform.anchoredPosition.WithY(y), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoPunchAnchoredPosition3D
+        public static Sequence DoPunchAnchoredPosition3D(this RectTransform rectTransform, Vector3 vector, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchAnchoredPosition3D(rectTransform, rectTransform.gameObject, vector, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, Vector3 vector, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rectTransform.anchoredPosition3D.x, count, vector.x, duration, x => rectTransform.anchoredPosition3D = rectTransform.anchoredPosition3D.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rectTransform.anchoredPosition3D.y, count, vector.y, duration, y => rectTransform.anchoredPosition3D = rectTransform.anchoredPosition3D.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rectTransform.anchoredPosition3D.z, count, vector.z, duration, z => rectTransform.anchoredPosition3D = rectTransform.anchoredPosition3D.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
     }
 }

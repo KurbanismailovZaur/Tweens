@@ -581,9 +581,419 @@ namespace Tweens
         }
         #endregion
 
-        //Sequence Shake(this Transform transform, GameObject owner, string name, float duration, int count, float strenght, float randomness)
-        //{
-            
-        //}
+        #region DoLookAt
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Transform transform, GameObject gameObject, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoLookAt(transform, transform.gameObject, gameObject.transform.position, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Transform transform, GameObject owner, GameObject gameObject, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoLookAt(transform, owner, gameObject.transform.position, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Transform transform, Transform target, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoLookAt(transform, transform.gameObject, target.position, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Transform transform, GameObject owner, Transform target, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoLookAt(transform, owner, target.position, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Transform transform, Vector3 point, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoLookAt(transform, transform.gameObject, point, duration, formula, loopsCount, loopType, direction);
+        }
+
+        public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Transform transform, GameObject owner, Vector3 point, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        {
+            return DoRotation(transform, owner, Quaternion.LookRotation(point - transform.position), duration, formula, loopsCount, loopType, direction);
+        }
+        #endregion
+
+        #region Shake
+        #region DoShakePosition
+        public static Sequence DoShakePosition(this Transform transform, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(transform, transform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Transform transform, (int x, int y, int z) count, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(transform, transform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Transform transform, int count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(transform, transform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Transform transform, (int x, int y, int z) count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(transform, transform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Transform transform, GameObject owner, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(transform, owner, (count, count, count), (strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Transform transform, GameObject owner, (int x, int y, int z) count, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(transform, owner, count, (strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Transform transform, GameObject owner, int count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(transform, owner, (count, count, count), strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Transform transform, GameObject owner, (int x, int y, int z) count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.position.x, count.x, strenght.x, duration, x => transform.position = transform.position.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.position.y, count.y, strenght.y, duration, y => transform.position = transform.position.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.position.z, count.z, strenght.z, duration, z => transform.position = transform.position.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoShakeLocalPosition
+        public static Sequence DoShakeLocalPosition(this Transform transform, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalPosition(transform, transform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalPosition(this Transform transform, (int x, int y, int z) count, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalPosition(transform, transform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalPosition(this Transform transform, int count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalPosition(transform, transform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalPosition(this Transform transform, (int x, int y, int z) count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalPosition(transform, transform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalPosition(this Transform transform, GameObject owner, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalPosition(transform, owner, (count, count, count), (strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalPosition(this Transform transform, GameObject owner, (int x, int y, int z) count, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalPosition(transform, owner, count, (strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalPosition(this Transform transform, GameObject owner, int count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalPosition(transform, owner, (count, count, count), strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalPosition(this Transform transform, GameObject owner, (int x, int y, int z) count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.localPosition.x, count.x, strenght.x, duration, x => transform.localPosition = transform.localPosition.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.localPosition.y, count.y, strenght.y, duration, y => transform.localPosition = transform.localPosition.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.localPosition.z, count.z, strenght.z, duration, z => transform.localPosition = transform.localPosition.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoShakeEulerAngles
+        public static Sequence DoShakeEulerAngles(this Transform transform, int count = 8, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(transform, transform.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Transform transform, (int x, int y, int z) count, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(transform, transform.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Transform transform, int count, (float x, float y, float z) angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(transform, transform.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Transform transform, (int x, int y, int z) count, (float x, float y, float z) angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(transform, transform.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Transform transform, GameObject owner, int count = 8, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(transform, owner, (count, count, count), (angles, angles, angles), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Transform transform, GameObject owner, (int x, int y, int z) count, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(transform, owner, count, (angles, angles, angles), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Transform transform, GameObject owner, int count, (float x, float y, float z) angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(transform, owner, (count, count, count), angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Transform transform, GameObject owner, (int x, int y, int z) count, (float x, float y, float z) angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.eulerAngles.x, count.x, angles.x, duration, x => transform.eulerAngles = transform.eulerAngles.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.eulerAngles.y, count.y, angles.y, duration, y => transform.eulerAngles = transform.eulerAngles.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.eulerAngles.z, count.z, angles.z, duration, z => transform.eulerAngles = transform.eulerAngles.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoShakeLocalEulerAngles
+        public static Sequence DoShakeLocalEulerAngles(this Transform transform, int count = 8, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalEulerAngles(transform, transform.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalEulerAngles(this Transform transform, (int x, int y, int z) count, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalEulerAngles(transform, transform.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalEulerAngles(this Transform transform, int count, (float x, float y, float z) angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalEulerAngles(transform, transform.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalEulerAngles(this Transform transform, (int x, int y, int z) count, (float x, float y, float z) angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalEulerAngles(transform, transform.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalEulerAngles(this Transform transform, GameObject owner, int count = 8, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalEulerAngles(transform, owner, (count, count, count), (angles, angles, angles), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalEulerAngles(this Transform transform, GameObject owner, (int x, int y, int z) count, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalEulerAngles(transform, owner, count, (angles, angles, angles), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalEulerAngles(this Transform transform, GameObject owner, int count, (float x, float y, float z) angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalEulerAngles(transform, owner, (count, count, count), angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalEulerAngles(this Transform transform, GameObject owner, (int x, int y, int z) count, (float x, float y, float z) angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.localEulerAngles.x, count.x, angles.x, duration, x => transform.localEulerAngles = transform.localEulerAngles.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.localEulerAngles.y, count.y, angles.y, duration, y => transform.localEulerAngles = transform.localEulerAngles.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.localEulerAngles.z, count.z, angles.z, duration, z => transform.localEulerAngles = transform.localEulerAngles.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoShakeLocalScale
+        public static Sequence DoShakeLocalScale(this Transform transform, int count = 10, float scale = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalScale(transform, transform.gameObject, count, scale, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalScale(this Transform transform, (int x, int y, int z) count, float scale = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalScale(transform, transform.gameObject, count, scale, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalScale(this Transform transform, int count, (float x, float y, float z) scale, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalScale(transform, transform.gameObject, count, scale, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalScale(this Transform transform, (int x, int y, int z) count, (float x, float y, float z) scale, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalScale(transform, transform.gameObject, count, scale, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalScale(this Transform transform, GameObject owner, int count = 10, float scale = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalScale(transform, owner, (count, count, count), (scale, scale, scale), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalScale(this Transform transform, GameObject owner, (int x, int y, int z) count, float scale = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalScale(transform, owner, count, (scale, scale, scale), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalScale(this Transform transform, GameObject owner, int count, (float x, float y, float z) scale, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeLocalScale(transform, owner, (count, count, count), scale, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeLocalScale(this Transform transform, GameObject owner, (int x, int y, int z) count, (float x, float y, float z) scale, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.localScale.x, count.x, scale.x, duration, x => transform.localScale = transform.localScale.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.localScale.y, count.y, scale.y, duration, y => transform.localScale = transform.localScale.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, transform.localScale.z, count.z, scale.z, duration, z => transform.localScale = transform.localScale.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+        #endregion
+
+        #region Punch
+        #region DoPunchPosition
+        public static Sequence DoPunchPosition(this Transform transform, Vector3 vector, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchPosition(transform, transform.gameObject, vector, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchPosition(this Transform transform, GameObject owner, Vector3 vector, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.position.x, count, vector.x, duration, x => transform.position = transform.position.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.position.y, count, vector.y, duration, y => transform.position = transform.position.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.position.z, count, vector.z, duration, z => transform.position = transform.position.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoPunchLocalPosition
+        public static Sequence DoPunchLocalPosition(this Transform transform, Vector3 vector, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchLocalPosition(transform, transform.gameObject, vector, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchLocalPosition(this Transform transform, GameObject owner, Vector3 vector, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.localPosition.x, count, vector.x, duration, x => transform.localPosition = transform.localPosition.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.localPosition.y, count, vector.y, duration, y => transform.localPosition = transform.localPosition.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.localPosition.z, count, vector.z, duration, z => transform.localPosition = transform.localPosition.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoPunchEulerAngles
+        public static Sequence DoPunchEulerAngles(this Transform transform, Vector3 angles, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchEulerAngles(transform, transform.gameObject, angles, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchEulerAngles(this Transform transform, GameObject owner, Vector3 angles, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.eulerAngles.x, count, angles.x, duration, x => transform.eulerAngles = transform.eulerAngles.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.eulerAngles.y, count, angles.y, duration, y => transform.eulerAngles = transform.eulerAngles.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.eulerAngles.z, count, angles.z, duration, z => transform.eulerAngles = transform.eulerAngles.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoPunchLocalEulerAngles
+        public static Sequence DoPunchLocalEulerAngles(this Transform transform, Vector3 angles, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchLocalEulerAngles(transform, transform.gameObject, angles, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchLocalEulerAngles(this Transform transform, GameObject owner, Vector3 angles, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.localEulerAngles.x, count, angles.x, duration, x => transform.localEulerAngles = transform.localEulerAngles.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.localEulerAngles.y, count, angles.y, duration, y => transform.localEulerAngles = transform.localEulerAngles.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.localEulerAngles.z, count, angles.z, duration, z => transform.localEulerAngles = transform.localEulerAngles.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoPunchRotation
+        public static Tween<float, TweakFloat> DoPunchRotation(this Transform transform, Vector3 direction, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchRotation(transform, transform.gameObject, Quaternion.LookRotation(direction), count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoPunchRotation(this Transform transform, GameObject owner, Vector3 direction, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchRotation(transform, owner, Quaternion.LookRotation(direction), count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoPunchRotation(this Transform transform, Quaternion rotation, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchRotation(transform, transform.gameObject, rotation, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoPunchRotation(this Transform transform, GameObject owner, Quaternion rotation, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return Tween.Punch(owner, owner.name, transform.rotation, count, rotation, duration, rot => transform.rotation = rot, leftSmoothness, rightSmoothness);
+        }
+        #endregion
+
+        #region DoPunchLocalRotation
+        public static Tween<float, TweakFloat> DoPunchLocalRotation(this Transform transform, Vector3 direction, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchLocalRotation(transform, transform.gameObject, Quaternion.LookRotation(direction), count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoPunchLocalRotation(this Transform transform, GameObject owner, Vector3 direction, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchLocalRotation(transform, owner, Quaternion.LookRotation(direction), count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoPunchLocalRotation(this Transform transform, Quaternion rotation, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchLocalRotation(transform, transform.gameObject, rotation, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoPunchLocalRotation(this Transform transform, GameObject owner, Quaternion rotation, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return Tween.Punch(owner, owner.name, transform.localRotation, count, rotation, duration, rot => transform.localRotation = rot, leftSmoothness, rightSmoothness);
+        }
+        #endregion
+
+        #region DoPunchLocalScale
+        public static Sequence DoPunchLocalScale(this Transform transform, float scale = 0.5f, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchLocalScale(transform, transform.gameObject, new Vector3(scale, scale, scale), count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchLocalScale(this Transform transform, Vector3 scale, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchLocalScale(transform, transform.gameObject, scale, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchLocalScale(this Transform transform, GameObject owner, Vector3 scale, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.localScale.x, count, scale.x, duration, x => transform.localScale = transform.localScale.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.localScale.y, count, scale.y, duration, y => transform.localScale = transform.localScale.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, transform.localScale.z, count, scale.z, duration, z => transform.localScale = transform.localScale.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+        #endregion
     }
 }

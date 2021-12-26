@@ -9,22 +9,18 @@ namespace Tweens
     public class Test : MonoBehaviour
     {
         [SerializeField]
-        private Transform _target;
+        private RectTransform _target;
 
         [SerializeField]
-        [Range(2, 50)]
-        private int _count;
+        [Range(0f, 90f)]
+        private int _x;
 
-        public int MyProperty { get; set; }
 
         IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
 
-            Tween.Shake(null, null, 0, 1f, _count, 0.5f, 0.5f, x => { _target.SetPositionX(x); print($"SETTED TO {x}"); })
-                .OnPhaseUpdated(() => print("Updated"))
-                .OnCompleted(() => print("Completed"))
-                .Play();
+            _target.DoPunchAnchoredPosition(Vector2.one * 100).Play();
         }
     }
 }

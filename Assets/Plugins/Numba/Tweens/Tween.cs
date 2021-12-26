@@ -2,6 +2,7 @@ using System;
 using Tweens.Formulas;
 using Tweens.Tweaks;
 using UnityEngine;
+using Extensions;
 
 namespace Tweens
 {
@@ -3701,32 +3702,99 @@ namespace Tweens
         #endregion
         #endregion
 
-        public static Sequence Shake(GameObject owner, string name, float value, float duration, int count, float strenght, float randomness, Action<float> action)
+        #region Shake
+        public static Tween<float, TweakFloat> Shake(float from, int count, float strenght, float duration, Action<float> action, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            duration = Mathf.Max(duration, 0f);
-            count = Mathf.Max(count, 2);
-            strenght = Mathf.Abs(strenght);
-            randomness = Mathf.Clamp(randomness, 0, strenght);
-
-            var tweenDuration = duration / count;
-            var sign = UnityEngine.Random.Range(0, 2) % 2 == 0 ? 1f : -1f;
-            var from = value;
-
-            var sequence = new Sequence(owner, name);
-
-            for (int i = 0; i < count - 1; i++)
-            {
-                var to = value + strenght * sign + UnityEngine.Random.Range(0f, randomness) * -sign;
-                sequence.Append(Float(owner, name, from, to, action, tweenDuration));
-
-                from = to;
-                sign *= -1;
-            }
-
-            sequence.Append(Float(owner, $"{count - 1}", from, value, action, tweenDuration));
-
-            return sequence;
+            return Shake(null, null, from, count, strenght, duration, action, leftSmoothness, rightSmoothness);
         }
+
+        public static Tween<float, TweakFloat> Shake(GameObject owner, string name, float from, int count, float strenght, float duration, Action<float> action, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var startX = UnityEngine.Random.Range(0f, 100f);
+            var y = UnityEngine.Random.Range(0f, 300f);
+
+            duration = Mathf.Max(duration, 0f);
+
+            count = Mathf.Max(count, 0);
+            strenght = Mathf.Abs(strenght);
+
+            var endX = startX + count;
+
+            var tween = Float(owner, name, startX, endX, x =>
+            {
+                if (count == 0)
+                    return;
+
+                var percent = (x - startX) / count;
+                var smoother = 1f;
+
+                if (percent.NearlyEquals(leftSmoothness) || percent < leftSmoothness)
+                    smoother = percent.Remap(0f, leftSmoothness, 0f, 1f);
+                else if (percent.NearlyEquals(1f - rightSmoothness) || percent > 1f - rightSmoothness)
+                    smoother = percent.Remap(1f - rightSmoothness, 1f, 1f, 0f);
+
+                action(from + Mathf.Clamp01(Mathf.PerlinNoise(x, y)).Remap(0f, 1f, -1f, 1f) * strenght * smoother);
+            }, duration);
+
+            return tween;
+        }
+        #endregion
+
+        #region Punch
+        public static Tween<float, TweakFloat> Punch(float from, int count, float strenght, float duration, Action<float> action, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return Punch(null, null, from, count, strenght, duration, action, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> Punch(GameObject owner, string name, float from, int count, float strenght, float duration, Action<float> action, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var totalCount = count * 2f;
+            return Float(0f, totalCount, x =>
+            {
+                if (count == 0)
+                    return;
+
+                var multiplier = Mathf.Sin(x * 90f * Mathf.Deg2Rad);
+
+                var percent = x / totalCount;
+                var smoother = 1f;
+
+                if (percent.NearlyEquals(leftSmoothness) || percent < leftSmoothness)
+                    smoother = percent.Remap(0f, leftSmoothness, 0f, 1f);
+                else if (percent.NearlyEquals(1f - rightSmoothness) || percent > 1f - rightSmoothness)
+                    smoother = percent.Remap(1f - rightSmoothness, 1f, 1f, 0f);
+
+                action(from + strenght * multiplier * smoother);
+            }, duration);
+        }
+
+        public static Tween<float, TweakFloat> Punch(Quaternion from, int count, Quaternion to, float duration, Action<Quaternion> action, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return Punch(null, null, from, count, to, duration, action, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> Punch(GameObject owner, string name, Quaternion from, int count, Quaternion to, float duration, Action<Quaternion> action, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var totalCount = count * 2f;
+            return Float(0f, totalCount, x =>
+            {
+                if (count == 0)
+                    return;
+
+                var multiplier = Mathf.Sin(x * 90f * Mathf.Deg2Rad);
+
+                var percent = x / totalCount;
+                var smoother = 1f;
+
+                if (percent.NearlyEquals(leftSmoothness) || percent < leftSmoothness)
+                    smoother = percent.Remap(0f, leftSmoothness, 0f, 1f);
+                else if (percent.NearlyEquals(1f - rightSmoothness) || percent > 1f - rightSmoothness)
+                    smoother = percent.Remap(1f - rightSmoothness, 1f, 1f, 0f);
+
+                action(UnityEngine.Quaternion.SlerpUnclamped(from, to, multiplier * smoother));
+            }, duration);
+        }
+        #endregion
     }
 
     /// <summary>
