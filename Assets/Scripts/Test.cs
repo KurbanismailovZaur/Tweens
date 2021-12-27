@@ -20,7 +20,7 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            _target.DoPunchAnchoredPosition(Vector2.one * 100).Play();
+            _target.DoShakePosition().Play();
         }
     }
 }

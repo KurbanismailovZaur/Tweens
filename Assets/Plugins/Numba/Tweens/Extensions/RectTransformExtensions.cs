@@ -569,37 +569,37 @@ namespace Tweens
             return DoShakeAnchoredPosition(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, (int x, int y) count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, Vector2Int count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             return DoShakeAnchoredPosition(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, int count, (float x, float y) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, int count, Vector2 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             return DoShakeAnchoredPosition(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, (int x, int y) count, (float x, float y) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, Vector2Int count, Vector2 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             return DoShakeAnchoredPosition(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
         }
 
         public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, int count = 10, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeAnchoredPosition(rectTransform, owner, (count, count), (strenght, strenght), duration, leftSmoothness, rightSmoothness);
+            return DoShakeAnchoredPosition(rectTransform, owner, new Vector2Int(count, count), new Vector2(strenght, strenght), duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, (int x, int y) count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, Vector2Int count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeAnchoredPosition(rectTransform, owner, count, (strenght, strenght), duration, leftSmoothness, rightSmoothness);
+            return DoShakeAnchoredPosition(rectTransform, owner, count, new Vector2(strenght, strenght), duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, int count, (float x, float y) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, int count, Vector2 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeAnchoredPosition(rectTransform, owner, (count, count), strenght, duration, leftSmoothness, rightSmoothness);
+            return DoShakeAnchoredPosition(rectTransform, owner, new Vector2Int(count, count), strenght, duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, (int x, int y) count, (float x, float y) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition(this RectTransform rectTransform, GameObject owner, Vector2Int count, Vector2 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             var sequence = new Sequence(owner, owner.name);
 
@@ -616,37 +616,37 @@ namespace Tweens
             return DoShakeAnchoredPosition3D(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, (int x, int y, int z) count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, Vector3Int count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             return DoShakeAnchoredPosition3D(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, int count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             return DoShakeAnchoredPosition3D(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, (int x, int y, int z) count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, Vector3Int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             return DoShakeAnchoredPosition3D(rectTransform, rectTransform.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
         }
 
         public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, int count = 10, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeAnchoredPosition3D(rectTransform, owner, (count, count, count), (strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
+            return DoShakeAnchoredPosition3D(rectTransform, owner, new Vector3Int(count, count, count), new Vector3(strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, (int x, int y, int z) count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, Vector3Int count, float strenght = 10f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeAnchoredPosition3D(rectTransform, owner, count, (strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
+            return DoShakeAnchoredPosition3D(rectTransform, owner, count, new Vector3(strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, int count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeAnchoredPosition3D(rectTransform, owner, (count, count, count), strenght, duration, leftSmoothness, rightSmoothness);
+            return DoShakeAnchoredPosition3D(rectTransform, owner, new Vector3Int(count, count, count), strenght, duration, leftSmoothness, rightSmoothness);
         }
 
-        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, (int x, int y, int z) count, (float x, float y, float z) strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        public static Sequence DoShakeAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, Vector3Int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             var sequence = new Sequence(owner, owner.name);
 
