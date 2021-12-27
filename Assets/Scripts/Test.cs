@@ -15,7 +15,6 @@ namespace Tweens
         [Range(0f, 90f)]
         private int _x;
 
-
         IEnumerator Start()
         {
             yield return new WaitForSeconds(1f);
