@@ -4132,7 +4132,6 @@ namespace Tweens
 
         protected override void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
-            Debug.Log($"loop: {loop}, loopedTime: {loopedTime}, direction: {direction}, emitEvents: {emitEvents}, parentContinueLoopIndex: {parentContinueLoopIndex}, continueMaxLoopsCoubt: {continueMaxLoopsCount}");
             var (from, to) = (From(), To());
 
             (T, T) Evaluate(float fromInterlopation, float toInterpolation) => (Tweak.Evaluate(from, to, fromInterlopation), Tweak.Evaluate(from, to, toInterpolation));

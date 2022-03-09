@@ -11,25 +11,25 @@ namespace Tweens
     /// </summary>
     public static class Lerp
     {
-        public static byte Byte(byte from, byte to, float interpolation) => (byte)Mathf.Lerp(from, to, interpolation);
+        public static byte Byte(byte from, byte to, float interpolation) => (byte)Mathf.LerpUnclamped(from, to, interpolation);
 
-        public static sbyte SByte(sbyte from, sbyte to, float interpolation) => (sbyte)Mathf.Lerp(from, to, interpolation);
+        public static sbyte SByte(sbyte from, sbyte to, float interpolation) => (sbyte)Mathf.LerpUnclamped(from, to, interpolation);
 
-        public static short Short(short from, short to, float interpolation) => (short)Mathf.Lerp(from, to, interpolation);
+        public static short Short(short from, short to, float interpolation) => (short)Mathf.LerpUnclamped(from, to, interpolation);
 
-        public static ushort UShort(ushort from, ushort to, float interpolation) => (ushort)Mathf.Lerp(from, to, interpolation);
+        public static ushort UShort(ushort from, ushort to, float interpolation) => (ushort)Mathf.LerpUnclamped(from, to, interpolation);
 
-        public static char Char(char from, char to, float interpolation) => (char)Mathf.Lerp(from, to, interpolation);
+        public static char Char(char from, char to, float interpolation) => (char)Mathf.LerpUnclamped(from, to, interpolation);
 
-        public static int Int(int from, int to, float interpolation) => (int)Mathf.Lerp(from, to, interpolation);
+        public static int Int(int from, int to, float interpolation) => (int)Mathf.LerpUnclamped(from, to, interpolation);
 
-        public static uint UInt(uint from, uint to, float interpolation) => (uint)Mathf.Lerp(from, to, interpolation);
+        public static uint UInt(uint from, uint to, float interpolation) => (uint)Mathf.LerpUnclamped(from, to, interpolation);
 
-        public static long Long(long from, long to, float interpolation) => (long)Mathf.Lerp(from, to, interpolation);
+        public static long Long(long from, long to, float interpolation) => (long)Mathf.LerpUnclamped(from, to, interpolation);
 
-        public static ulong ULong(ulong from, ulong to, float interpolation) => (ulong)Mathf.Lerp(from, to, interpolation);
+        public static ulong ULong(ulong from, ulong to, float interpolation) => (ulong)Mathf.LerpUnclamped(from, to, interpolation);
 
-        public static float Float(float from, float to, float interpolation) => Mathf.Lerp(from, to, interpolation);
+        public static float Float(float from, float to, float interpolation) => Mathf.LerpUnclamped(from, to, interpolation);
 
         public static double Double(double from, double to, float interpolation) => from + (to - from) * interpolation;
 

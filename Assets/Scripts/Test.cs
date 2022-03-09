@@ -19,11 +19,11 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            var tween = Tween.Float(0f, 1f, x => _target.SetPositionX(x), 1f, null, 2, LoopType.Continue).Play();
+            var tween = Tween.Float(0f, 1f, x => _target.SetPositionX(x), 1f, null, 2, LoopType.Mirror);
             
-            //var sequence = new Sequence(null, 2, LoopType.Continue);
-            //sequence.Append(tween);
-            //sequence.Play();
+            var sequence = new Sequence(null, 3, LoopType.Continue);
+            sequence.Append(tween);
+            sequence.Play();
         }
     }
 }
