@@ -1,5 +1,5 @@
-using Extensions;
-using Moroutines;
+using Redcode.Extensions;
+using Redcode.Moroutines;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +9,7 @@ namespace Tweens
     public class Test : MonoBehaviour
     {
         [SerializeField]
-        private RectTransform _target;
+        private Transform _target;
 
         [SerializeField]
         [Range(0f, 90f)]
@@ -19,7 +19,11 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            _target.DoShakePosition().Play();
+            var tween = Tween.Float(0f, 1f, x => _target.SetPositionX(x), 1f, null, 2, LoopType.Continue).Play();
+            
+            //var sequence = new Sequence(null, 2, LoopType.Continue);
+            //sequence.Append(tween);
+            //sequence.Play();
         }
     }
 }

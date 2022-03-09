@@ -1,4 +1,4 @@
-using Extensions;
+using Redcode.Extensions;
 using Tweens.Tweaks;
 using UnityEngine;
 
@@ -1363,9 +1363,9 @@ namespace Tweens
 
         public void SequenceContinuePlaySequenceMirrorTween1Reset()
         {
-            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 2, LoopType.Reset);
+            var tween = new Tween<float, TweakFloat>("tween", 0f, 1f, x => SetWithLog(0, x), 1f, null, 1, LoopType.Reset);
 
-            var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Mirror);
+            var subsequence = new Sequence("sub-sequence", null, 1, LoopType.Mirror);
             subsequence.Append(tween);
 
             var sequence = new Sequence("sequence", null, 2, LoopType.Continue);
