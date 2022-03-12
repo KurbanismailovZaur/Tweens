@@ -22,32 +22,26 @@ namespace Extensions.Editor
                 "using System.Linq;\n" +
                 "using UnityEngine;\n";
 
-            var pluginsPath = Path.Combine(Application.dataPath, "Plugins", "Numba");
+            var redcodePath = Path.Combine(Application.dataPath, "Redcode");
 
-            if (Directory.Exists(Path.Combine(pluginsPath, "Extensions")))
-                namespaces += "using Extensions;\n";
+            if (Directory.Exists(Path.Combine(redcodePath, "Extensions")))
+                namespaces += "using Redcode.Extensions;\n";
 
-            if (Directory.Exists(Path.Combine(pluginsPath, "Coroutines")))
-                namespaces += "using Coroutines;\n" +
-                "using Coroutines.Extensions;\n" +
-                "using Object = UnityEngine.Object;\n" +
-                "using Coroutine = Coroutines.Coroutine;\n";
+            if (Directory.Exists(Path.Combine(redcodePath, "Moroutines")))
+                namespaces += "using Redcode.Moroutines;\n" +
+                "using Redcode.Moroutines.Extensions;\n";
 
-            var namespaceBegin = "\nnamespace #NAMESPACE#\n{\n";
+            var before = namespaces + "\nnamespace #NAMESPACE#\n{\n";
 
-            var before = namespaces + namespaceBegin;
+            var scriptTemplate = before + "\tpublic class #SCRIPTNAME# : MonoBehaviour\n\t{\n\t}\n}";
 
-            var after = "}";
+            var classTemplate = before + "\tpublic class #SCRIPTNAME#\n\t{\n\t}\n}";
 
-            var scriptTemplate = before + "\tpublic class #SCRIPTNAME# : MonoBehaviour\n\t{\n\t}\n" + after;
+            var structTemplate = before + "\tpublic struct #SCRIPTNAME#\n\t{\n\t}\n}";
 
-            var classTemplate = before + "\tpublic class #SCRIPTNAME#\n\t{\n\t}\n" + after;
+            var interfaceTemplate = before + "\tpublic interface #SCRIPTNAME#\n\t{\n\t}\n}";
 
-            var structTemplate = before + "\tpublic struct #SCRIPTNAME#\n\t{\n\t}\n" + after;
-
-            var interfaceTemplate = before + "\tpublic interface #SCRIPTNAME#\n\t{\n\t}\n" + after;
-
-            var enumTemplate = before + "\tpublic enum #SCRIPTNAME#\n\t{\n\t}\n" + after;
+            var enumTemplate = before + "\tpublic enum #SCRIPTNAME#\n\t{\n\t}\n}";
 
             Dictionary<string, string> tempaltes = new Dictionary<string, string>
             {
