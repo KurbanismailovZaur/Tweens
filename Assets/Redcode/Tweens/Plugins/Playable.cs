@@ -97,6 +97,13 @@ namespace Tweens
         #endregion
 
         /// <summary>
+        /// Sets formula.
+        /// </summary>
+        /// <param name="formula">Formula for playing.</param>
+        /// <returns>The playable.</returns>
+        IPlayable SetFormula(FormulaBase formula);
+
+        /// <summary>
         /// Set direction.
         /// </summary>
         /// <param name="direction">Direction for playing.</param>
@@ -695,6 +702,12 @@ namespace Tweens
         {
             _startTime = Direction == Direction.Forward ? _timeSelector() - PlayedTime : _timeSelector() - (Duration - PlayedTime);
             _endTime = _startTime + Duration;
+        }
+
+        public IPlayable SetFormula(FormulaBase formula)
+        {
+            _formula = formula;
+            return this;
         }
 
         public IPlayable SetDirection(Direction direction)
@@ -1763,6 +1776,13 @@ namespace Tweens
         #endregion
 
         /// <summary>
+        /// <inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/>
+        /// </summary>
+        /// <param name="formula"><inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/></returns>
+        new T SetFormula(FormulaBase formula);
+
+        /// <summary>
         /// <inheritdoc cref="IPlayable.SetDirection(Direction)"/>
         /// </summary>
         /// <param name="direction"><inheritdoc cref="IPlayable.SetDirection(Direction)"/></param>
@@ -2104,6 +2124,8 @@ namespace Tweens
             return (T)(Playable)this;
         }
         #endregion
+
+        public new T SetFormula(FormulaBase formula) => (T)base.SetFormula(formula);
 
         public new T SetDirection(Direction direction) => (T)base.SetDirection(direction);
 

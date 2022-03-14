@@ -1,5 +1,6 @@
 using Redcode.Extensions;
 using Redcode.Moroutines;
+using Redcode.Paths;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,15 +13,14 @@ namespace Tweens
         private Transform _target;
 
         [SerializeField]
-        [Range(0f, 90f)]
-        private int _x;
+        private Path _path;
 
         IEnumerator Start()
         {
-            print("");
             yield return new WaitForSeconds(1f);
 
-            _target.DoPunchEulerAngles(new Vector3(0f, 90f, 0f), 6).Play();
+            yield return _target.DoMoveByPath(_path, 8f, Redcode.Tweens.Extensions.PathFollowOptions.UsePointRotation).SetFormula(Formula.InBounce).Repeat().WaitForStop();
+            print("Completed");
         }
     }
 }
