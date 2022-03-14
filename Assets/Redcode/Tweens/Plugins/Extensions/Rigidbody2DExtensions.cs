@@ -1,4 +1,6 @@
 using Redcode.Extensions;
+using Redcode.Paths;
+using Redcode.Tweens.Extensions;
 using Tweens.Formulas;
 using Tweens.Tweaks;
 using UnityEngine;
@@ -72,6 +74,118 @@ namespace Tweens
         public static Tween<float, TweakFloat> DoRotation(this Rigidbody2D rigidbody, GameObject owner, float rotation, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return Tween.Float(owner, owner.name, rigidbody.rotation, rotation, r => rigidbody.rotation = r, duration, formula, loopsCount, loopType, direction);
+        }
+        #endregion
+
+        #region DoShake
+        #region DoShakePosition
+        public static Sequence DoShakePosition(this Rigidbody2D rigidbody, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, rigidbody.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody2D rigidbody, Vector2Int count, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, rigidbody.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody2D rigidbody, int count, Vector2 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, rigidbody.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody2D rigidbody, Vector2Int count, Vector2 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, rigidbody.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody2D rigidbody, GameObject owner, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, owner, new Vector2Int(count, count), new Vector2(strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody2D rigidbody, GameObject owner, Vector2Int count, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, owner, count, new Vector2(strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody2D rigidbody, GameObject owner, int count, Vector2 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, owner, new Vector2Int(count, count), strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody2D rigidbody, GameObject owner, Vector2Int count, Vector2 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rigidbody.position.x, count.x, strenght.x, duration, x => rigidbody.position = rigidbody.position.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rigidbody.position.y, count.y, strenght.y, duration, y => rigidbody.position = rigidbody.position.WithY(y), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoShakeEulerAngles
+        public static Tween<float, TweakFloat> DoShakeEulerAngles(this Rigidbody2D rigidbody, int count = 8, float rotation = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(rigidbody, rigidbody.gameObject, count, rotation, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoShakeEulerAngles(this Rigidbody2D rigidbody, GameObject owner, int count = 8, float rotation = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return Tween.Shake(owner, owner.name, rigidbody.rotation, count, rotation, duration, rotation => rigidbody.rotation = rotation, leftSmoothness, rightSmoothness);
+        }
+        #endregion
+        #endregion
+
+        #region DoPunch
+        #region DoPunchPosition
+        public static Sequence DoPunchPosition(this Rigidbody2D rigidbody, Vector2 vector, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchPosition(rigidbody, rigidbody.gameObject, vector, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchPosition(this Rigidbody2D rigidbody, GameObject owner, Vector2 vector, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rigidbody.position.x, count, vector.x, duration, x => rigidbody.position = rigidbody.position.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rigidbody.position.y, count, vector.y, duration, y => rigidbody.position = rigidbody.position.WithY(y), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoPunchRotation
+        public static Tween<float, TweakFloat> DoPunchRotation(this Rigidbody2D rigidbody, float rotation, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchRotation(rigidbody, rigidbody.gameObject, rotation, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoPunchRotation(this Rigidbody2D rigidbody, GameObject owner, float rotation, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return Tween.Punch(owner, owner.name, rigidbody.rotation, count, rotation, duration, rotation => rigidbody.rotation = rotation, leftSmoothness, rightSmoothness);
+        }
+        #endregion
+        #endregion
+
+        #region DoMoveByPath
+        public static Tween<float, TweakFloat> DoMoveByPath(this Rigidbody2D rigidbody, float time, params Vector3[] points) => DoMoveByPath(rigidbody, time, true, points);
+
+        public static Tween<float, TweakFloat> DoMoveByPath(this Rigidbody2D rigidbody, float time, bool isGlobal, params Vector3[] points) => DoMoveByPath(rigidbody, Path.Create(Vector3.zero, isGlobal, points), time);
+
+        public static Tween<float, TweakFloat> DoMoveByPath(this Rigidbody2D rigidbody, Path path, float time, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection)
+        {
+            return Tween.Float(0f, 1f, p =>
+            {
+                var pointData = path.Calculate(p);
+
+                rigidbody.position = pointData.Position;
+                if (pathFollowOptions == PathFollowOptions.UsePointRotation)
+                    rigidbody.rotation = pointData.Rotation.eulerAngles.z;
+                else if (pathFollowOptions == PathFollowOptions.UsePathDirection)
+                    rigidbody.rotation = Vector2.SignedAngle(pointData.Direction.GetXY(), Vector2.right);
+            }, time);
         }
         #endregion
     }

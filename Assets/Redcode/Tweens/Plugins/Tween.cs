@@ -4076,6 +4076,17 @@ namespace Tweens
         #endregion
 
         /// <summary>
+        /// Sets loop duration of the tween.
+        /// </summary>
+        /// <param name="loopDuration">Loop duration.</param>
+        /// <returns>The tween.</returns>
+        public Tween<T, U> SetLoopDuration(float loopDuration)
+        {
+            LoopDuration = loopDuration;
+            return this;
+        }
+
+        /// <summary>
         /// Set tweak interpolation type if tweak inherited by TweakDirectional<![CDATA[<]]>T<![CDATA[>]]>.
         /// </summary>
         /// <param name="type">Interpolation type to set.</param>

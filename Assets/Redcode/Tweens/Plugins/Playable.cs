@@ -104,6 +104,20 @@ namespace Tweens
         IPlayable SetFormula(FormulaBase formula);
 
         /// <summary>
+        /// Sets loops count.
+        /// </summary>
+        /// <param name="loopsCount">Loops count.</param>
+        /// <returns>The playable.</returns>
+        IPlayable SetLoopCount(int loopsCount);
+
+        /// <summary>
+        /// Sets loop type.
+        /// </summary>
+        /// <param name="loopType">Loop type.</param>
+        /// <returns>The playable.</returns>
+        IPlayable SetLoopType(LoopType loopType);
+
+        /// <summary>
         /// Set direction.
         /// </summary>
         /// <param name="direction">Direction for playing.</param>
@@ -707,6 +721,18 @@ namespace Tweens
         public IPlayable SetFormula(FormulaBase formula)
         {
             _formula = formula;
+            return this;
+        }
+
+        public IPlayable SetLoopCount(int loopsCount)
+        {
+            LoopsCount = loopsCount;
+            return this;
+        }
+
+        public IPlayable SetLoopType(LoopType loopType)
+        {
+            LoopType = loopType;
             return this;
         }
 
@@ -1783,6 +1809,15 @@ namespace Tweens
         new T SetFormula(FormulaBase formula);
 
         /// <summary>
+        /// <inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/>
+        /// </summary>
+        /// <param name="formula"><inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/></returns>
+        new T SetLoopCount(int loopsCount);
+
+        new T SetLoopType(LoopType loopType);
+
+        /// <summary>
         /// <inheritdoc cref="IPlayable.SetDirection(Direction)"/>
         /// </summary>
         /// <param name="direction"><inheritdoc cref="IPlayable.SetDirection(Direction)"/></param>
@@ -2126,6 +2161,10 @@ namespace Tweens
         #endregion
 
         public new T SetFormula(FormulaBase formula) => (T)base.SetFormula(formula);
+
+        public new T SetLoopCount(int loopsCount) => (T)base.SetLoopCount(loopsCount);
+
+        public new T SetLoopType(LoopType loopType) => (T)base.SetLoopType(loopType);
 
         public new T SetDirection(Direction direction) => (T)base.SetDirection(direction);
 

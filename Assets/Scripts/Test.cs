@@ -19,7 +19,7 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            yield return _target.DoMoveByPath(_path, 8f, Redcode.Tweens.Extensions.PathFollowOptions.UsePointRotation).SetFormula(Formula.InBounce).Repeat().WaitForStop();
+            _target.DoMoveByPath(_path, 8f, Redcode.Tweens.Extensions.PathFollowOptions.UsePathDirection).Play().OnCompleted(() => Destroy(_path.gameObject));
             print("Completed");
         }
     }

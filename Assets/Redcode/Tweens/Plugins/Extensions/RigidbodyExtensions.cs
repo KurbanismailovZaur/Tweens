@@ -1,4 +1,6 @@
 using Redcode.Extensions;
+using Redcode.Paths;
+using Redcode.Tweens.Extensions;
 using Tweens.Formulas;
 using Tweens.Tweaks;
 using UnityEngine;
@@ -156,6 +158,182 @@ namespace Tweens
         public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Rigidbody rigidbody, GameObject owner, Vector3 point, float duration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return DoRotation(rigidbody, owner, Quaternion.LookRotation(point - rigidbody.position), duration, formula, loopsCount, loopType, direction);
+        }
+        #endregion
+
+        #region DoShake
+        #region DoShakePosition
+        public static Sequence DoShakePosition(this Rigidbody rigidbody, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, rigidbody.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody rigidbody, Vector3Int count, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, rigidbody.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody rigidbody, int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, rigidbody.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody rigidbody, Vector3Int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, rigidbody.gameObject, count, strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody rigidbody, GameObject owner, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, owner, new Vector3Int(count, count, count), new Vector3(strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody rigidbody, GameObject owner, Vector3Int count, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, owner, count, new Vector3(strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody rigidbody, GameObject owner, int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakePosition(rigidbody, owner, new Vector3Int(count, count, count), strenght, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakePosition(this Rigidbody rigidbody, GameObject owner, Vector3Int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rigidbody.position.x, count.x, strenght.x, duration, x => rigidbody.position = rigidbody.position.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rigidbody.position.y, count.y, strenght.y, duration, y => rigidbody.position = rigidbody.position.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rigidbody.position.z, count.z, strenght.z, duration, z => rigidbody.position = rigidbody.position.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoShakeEulerAngles
+        public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, int count = 8, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(rigidbody, rigidbody.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, Vector3Int count, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(rigidbody, rigidbody.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, int count, Vector3 angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(rigidbody, rigidbody.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, Vector3Int count, Vector3 angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(rigidbody, rigidbody.gameObject, count, angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, GameObject owner, int count = 8, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(rigidbody, owner, new Vector3Int(count, count, count), new Vector3(angles, angles, angles), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, GameObject owner, Vector3Int count, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(rigidbody, owner, count, new Vector3(angles, angles, angles), duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, GameObject owner, int count, Vector3 angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            return DoShakeEulerAngles(rigidbody, owner, new Vector3Int(count, count, count), angles, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, GameObject owner, Vector3Int count, Vector3 angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rigidbody.rotation.eulerAngles.x, count.x, angles.x, duration, x => rigidbody.rotation = Quaternion.Euler(rigidbody.rotation.eulerAngles.WithX(x)), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rigidbody.rotation.eulerAngles.y, count.y, angles.y, duration, y => rigidbody.rotation = Quaternion.Euler(rigidbody.rotation.eulerAngles.WithY(y)), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Shake(owner, owner.name, rigidbody.rotation.eulerAngles.z, count.z, angles.z, duration, z => rigidbody.rotation = Quaternion.Euler(rigidbody.rotation.eulerAngles.WithZ(z)), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+        #endregion
+
+        #region DoPunch
+        #region DoPunchPosition
+        public static Sequence DoPunchPosition(this Rigidbody rigidbody, Vector3 vector, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchPosition(rigidbody, rigidbody.gameObject, vector, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchPosition(this Rigidbody rigidbody, GameObject owner, Vector3 vector, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rigidbody.position.x, count, vector.x, duration, x => rigidbody.position = rigidbody.position.WithX(x), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rigidbody.position.y, count, vector.y, duration, y => rigidbody.position = rigidbody.position.WithY(y), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rigidbody.position.z, count, vector.z, duration, z => rigidbody.position = rigidbody.position.WithZ(z), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoPunchEulerAngles
+        public static Sequence DoPunchEulerAngles(this Rigidbody rigidbody, Vector3 angles, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchEulerAngles(rigidbody, rigidbody.gameObject, angles, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Sequence DoPunchEulerAngles(this Rigidbody rigidbody, GameObject owner, Vector3 angles, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            var sequence = new Sequence(owner, owner.name);
+
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rigidbody.rotation.eulerAngles.x, count, angles.x, duration, x => rigidbody.rotation = Quaternion.Euler(rigidbody.rotation.eulerAngles.WithX(x)), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rigidbody.rotation.eulerAngles.y, count, angles.y, duration, y => rigidbody.rotation = Quaternion.Euler(rigidbody.rotation.eulerAngles.WithY(y)), leftSmoothness, rightSmoothness));
+            sequence.Insert(0f, Tween.Punch(owner, owner.name, rigidbody.rotation.eulerAngles.z, count, angles.z, duration, z => rigidbody.rotation = Quaternion.Euler(rigidbody.rotation.eulerAngles.WithZ(z)), leftSmoothness, rightSmoothness));
+
+            return sequence;
+        }
+        #endregion
+
+        #region DoPunchRotation
+        public static Tween<float, TweakFloat> DoPunchRotation(this Rigidbody rigidbody, Vector3 direction, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchRotation(rigidbody, rigidbody.gameObject, Quaternion.LookRotation(direction), count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoPunchRotation(this Rigidbody rigidbody, GameObject owner, Vector3 direction, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchRotation(rigidbody, owner, Quaternion.LookRotation(direction), count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoPunchRotation(this Rigidbody rigidbody, Quaternion rotation, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return DoPunchRotation(rigidbody, rigidbody.gameObject, rotation, count, duration, leftSmoothness, rightSmoothness);
+        }
+
+        public static Tween<float, TweakFloat> DoPunchRotation(this Rigidbody rigidbody, GameObject owner, Quaternion rotation, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
+        {
+            return Tween.Punch(owner, owner.name, rigidbody.rotation, count, rotation, duration, rot => rigidbody.rotation = rot, leftSmoothness, rightSmoothness);
+        }
+        #endregion
+        #endregion
+
+        #region DoMoveByPath
+        public static Tween<float, TweakFloat> DoMoveByPath(this Rigidbody rigidbody, float time, params Vector3[] points) => DoMoveByPath(rigidbody, time, true, points);
+
+        public static Tween<float, TweakFloat> DoMoveByPath(this Rigidbody rigidbody, float time, bool isGlobal, params Vector3[] points) => DoMoveByPath(rigidbody, Path.Create(Vector3.zero, isGlobal, points), time);
+
+        public static Tween<float, TweakFloat> DoMoveByPath(this Rigidbody rigidbody, Path path, float time, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection)
+        {
+            return Tween.Float(0f, 1f, p =>
+            {
+                var pointData = path.Calculate(p);
+
+                rigidbody.position = pointData.Position;
+                if (pathFollowOptions != PathFollowOptions.None)
+                    rigidbody.rotation = pathFollowOptions == PathFollowOptions.UsePointRotation ? pointData.Rotation : Quaternion.LookRotation(pointData.Direction);
+            }, time);
         }
         #endregion
     }

@@ -615,7 +615,7 @@ namespace Tweens
         }
         #endregion
 
-        #region Shake
+        #region DoShake
         #region DoShakePosition
         public static Sequence DoShakePosition(this Transform transform, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
@@ -857,7 +857,7 @@ namespace Tweens
         #endregion
         #endregion
 
-        #region Punch
+        #region DoPunch
         #region DoPunchPosition
         public static Sequence DoPunchPosition(this Transform transform, Vector3 vector, int count = 10, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
         {
@@ -998,7 +998,7 @@ namespace Tweens
         #endregion
         #endregion
 
-        #region MoveByPath
+        #region DoMoveByPath
         public static Tween<float, TweakFloat> DoMoveByPath(this Transform transform, float time, params Vector3[] points) => DoMoveByPath(transform, time, true, points);
 
         public static Tween<float, TweakFloat> DoMoveByPath(this Transform transform, float time, bool isGlobal, params Vector3[] points) => DoMoveByPath(transform, Path.Create(Vector3.zero, isGlobal, points), time);
