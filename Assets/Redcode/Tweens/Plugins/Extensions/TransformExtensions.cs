@@ -998,22 +998,16 @@ namespace Tweens
         #endregion
         #endregion
 
-        #region DoMoveByPath
-        public static Tween<float, TweakFloat> DoMoveByPath(this Transform transform, float time, params Vector3[] points) => DoMoveByPath(transform, time, true, points);
-
-        public static Tween<float, TweakFloat> DoMoveByPath(this Transform transform, float time, bool isGlobal, params Vector3[] points) => DoMoveByPath(transform, Path.Create(Vector3.zero, isGlobal, points), time);
-
-        public static Tween<float, TweakFloat> DoMoveByPath(this Transform transform, Path path, float time, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection)
+        public static Tween<float, TweakFloat> DoMoveAlongPath(this Transform transform, Path path, float time, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection)
         {
             return Tween.Float(0f, 1f, p =>
             {
-                var pointData = path.Calculate(p);
+                var pointData = path.GetPointAtDistance(p);
 
                 transform.position = pointData.Position;
                 if (pathFollowOptions != PathFollowOptions.None)
                     transform.rotation = pathFollowOptions == PathFollowOptions.UsePointRotation ? pointData.Rotation : Quaternion.LookRotation(pointData.Direction);
             }, time);
         }
-        #endregion
     }
 }
