@@ -1,4 +1,4 @@
-namespace Tweens
+namespace Redcode.Tweens
 {
     /// <summary>
     /// Represents the behavior after <c>Playable</c> finishes playing one of its loops and moves on to the nextþ

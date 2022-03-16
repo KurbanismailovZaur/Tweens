@@ -1,6 +1,6 @@
 using System;
 
-namespace Tweens
+namespace Redcode.Tweens
 {
     /// <summary>
     /// Represents the callback function that can be used in sequences.

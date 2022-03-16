@@ -1,4 +1,4 @@
-namespace Tweens
+namespace Redcode.Tweens
 {
     /// <summary>
     /// Represent behaviour which applied to sequences before every loop start event.

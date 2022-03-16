@@ -1,17 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using Redcode.Extensions;
 
-namespace Tweens
+namespace Redcode.Tweens
 {
-	/// <summary>
-	/// Represent time type for playing methods. <br/>If you want to play the animation independently
-	/// of the <see cref="Time.timeScale"/> multiplier, use <see cref="TimeType.Unscaled"/>. 
-	/// </summary>
-	public enum TimeType
+    /// <summary>
+    /// Represent time type for playing methods. <br/>If you want to play the animation independently
+    /// of the <see cref="Time.timeScale"/> multiplier, use <see cref="TimeType.Unscaled"/>. 
+    /// </summary>
+    public enum TimeType
 	{
 		/// <summary>
 		/// Play playables with <see cref="Time.timeScale"/>. <br/>

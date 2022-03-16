@@ -1,4 +1,4 @@
-namespace Tweens
+namespace Redcode.Tweens
 {
     /// <summary>
     /// Represents the empty interval that can be used in sequences.

@@ -1,4 +1,4 @@
-namespace Tweens
+namespace Redcode.Tweens
 {
 	/// <summary>
 	/// Represent type of interpolation which will be used in tweaks.

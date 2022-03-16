@@ -1,4 +1,4 @@
-namespace Tweens
+namespace Redcode.Tweens
 {
     /// <summary>
     /// Represent <c>Playable</c> type.

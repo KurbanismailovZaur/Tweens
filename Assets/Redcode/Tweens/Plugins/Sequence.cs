@@ -3,10 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Tweens.Formulas;
 using UnityEngine;
 
-namespace Tweens
+namespace Redcode.Tweens
 {
     /// <summary>
     /// Represents a container class capable of storing lots of any <see cref="IPlayable"/> and animating them.
@@ -436,46 +435,46 @@ namespace Tweens
         /// <summary>
         /// Create sequence object.
         /// </summary>
-        /// <param name="formula"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
         /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
-        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        public Sequence(FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this((string)null, formula, loopsCount, loopType, loopResetBehaviour, direction) { }
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this((string)null, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
 
         /// <summary>
-        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, LoopResetBehaviour, Direction)"/>
+        /// <inheritdoc cref="Sequence.Sequence(Ease, int, LoopType, LoopResetBehaviour, Direction)"/>
         /// </summary>
         /// <param name="name">Name of the sequence (usefull for finding nested sequences and for debugging).</param>
-        /// <param name="formula"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
         /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
-        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        public Sequence(string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(null, name, formula, loopsCount, loopType, loopResetBehaviour, direction) { }
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(string name, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(null, name, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
 
         /// <summary>
-        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, LoopResetBehaviour, Direction)"/>
+        /// <inheritdoc cref="Sequence.Sequence(Ease, int, LoopType, LoopResetBehaviour, Direction)"/>
         /// </summary>
         /// <param name="owner">Game object to which this sequence will be attached.</param>
-        /// <param name="formula"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
         /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
-        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        public Sequence(GameObject owner, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(owner, null, formula, loopsCount, loopType, loopResetBehaviour, direction) { }
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(GameObject owner, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(owner, null, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
 
         /// <summary>
-        /// <inheritdoc cref="Sequence.Sequence(FormulaBase, int, LoopType, LoopResetBehaviour, Direction)"/>
+        /// <inheritdoc cref="Sequence.Sequence(Ease, int, LoopType, LoopResetBehaviour, Direction)"/>
         /// </summary>
-        /// <param name="owner"><inheritdoc cref="Sequence(GameObject, FormulaBase, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='owner']"/></param>
-        /// <param name="name"><inheritdoc cref="Sequence(string, FormulaBase, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='name']"/></param>
-        /// <param name="formula"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="owner"><inheritdoc cref="Sequence(GameObject, Ease, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='owner']"/></param>
+        /// <param name="name"><inheritdoc cref="Sequence(string, Ease, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='name']"/></param>
+        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
         /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
-        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        public Sequence(GameObject owner, string name, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : base(owner, name, 0f, formula, loopsCount, loopType, direction)
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(GameObject owner, string name, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : base(owner, name, 0f, ease, loopsCount, loopType, direction)
         {
             Elements = _elements.AsReadOnly();
             LoopResetBehaviour = loopResetBehaviour;
@@ -1747,10 +1746,10 @@ namespace Tweens
         protected override void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             #region Local functions
-            bool RemapTimes(float loopedPlayedTime, float loopedTime, FormulaBase formula, out (float loopedPlayedTime, float loopedTime) remaped)
+            bool RemapTimes(float loopedPlayedTime, float loopedTime, Ease ease, out (float loopedPlayedTime, float loopedTime) remaped)
             {
-                remaped.loopedPlayedTime = Mathf.Clamp(formula.Remap(loopedPlayedTime / LoopDuration) * LoopDuration, 0f, LoopDuration);
-                remaped.loopedTime = Mathf.Clamp(formula.Remap(loopedTime / LoopDuration) * LoopDuration, 0f, LoopDuration);
+                remaped.loopedPlayedTime = Mathf.Clamp(ease.Remap(loopedPlayedTime / LoopDuration) * LoopDuration, 0f, LoopDuration);
+                remaped.loopedTime = Mathf.Clamp(ease.Remap(loopedTime / LoopDuration) * LoopDuration, 0f, LoopDuration);
 
                 return !remaped.loopedPlayedTime.Approximately(remaped.loopedTime);
             }
@@ -1891,7 +1890,7 @@ namespace Tweens
 
                 if (LoopType != LoopType.Mirror)
                 {
-                    if (!RemapTimes(loopedPlayedTime, loopedTime, Formula, out (float loopedPlayedTime, float loopedTime) remaped))
+                    if (!RemapTimes(loopedPlayedTime, loopedTime, Ease, out (float loopedPlayedTime, float loopedTime) remaped))
                         return;
 
                     var (forwardParentContinueLoopIndex, backwardParentContinueLoopIndex) = direction == Direction.Forward ? (parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1) : (continueMaxLoopsCount - parentContinueLoopIndex - 1, parentContinueLoopIndex);
@@ -1907,7 +1906,7 @@ namespace Tweens
                     // Forward handling.
                     if (loopedPlayedTime < LoopDuration)
                     {
-                        if (!RemapTimes(loopedPlayedTime, loopedTime, Formula, out (float loopedPlayedTime, float loopedTime) remaped))
+                        if (!RemapTimes(loopedPlayedTime, loopedTime, Ease, out (float loopedPlayedTime, float loopedTime) remaped))
                             return;
 
                         HandleForwardBackwardIntervals(remaped, remaped.loopedTime, remaped.loopedPlayedTime, forwardParentContinueLoopIndex, backwardParentContinueLoopIndex, ref lastChronoline);
@@ -1917,7 +1916,7 @@ namespace Tweens
                         loopedPlayedTime %= LoopDuration;
                         loopedTime = LoopTime(loopedTime);
 
-                        if (!RemapTimes(loopedPlayedTime, loopedTime, Tweens.Formula.Invertion.WithFormula(Formula), out (float loopedPlayedTime, float loopedTime) remaped))
+                        if (!RemapTimes(loopedPlayedTime, loopedTime, Ease.Invertion.With(Ease), out (float loopedPlayedTime, float loopedTime) remaped))
                             return;
 
                         HandleBackwardForwardIntervals(remaped, LoopDuration - remaped.loopedTime, LoopDuration - remaped.loopedPlayedTime, backwardParentContinueLoopIndex, forwardParentContinueLoopIndex, ref lastChronoline);
@@ -1938,7 +1937,7 @@ namespace Tweens
 
                 if (LoopType != LoopType.Mirror)
                 {
-                    if (!RemapTimes(loopedPlayedTime, loopedTime, Tweens.Formula.Invertion.WithFormula(Formula), out (float loopedPlayedTime, float loopedTime) remaped))
+                    if (!RemapTimes(loopedPlayedTime, loopedTime, Ease.Invertion.With(Ease), out (float loopedPlayedTime, float loopedTime) remaped))
                         return;
 
                     var (forwardParentContinueLoopIndex, backwardParentContinueLoopIndex) = direction == Direction.Forward ? (parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1) : (continueMaxLoopsCount - parentContinueLoopIndex - 1, parentContinueLoopIndex);
@@ -1954,7 +1953,7 @@ namespace Tweens
                     // Forward handling.
                     if (loopedPlayedTime < LoopDuration)
                     {
-                        if (!RemapTimes(loopedPlayedTime, loopedTime, Formula, out (float loopedPlayedTime, float loopedTime) remaped))
+                        if (!RemapTimes(loopedPlayedTime, loopedTime, Ease, out (float loopedPlayedTime, float loopedTime) remaped))
                             return;
 
                         HandleForwardBackwardIntervals(remaped, remaped.loopedTime, remaped.loopedPlayedTime, forwardParentContinueLoopIndex, backwardParentContinueLoopIndex, ref lastChronoline);
@@ -1964,7 +1963,7 @@ namespace Tweens
                         loopedPlayedTime %= LoopDuration;
                         loopedTime = LoopTime(loopedTime);
 
-                        if (!RemapTimes(loopedPlayedTime, loopedTime, Tweens.Formula.Invertion.WithFormula(Formula), out (float loopedPlayedTime, float loopedTime) remaped))
+                        if (!RemapTimes(loopedPlayedTime, loopedTime, Ease.Invertion.With(Ease), out (float loopedPlayedTime, float loopedTime) remaped))
                             return;
 
                         HandleBackwardForwardIntervals(remaped, LoopDuration - remaped.loopedTime, LoopDuration - remaped.loopedPlayedTime, backwardParentContinueLoopIndex, forwardParentContinueLoopIndex, ref lastChronoline);

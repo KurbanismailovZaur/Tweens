@@ -1,8 +1,6 @@
 using System;
-using Tweens.Formulas;
-using UnityEngine;
 
-namespace Tweens
+namespace Redcode.Tweens
 {
     /// <summary>
     /// Base class for all tweaks, which used in <c>Tween</c> class.
@@ -18,7 +16,7 @@ namespace Tweens
         /// <param name="interpolation">Interpolation value.</param>
         /// <param name="formula">Formula which will be used to remap interpolation value (<c>null</c> means linear formula).</param>
         /// <returns>Interpolated through <paramref name="formula"/> value.</returns>
-        public T Evaluate(T from, T to, float interpolation, FormulaBase formula = null) => Interpolate(from, to, formula?.Remap(interpolation) ?? interpolation);
+        public T Evaluate(T from, T to, float interpolation, Ease formula = null) => Interpolate(from, to, formula?.Remap(interpolation) ?? interpolation);
 
         protected abstract T Interpolate(T from, T to, float interpolation);
 
@@ -30,7 +28,7 @@ namespace Tweens
         /// <param name="interpolation"><inheritdoc cref="Tweak{T}.Evaluate" path="/param[@name='interpolation']"/></param>
         /// <param name="action">Callback which will be applied.</param>
         /// <param name="formula"><inheritdoc cref="Tweak{T}.Evaluate" path="/param[@name='formula']"/></param>
-        public void Apply(T from, T to, float interpolation, Action<T> action, FormulaBase formula = null) => action(Evaluate(from, to, interpolation, formula));
+        public void Apply(T from, T to, float interpolation, Action<T> action, Ease formula = null) => action(Evaluate(from, to, interpolation, formula));
     }
 
     /// <summary>

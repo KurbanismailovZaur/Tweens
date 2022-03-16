@@ -3,10 +3,9 @@ using Redcode.Moroutines;
 using Redcode.Moroutines.Exceptions;
 using System;
 using System.Collections;
-using Tweens.Formulas;
 using UnityEngine;
 
-namespace Tweens
+namespace Redcode.Tweens
 {
     /// <summary>
     /// Represent interface to work with any <see cref="Playable"/>.
@@ -40,9 +39,9 @@ namespace Tweens
         float Duration { get; }
 
         /// <summary>
-        /// Formula which used in the playable when interpolate values.
+        /// Easing formula which used in the playable when interpolate values.
         /// </summary>
-        FormulaBase Formula { get; set; }
+        Ease Ease { get; set; }
 
         /// <summary>
         /// Loops count of the playable. Can't be less than 1
@@ -97,11 +96,11 @@ namespace Tweens
         #endregion
 
         /// <summary>
-        /// Sets formula.
+        /// Sets easing formula.
         /// </summary>
-        /// <param name="formula">Formula for playing.</param>
+        /// <param name="ease">Easing formula for playing.</param>
         /// <returns>The playable.</returns>
-        IPlayable SetFormula(FormulaBase formula);
+        IPlayable SetEase(Ease ease);
 
         /// <summary>
         /// Sets loops count.
@@ -546,12 +545,12 @@ namespace Tweens
 
         public float Duration { get; private set; }
 
-        private FormulaBase _formula;
+        private Ease _ease;
 
-        public FormulaBase Formula
+        public Ease Ease
         {
-            get => _formula;
-            set => _formula = value ?? Tweens.Formula.Linear;
+            get => _ease;
+            set => _ease = value ?? Ease.Linear;
         }
 
         private int _loopsCount;
@@ -688,15 +687,15 @@ namespace Tweens
         /// <param name="owner">Game object to which this playable will be attached.</param>
         /// <param name="name">Name of the playable.</param>
         /// <param name="loopDuration">Loop duration of the playable.</param>
-        /// <param name="formula">Formula which used when playable animate values.</param>
+        /// <param name="ease">Easing formula which used when playable animate values.</param>
         /// <param name="loopsCount">Loops count of the playable.</param>
         /// <param name="loopType">Loop type which used between loops in the playable.</param>
         /// <param name="direction">Direction in which the playable starts playing animation.</param>
-        protected Playable(GameObject owner, string name, float loopDuration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        protected Playable(GameObject owner, string name, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             Name = name;
             LoopDuration = loopDuration;
-            Formula = formula ?? Tweens.Formula.Linear;
+            Ease = ease ?? Ease.Linear;
             LoopsCount = loopsCount;
             LoopType = loopType;
             Direction = direction;
@@ -718,9 +717,9 @@ namespace Tweens
             _endTime = _startTime + Duration;
         }
 
-        public IPlayable SetFormula(FormulaBase formula)
+        public IPlayable SetEase(Ease ease)
         {
-            _formula = formula;
+            _ease = ease;
             return this;
         }
 
@@ -1802,17 +1801,17 @@ namespace Tweens
         #endregion
 
         /// <summary>
-        /// <inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/>
+        /// <inheritdoc cref="IPlayable.SetEase(Ease)"/>
         /// </summary>
-        /// <param name="formula"><inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/></param>
-        /// <returns><inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/></returns>
-        new T SetFormula(FormulaBase formula);
+        /// <param name="ease"><inheritdoc cref="IPlayable.SetEase(Ease)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetEase(Ease)"/></returns>
+        new T SetEase(Ease ease);
 
         /// <summary>
-        /// <inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/>
+        /// <inheritdoc cref="IPlayable.SetEase(Ease)"/>
         /// </summary>
-        /// <param name="formula"><inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/></param>
-        /// <returns><inheritdoc cref="IPlayable.SetFormula(FormulaBase)"/></returns>
+        /// <param name="loopsCount"><inheritdoc cref="IPlayable.SetLoopCount(int)(Ease)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetEase(Ease)"/></returns>
         new T SetLoopCount(int loopsCount);
 
         new T SetLoopType(LoopType loopType);
@@ -1985,14 +1984,14 @@ namespace Tweens
         /// <summary>
         /// Create <see cref="Playable{T}"/> object.
         /// </summary>
-        /// <param name="owner"><inheritdoc cref="Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='owner']"/></param>
-        /// <param name="name"><inheritdoc cref="Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='name']"/></param>
-        /// <param name="loopDuration"><inheritdoc cref="Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopDuration']"/></param>
-        /// <param name="formula"><inheritdoc cref="Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='formula']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
-        /// <param name="direction"><inheritdoc cref="Playable(GameObject, string, float, FormulaBase, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        protected Playable(GameObject owner, string name, float loopDuration, FormulaBase formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : base(owner, name, loopDuration, formula, loopsCount, loopType, direction) { }
+        /// <param name="owner"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='owner']"/></param>
+        /// <param name="name"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='name']"/></param>
+        /// <param name="loopDuration"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopDuration']"/></param>
+        /// <param name="ease"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="direction"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        protected Playable(GameObject owner, string name, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : base(owner, name, loopDuration, ease, loopsCount, loopType, direction) { }
 
         #region Phase calls
         protected override void CallPhaseStarting(Direction direction) => PhaseStarting?.Invoke((T)(Playable)this, direction);
@@ -2160,7 +2159,7 @@ namespace Tweens
         }
         #endregion
 
-        public new T SetFormula(FormulaBase formula) => (T)base.SetFormula(formula);
+        public new T SetEase(Ease ease) => (T)base.SetEase(ease);
 
         public new T SetLoopCount(int loopsCount) => (T)base.SetLoopCount(loopsCount);
 

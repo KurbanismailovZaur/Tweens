@@ -1,11 +1,8 @@
-using Redcode.Extensions;
-using Redcode.Moroutines;
 using Redcode.Paths;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Tweens
+namespace Redcode.Tweens
 {
     public class Test : MonoBehaviour
     {
@@ -19,7 +16,8 @@ namespace Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            _target.DoMoveAlongPath(Path.Create(), 8f, Redcode.Tweens.Extensions.PathFollowOptions.UsePathDirection).Play().OnCompleted(() => Destroy(_path.gameObject));
+            yield return _target.DoPosition(Vector3.right, 1f, Ease.InBounce).Play().WaitForComplete();
+
             print("Completed");
         }
     }

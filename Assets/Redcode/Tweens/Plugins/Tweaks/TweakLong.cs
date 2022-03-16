@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
-namespace Tweens.Tweaks
+namespace Redcode.Tweens.Tweaks
 {
     public sealed class TweakLong : Tweak<long>
     {
