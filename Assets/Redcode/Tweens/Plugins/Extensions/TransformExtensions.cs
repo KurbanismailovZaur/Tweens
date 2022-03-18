@@ -997,9 +997,11 @@ namespace Redcode.Tweens
         #endregion
         #endregion
 
-        public static Tween<float, TweakFloat> DoMoveAlongPath(this Transform transform, Path path, float duration, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection)
+        public static Tween<float, TweakFloat> DoMoveAlongPath(this Transform transform, Path path, float duration, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection) => DoMoveAlongPath(transform, null, path, duration, pathFollowOptions);
+
+        public static Tween<float, TweakFloat> DoMoveAlongPath(this Transform transform, GameObject owner, Path path, float duration, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection)
         {
-            return Tween.Float(0f, 1f, p =>
+            return Tween.Float(owner, 0f, 1f, p =>
             {
                 var pointData = path.GetPointAtDistance(p);
 
@@ -1009,13 +1011,15 @@ namespace Redcode.Tweens
             }, duration);
         }
 
-        public static (Tween<float, TweakFloat> tween, Path path) DoJump(this Transform transform, float height, Vector3 endPoint, float duration)
+        public static (Tween<float, TweakFloat> tween, Path path) DoJump(this Transform transform, float height, Vector3 endPoint, float duration) => DoJump(transform, null, height, endPoint, duration);
+
+        public static (Tween<float, TweakFloat> tween, Path path) DoJump(this Transform transform, GameObject owner, float height, Vector3 endPoint, float duration)
         {
             height = Mathf.Max(endPoint.y - transform.position.y, 0f) + height;
             var path = Path.Create(transform.position, true, Vector3.zero.WithY(transform.position.y - 5f), Vector3.zero, Vector3.Lerp(transform.position, endPoint, 0.5f).WithY(height), endPoint, endPoint.WithY(endPoint.y - 5f));
             path.Resolution = 10;
 
-            var tween = Tween.Float(0f, 1f, p => transform.position = path.GetPointAtDistance(p).Position, duration, Ease.InOutQuad);
+            var tween = Tween.Float(owner, 0f, 1f, p => transform.position = path.GetPointAtDistance(p).Position, duration, Ease.InOutQuad);
             return (tween, path);
         }
     }

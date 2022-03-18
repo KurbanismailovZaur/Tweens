@@ -168,9 +168,11 @@ namespace Redcode.Tweens
         #endregion
         #endregion
 
-        public static Tween<float, TweakFloat> DoMoveAlongPath(this Rigidbody2D rigidbody, Path path, float duration, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection)
+        public static Tween<float, TweakFloat> DoMoveAlongPath(this Rigidbody2D rigidbody, Path path, float duration, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection) => DoMoveAlongPath(rigidbody, null, duration, pathFollowOptions);
+
+        public static Tween<float, TweakFloat> DoMoveAlongPath(this Rigidbody2D rigidbody, GameObject owner, Path path, float duration, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection)
         {
-            return Tween.Float(0f, 1f, p =>
+            return Tween.Float(owner, 0f, 1f, p =>
             {
                 var pointData = path.GetPointAtDistance(p);
 
@@ -182,13 +184,15 @@ namespace Redcode.Tweens
             }, duration);
         }
 
-        public static (Tween<float, TweakFloat> tween, Path path) DoJump(this Rigidbody2D rigidbody, float height, Vector3 endPoint, float duration)
+        public static (Tween<float, TweakFloat> tween, Path path) DoJump(this Rigidbody2D rigidbody, float height, Vector3 endPoint, float duration) => DoJump(rigidbody, null, height, endPoint, duration);
+
+        public static (Tween<float, TweakFloat> tween, Path path) DoJump(this Rigidbody2D rigidbody, GameObject owner, float height, Vector3 endPoint, float duration)
         {
             height = Mathf.Max(endPoint.y - rigidbody.position.y, 0f) + height;
             var path = Path.Create(rigidbody.position, true, Vector3.zero, Vector3.zero, Vector3.Lerp(rigidbody.position, endPoint, 0.5f).WithY(height), endPoint, endPoint);
             path.Optimize();
 
-            var tween = Tween.Float(0f, 1f, p => rigidbody.position = path.GetPointAtDistance(p).Position, duration, Ease.InOutQuad);
+            var tween = Tween.Float(owner, 0f, 1f, p => rigidbody.position = path.GetPointAtDistance(p).Position, duration, Ease.InOutQuad);
             return (tween, path);
         }
     }

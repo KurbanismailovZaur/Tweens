@@ -1,5 +1,6 @@
 using Redcode.Paths;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 namespace Redcode.Tweens
@@ -7,18 +8,18 @@ namespace Redcode.Tweens
     public class Test : MonoBehaviour
     {
         [SerializeField]
-        private Transform _target;
+        private TextMeshProUGUI _text;
+
+        private Material _material;
 
         [SerializeField]
-        private Path _path;
+        private float _softness;
 
-        IEnumerator Start()
+        private void Start() => _material = _text.material;
+
+        private void Update()
         {
-            yield return new WaitForSeconds(1f);
-
-            yield return _target.DoMoveAlongPath(_path, 1f).SetLoopCount(int.MaxValue).SetLoopType(LoopType.Continue).Play().WaitForComplete();
-
-            print("Completed");
+            _material.SetFloat("_OutlineSoftness", _softness); 
         }
     }
 }
