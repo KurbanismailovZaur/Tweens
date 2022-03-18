@@ -16,7 +16,7 @@ namespace Redcode.Tweens
         {
             yield return new WaitForSeconds(1f);
 
-            yield return _target.DoPosition(Vector3.right, 1f, Ease.InBounce).Play().WaitForComplete();
+            yield return _target.DoJump(2f, new Vector3(0f, 5f, 3f), 0.7f).tween.SetLoopCount(int.MaxValue).SetLoopType(LoopType.Mirror).Play().WaitForComplete();
 
             print("Completed");
         }
