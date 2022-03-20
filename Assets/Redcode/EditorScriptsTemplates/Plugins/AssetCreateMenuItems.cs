@@ -1,16 +1,12 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using UnityEditor;
-using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 
-namespace Extensions.Editor
+#if UNITY_EDITOR
+namespace Redcode.EditorScriptsTemplates
 {
-    public static class AssetCreateMenuItems
+    internal static class AssetCreateMenuItems
     {
         private static void CheckAndCreate(string templateName, string assetName)
         {
@@ -84,3 +80,4 @@ namespace Extensions.Editor
         private static void CreateEnum() => CheckAndCreate("EnumTemplate.txt", "NewEnum.cs");
     }
 }
+#endif

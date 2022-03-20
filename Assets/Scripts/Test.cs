@@ -2,37 +2,54 @@ using Redcode.Paths;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using Redcode.Extensions;
+using UnityEngine.UI;
+using System;
 
 namespace Redcode.Tweens
 {
     public class Test : MonoBehaviour
     {
-        private int _lineIndex = 1;
+        [SerializeField]
+        private TextMeshProUGUI _framesText;
+
+        private int _frames;
 
         [SerializeField]
-        private Transform _linePoints;
+        private TMP_InputField _countField;
 
         [SerializeField]
-        private float _animationDuration;
+        private Button _testButton;
 
-        private Playable _animation;
+        [SerializeField]
+        private TextMeshProUGUI _statusText;
 
-        private void HandleInput(KeyCode key, int direction)
+        private IEnumerator Start()
         {
-            if (Input.GetKeyDown(key) && (_animation?.IsCompleted ?? true))
+            while (true)
             {
-                _lineIndex = Mathf.Clamp(_lineIndex + direction, 0, _linePoints.childCount - 1);
-                var point = _linePoints.GetChild(_lineIndex);
-                _animation = transform.DoPositionX(point.position.x, _animationDuration, Ease.InOutCirc).Play();
+                yield return new WaitForSeconds(1f);
+                _framesText.text = _frames.ToString();
+                _frames = 0;
             }
         }
 
-        private void Update()
-        {
-            HandleInput(KeyCode.A, -1);
-            HandleInput(KeyCode.D, 1);
+        private void Update() => _frames++;
 
-            print(_animation.IsCompleted);
-        }
+        public void TestTweens() => StartCoroutine(TestTweensEnumerator());
+
+        private IEnumerator TestTweensEnumerator()
+        {
+            var count = Convert.ToInt32(_countField.text);
+            _statusText.text = "Tweens creating started!";
+
+            var tweens = new Playable[count];
+            for (int i = 0; i < tweens.Length; i++)
+                tweens[i] = Tween.Float(0f, 1f, x => { }, 5f).Play();
+
+            _statusText.text = "Tweens playing started!";
+            yield return tweens[0].WaitForComplete();
+            _statusText.text = "Tweens playing completed!";
+        }        
     }
 }

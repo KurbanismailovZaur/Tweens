@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using System.IO;
+﻿using System.IO;
 using UnityEditor;
+using UnityEngine;
 
-namespace Extensions.Editor
+#if UNITY_EDITOR
+namespace Redcode.EditorScriptsTemplates
 {
-    public class ScriptModificationProcessor : UnityEditor.AssetModificationProcessor
+    internal class ScriptModificationProcessor : UnityEditor.AssetModificationProcessor
     {
         public static void OnWillCreateAsset(string path)
         {
@@ -43,3 +41,4 @@ namespace Extensions.Editor
         }
     }
 }
+#endif
