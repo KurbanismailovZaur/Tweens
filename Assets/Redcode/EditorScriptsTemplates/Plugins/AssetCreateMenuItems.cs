@@ -31,6 +31,10 @@ namespace Extensions.Editor
                 namespaces += "using Redcode.Moroutines;\n" +
                 "using Redcode.Moroutines.Extensions;\n";
 
+            if (Directory.Exists(Path.Combine(redcodePath, "Tweens")))
+                namespaces += "using Redcode.Tweens;\n" +
+                    "using Redcode.Tweens.Extensions;\n";
+
             var before = namespaces + "\nnamespace #NAMESPACE#\n{\n";
 
             var scriptTemplate = before + "\tpublic class #SCRIPTNAME# : MonoBehaviour\n\t{\n\t}\n}";

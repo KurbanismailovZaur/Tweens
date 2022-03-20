@@ -16,63 +16,63 @@ namespace Redcode.Tweens
         }
 
         #region DoPositionOneAxis
-        private static Tween<float, TweakFloat> DoPositionOneAxis(GameObject owner, Rigidbody2D rigidbody, int axis, float position, float duration, Ease formula, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoPositionOneAxis(GameObject owner, Rigidbody2D rigidbody, int axis, float position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rigidbody.position[axis], position, p => rigidbody.SetPosition(axis, p), duration, formula, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rigidbody.position[axis], position, p => rigidbody.SetPosition(axis, p), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Tween<float, TweakFloat> DoPositionX(this Rigidbody2D rigidbody, float x, float duration, Ease formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        public static Tween<float, TweakFloat> DoPositionX(this Rigidbody2D rigidbody, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoPositionOneAxis(rigidbody.gameObject, rigidbody, 0, x, duration, formula, loopsCount, loopType, direction);
+            return DoPositionOneAxis(rigidbody.gameObject, rigidbody, 0, x, duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Tween<float, TweakFloat> DoPositionX(this Rigidbody2D rigidbody, GameObject owner, float x, float duration, Ease formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        public static Tween<float, TweakFloat> DoPositionX(this Rigidbody2D rigidbody, GameObject owner, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoPositionOneAxis(owner, rigidbody, 0, x, duration, formula, loopsCount, loopType, direction);
+            return DoPositionOneAxis(owner, rigidbody, 0, x, duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Tween<float, TweakFloat> DoPositionY(this Rigidbody2D rigidbody, float y, float duration, Ease formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        public static Tween<float, TweakFloat> DoPositionY(this Rigidbody2D rigidbody, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoPositionOneAxis(rigidbody.gameObject, rigidbody, 1, y, duration, formula, loopsCount, loopType, direction);
+            return DoPositionOneAxis(rigidbody.gameObject, rigidbody, 1, y, duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Tween<float, TweakFloat> DoPositionY(this Rigidbody2D rigidbody, GameObject owner, float y, float duration, Ease formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        public static Tween<float, TweakFloat> DoPositionY(this Rigidbody2D rigidbody, GameObject owner, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoPositionOneAxis(owner, rigidbody, 1, y, duration, formula, loopsCount, loopType, direction);
+            return DoPositionOneAxis(owner, rigidbody, 1, y, duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
         #region DoPosition
-        public static Tween<Vector2, TweakVector2> DoPosition(this Rigidbody2D rigidbody, float x, float y, float duration, Ease formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoPosition(this Rigidbody2D rigidbody, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoPosition(rigidbody, rigidbody.gameObject, new Vector2(x, y), duration, formula, loopsCount, loopType, direction);
+            return DoPosition(rigidbody, rigidbody.gameObject, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Tween<Vector2, TweakVector2> DoPosition(this Rigidbody2D rigidbody, GameObject owner, float x, float y, float duration, Ease formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoPosition(this Rigidbody2D rigidbody, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoPosition(rigidbody, owner, new Vector3(x, y), duration, formula, loopsCount, loopType, direction);
+            return DoPosition(rigidbody, owner, new Vector3(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Tween<Vector2, TweakVector2> DoPosition(this Rigidbody2D rigidbody, Vector2 position, float duration, Ease formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoPosition(this Rigidbody2D rigidbody, Vector2 position, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoPosition(rigidbody, rigidbody.gameObject, position, duration, formula, loopsCount, loopType, direction);
+            return DoPosition(rigidbody, rigidbody.gameObject, position, duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Tween<Vector2, TweakVector2> DoPosition(this Rigidbody2D rigidbody, GameObject owner, Vector2 position, float duration, Ease formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoPosition(this Rigidbody2D rigidbody, GameObject owner, Vector2 position, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Vector2(owner, owner.name, rigidbody.position, position, p => rigidbody.position = p, duration, formula, loopsCount, loopType, direction);
+            return Tween.Vector2(owner, owner.name, rigidbody.position, position, p => rigidbody.position = p, duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
         #region DoRotation
-        public static Tween<float, TweakFloat> DoRotation(this Rigidbody2D rigidbody, float rotation, float duration, Ease formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        public static Tween<float, TweakFloat> DoRotation(this Rigidbody2D rigidbody, float rotation, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoRotation(rigidbody, rigidbody.gameObject, rotation, duration, formula, loopsCount, loopType, direction);
+            return DoRotation(rigidbody, rigidbody.gameObject, rotation, duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Tween<float, TweakFloat> DoRotation(this Rigidbody2D rigidbody, GameObject owner, float rotation, float duration, Ease formula = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        public static Tween<float, TweakFloat> DoRotation(this Rigidbody2D rigidbody, GameObject owner, float rotation, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Float(owner, owner.name, rigidbody.rotation, rotation, r => rigidbody.rotation = r, duration, formula, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rigidbody.rotation, rotation, r => rigidbody.rotation = r, duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 

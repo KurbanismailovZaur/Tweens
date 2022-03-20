@@ -532,7 +532,6 @@ namespace Redcode.Tweens
                 if (value < 0f)
                     throw new ArgumentException($"{Type} \"{Name}\": Loop duration can't be less than 0 ({value} passed)");
 
-                // TODO: Maybe need replace to NearlyEquals again.
                 if (value.Approximately(_loopDuration))
                     return;
 

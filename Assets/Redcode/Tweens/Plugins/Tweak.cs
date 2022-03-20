@@ -14,9 +14,9 @@ namespace Redcode.Tweens
         /// <param name="from">Value from which we starts interpolating.</param>
         /// <param name="to">Value on which we complete interpolating.</param>
         /// <param name="interpolation">Interpolation value.</param>
-        /// <param name="formula">Formula which will be used to remap interpolation value (<c>null</c> means linear formula).</param>
-        /// <returns>Interpolated through <paramref name="formula"/> value.</returns>
-        public T Evaluate(T from, T to, float interpolation, Ease formula = null) => Interpolate(from, to, formula?.Remap(interpolation) ?? interpolation);
+        /// <param name="ease">Easing formula which will be used to remap interpolation value (<c>null</c> means linear ease formula).</param>
+        /// <returns>Interpolated through <paramref name="ease"/> value.</returns>
+        public T Evaluate(T from, T to, float interpolation, Ease ease = null) => Interpolate(from, to, ease?.Remap(interpolation) ?? interpolation);
 
         protected abstract T Interpolate(T from, T to, float interpolation);
 
@@ -27,8 +27,8 @@ namespace Redcode.Tweens
         /// <param name="to"><inheritdoc cref="Tweak{T}.Evaluate" path="/param[@name='to']"/></param>
         /// <param name="interpolation"><inheritdoc cref="Tweak{T}.Evaluate" path="/param[@name='interpolation']"/></param>
         /// <param name="action">Callback which will be applied.</param>
-        /// <param name="formula"><inheritdoc cref="Tweak{T}.Evaluate" path="/param[@name='formula']"/></param>
-        public void Apply(T from, T to, float interpolation, Action<T> action, Ease formula = null) => action(Evaluate(from, to, interpolation, formula));
+        /// <param name="ease"><inheritdoc cref="Tweak{T}.Evaluate" path="/param[@name='formula']"/></param>
+        public void Apply(T from, T to, float interpolation, Action<T> action, Ease ease = null) => action(Evaluate(from, to, interpolation, ease));
     }
 
     /// <summary>
