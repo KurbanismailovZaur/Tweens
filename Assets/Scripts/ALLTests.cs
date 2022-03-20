@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Redcode.Tweens
 {
-    public class Tests : MonoBehaviour
+    public class ALLTests : MonoBehaviour
     {
         [SerializeField]
         private Transform[] _targets;

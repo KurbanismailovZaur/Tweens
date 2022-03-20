@@ -8,7 +8,7 @@ using System;
 
 namespace Redcode.Tweens
 {
-    public class Test : MonoBehaviour
+    public class FPSTest : MonoBehaviour
     {
         [SerializeField]
         private TextMeshProUGUI _framesText;
@@ -17,9 +17,6 @@ namespace Redcode.Tweens
 
         [SerializeField]
         private TMP_InputField _countField;
-
-        [SerializeField]
-        private Button _testButton;
 
         [SerializeField]
         private TextMeshProUGUI _statusText;
