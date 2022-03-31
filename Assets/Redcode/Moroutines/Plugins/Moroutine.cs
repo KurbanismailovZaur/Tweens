@@ -250,7 +250,23 @@ namespace Redcode.Moroutines
         /// <param name="enumerable">Enumerable which will be perform by moroutine. <br/>
         /// Calling the <see cref="Reset"/> method will reset the state of the moroutine.</param>
         /// <returns><inheritdoc cref="Create(IEnumerator)"/></returns>
-        public static Moroutine Create(IEnumerable enumerable) => Create(null, enumerable);
+        public static Moroutine Create(IEnumerable enumerable) => Create((GameObject)null, enumerable);
+
+        /// <summary>
+        /// Create moroutine with owner.
+        /// </summary>
+        /// <param name="ownersComponent">The owner's component of the moroutine. Moroutine will be owned by the component's gameObject.</param>
+        /// <param name="enumerator"><inheritdoc cref="Create(IEnumerator)"/></param>
+        /// <returns><inheritdoc cref="Create(IEnumerator)"/></returns>
+        public static Moroutine Create(Component ownersComponent, IEnumerator enumerator) => Create(ownersComponent, new EnumerableEnumerator(enumerator));
+
+        /// <summary>
+        /// Create moroutine with owner.
+        /// </summary>
+        /// <param name="ownersComponent"><inheritdoc cref="Create(Component, IEnumerator)" path="/param[@name='ownersComponent']"/></param>
+        /// <param name="enumerable"><inheritdoc cref="Create(IEnumerable)" path="/param[@name='enumerable']"/></param>
+        /// <returns><inheritdoc cref="Create(IEnumerator)"/></returns>
+        public static Moroutine Create(Component ownersComponent, IEnumerable enumerable) => Create(ownersComponent.gameObject, enumerable);
 
         /// <summary>
         /// Create moroutine with owner.
@@ -281,6 +297,22 @@ namespace Redcode.Moroutines
         /// <param name="enumerable"><inheritdoc cref="Create(IEnumerable)"/></param>
         /// <returns><inheritdoc cref="Create(IEnumerator)"/></returns>
         public static Moroutine Run(IEnumerable enumerable) => Run((GameObject)null, enumerable);
+
+        /// <summary>
+        /// Create and run moroutine.
+        /// </summary>
+        /// <param name="ownersComponent">The owner's component of the moroutine. Moroutine will be owned by the component's gameObject.</param>
+        /// <param name="enumerator"><inheritdoc cref="Run(IEnumerator)"/></param>
+        /// <returns><inheritdoc cref="Create(IEnumerator)"/></returns>
+        public static Moroutine Run(Component ownersComponent, IEnumerator enumerator) => Run(ownersComponent, new EnumerableEnumerator(enumerator));
+
+        /// <summary>
+        /// Create and run moroutine.
+        /// </summary>
+        /// /// <param name="ownersComponent"><inheritdoc cref="Run(Component, IEnumerator)" path="/param[@name='ownersComponent']"/></param>
+        /// <param name="enumerable"><inheritdoc cref="Create(IEnumerable)"/></param>
+        /// <returns><inheritdoc cref="Create(IEnumerator)"/></returns>
+        public static Moroutine Run(Component ownersComponent, IEnumerable enumerable) => Run(ownersComponent.gameObject, enumerable).Run();
 
         /// <summary>
         /// Create and run moroutine.
