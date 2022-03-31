@@ -23,6 +23,11 @@ namespace Redcode.Tweens
 
         private IEnumerator Start()
         {
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                Application.targetFrameRate = 10000;
+            }
+
             while (true)
             {
                 yield return new WaitForSeconds(1f);
