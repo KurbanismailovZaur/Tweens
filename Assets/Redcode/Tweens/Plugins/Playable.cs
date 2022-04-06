@@ -1393,7 +1393,7 @@ namespace Redcode.Tweens
         private Playable Play(bool resetIfCompleted, Direction direction)
         {
             if (IsPlaying && Direction == direction)
-                throw new PlayControlException($"{Type} \"{Name}\": Already playing in {direction} direction");
+                return this;
 
             Direction = direction;
 
@@ -1457,7 +1457,7 @@ namespace Redcode.Tweens
         public Playable Pause(bool stopMoroutine)
         {
             if (!IsPlaying)
-                throw new PlayControlException($"{Type} \"{Name}\": Can't be paused while not playing");
+                return this;
 
             // Unsubscribe moroutine reseted observer, because it not needed when paused.
             _playingMoroutine.Stopped -= MoroutineStopObserver;
@@ -1484,7 +1484,7 @@ namespace Redcode.Tweens
         private Playable Reset(bool resetMoroutine)
         {
             if (IsReseted)
-                throw new PlayControlException($"{Type} \"{Name}\": Already reseted");
+                return this;
 
             // Check playing state and remove moroutine reseted observer.
             // If Playable in pause state, then it means that observer already unsubscribed.
