@@ -3,9 +3,9 @@ using UnityEditor;
 using UnityEngine;
 
 #if UNITY_EDITOR
-namespace Redcode.EditorScriptsTemplates
+namespace Redcode.ScriptsGenerator
 {
-    internal class ScriptModificationProcessor : UnityEditor.AssetModificationProcessor
+    internal class ModificationProcessor : UnityEditor.AssetModificationProcessor
     {
         public static void OnWillCreateAsset(string path)
         {

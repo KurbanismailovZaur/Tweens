@@ -1,0 +1,19 @@
+{
+    "name": "Tweens",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b52c6daf0f9f3974fb04e400a06c9369",
+        "GUID:d24e900b7f4c0f14c816d3ea94ad84ec",
+        "GUID:f6ddd9657b8fa5d4092264fe3a9866ed",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

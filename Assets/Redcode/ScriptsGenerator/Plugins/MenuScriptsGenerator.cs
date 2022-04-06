@@ -4,9 +4,9 @@ using UnityEditor;
 using UnityEngine;
 
 #if UNITY_EDITOR
-namespace Redcode.EditorScriptsTemplates
+namespace Redcode.ScriptsGenerator
 {
-    internal static class AssetCreateMenuItems
+    internal static class MenuScriptsGenerator
     {
         private static void CheckAndCreate(string templateName, string assetName)
         {

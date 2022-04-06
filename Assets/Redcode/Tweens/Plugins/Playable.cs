@@ -16,7 +16,7 @@ namespace Redcode.Tweens
         /// <summary>
         /// The object that owns this playable.
         /// </summary>
-        GameObject Owner { get; }
+        Owner Owner { get; }
 
         /// <summary>
         /// Type of the playable.
@@ -439,7 +439,7 @@ namespace Redcode.Tweens
             /// Create repeater.
             /// </summary>
             /// <param name="playable">Target playable.</param>
-            public Repeater(T playable) : this(MoroutinesOwner.Instance.gameObject, playable) { }
+            public Repeater(T playable) : this(null, playable) { }
 
             /// <summary>
             /// <inheritdoc cref="Repeater{T}.Repeater(T)"/>
@@ -516,7 +516,7 @@ namespace Redcode.Tweens
         #endregion
 
         #region State
-        public GameObject Owner => _playingMoroutine.Owner;
+        public Owner Owner => _playingMoroutine.Owner;
 
         public abstract Type Type { get; }
 

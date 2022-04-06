@@ -1300,7 +1300,7 @@ namespace Redcode.Tweens
             var subsequence = new Sequence("sub-sequence", null, 2, LoopType.Continue);
             subsequence.Append(tween);
 
-            var sequence = new Sequence("sequence", null, 2, LoopType.Reset);
+            var sequence = new Sequence(gameObject, "sequence", null, 2, LoopType.Reset);
             sequence.Append(subsequence);
 
             SubscribeOnAllEvents(tween);
