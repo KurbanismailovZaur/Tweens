@@ -5,6 +5,7 @@ using UnityEngine;
 using Redcode.Extensions;
 using UnityEngine.UI;
 using System;
+using Redcode.Tweens.Tweaks;
 
 namespace Redcode.Tweens
 {
@@ -23,6 +24,8 @@ namespace Redcode.Tweens
 
         private IEnumerator Start()
         {
+            Light light = null;
+
             if (Application.platform == RuntimePlatform.Android)
             {
                 Application.targetFrameRate = 10000;

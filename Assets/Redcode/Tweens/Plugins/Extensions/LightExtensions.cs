@@ -1,5 +1,6 @@
 using Redcode.Tweens.Tweaks;
 using UnityEngine;
+using Redcode.Extensions;
 
 namespace Redcode.Tweens
 {

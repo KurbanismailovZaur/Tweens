@@ -4075,6 +4075,42 @@ namespace Redcode.Tweens
         #endregion
 
         /// <summary>
+        /// Sets <see langword=""="From"/> value.
+        /// </summary>
+        /// <param name="from">Value to set.</param>
+        /// <returns>The tween.</returns>
+        public Tween<T, U> SetFrom(T from) => SetFrom(() => from);
+
+        /// <summary>
+        /// Sets <see langword="From"/> callback value.
+        /// </summary>
+        /// <param name="from">Callback value to set.</param>
+        /// <returns>The tween.</returns>
+        public Tween<T, U> SetFrom(Func<T> from)
+        {
+            From = from;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets <see langword="To"/> value.
+        /// </summary>
+        /// <param name="to">Value to set.</param>
+        /// <returns>The tween.</returns>
+        public Tween<T, U> SetTo(T to) => SetTo(() => to);
+
+        /// <summary>
+        /// Sets <see langword="To"/> callback value.
+        /// </summary>
+        /// <param name="to">Callback value to set.</param>
+        /// <returns>The tween.</returns>
+        public Tween<T, U> SetTo(Func<T> to)
+        {
+            To = to;
+            return this;
+        }
+
+        /// <summary>
         /// Sets loop duration of the tween.
         /// </summary>
         /// <param name="loopDuration">Loop duration.</param>
