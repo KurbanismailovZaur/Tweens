@@ -6,17 +6,10 @@ namespace Redcode.Tweens
 {
     public static class RectTransformExtensions
     {
-        private static void SetAnchoredPosition(this RectTransform rectTransform, int axis, float position)
-        {
-            var pos = rectTransform.anchoredPosition;
-            pos[axis] = position;
-            rectTransform.anchoredPosition = pos;
-        }
-
         #region DoAnchoredPositionOneAxis
         private static Tween<float, TweakFloat> DoAnchoredPositionOneAxis(RectTransform rectTransform, GameObject owner, int axis, float position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rectTransform.anchoredPosition[axis], position, p => rectTransform.SetAnchoredPosition(axis, p), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rectTransform.anchoredPosition[axis], position, p => rectTransform.anchoredPosition = rectTransform.anchoredPosition.With(axis, p), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoAnchoredPositionX(this RectTransform rectTransform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -41,38 +34,31 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoAnchoredPosition
-        private static Tween<Vector2, TweakVector2> DoAnchoredPosition(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoredPosition(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoredPosition(rectTransform, rectTransform.gameObject, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoAnchoredPosition(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoredPosition(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoredPosition(rectTransform, owner, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoAnchoredPosition(this RectTransform rectTransform, Vector2 position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoredPosition(this RectTransform rectTransform, Vector2 position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoredPosition(rectTransform, rectTransform.gameObject, position, duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoAnchoredPosition(this RectTransform rectTransform, GameObject owner, Vector2 position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoredPosition(this RectTransform rectTransform, GameObject owner, Vector2 position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Vector2(owner, owner.name, rectTransform.anchoredPosition, position, p => rectTransform.anchoredPosition = p, duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
-        private static void SetAnchoredPosition3D(this RectTransform rectTransform, int axis, float position)
-        {
-            var pos = rectTransform.anchoredPosition3D;
-            pos[axis] = position;
-            rectTransform.anchoredPosition3D = pos;
-        }
-
         #region DoAnchoredPosition3DOneAxis
         private static Tween<float, TweakFloat> DoAnchoredPosition3DOneAxis(RectTransform rectTransform, GameObject owner, int axis, float position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rectTransform.anchoredPosition3D[axis], position, p => rectTransform.SetAnchoredPosition3D(axis, p), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rectTransform.anchoredPosition3D[axis], position, p => rectTransform.anchoredPosition3D = rectTransform.anchoredPosition3D.With(axis, p), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoAnchoredPosition3DX(this RectTransform rectTransform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -107,64 +93,59 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoAnchoredPosition3DTwoAxis
-        private static Sequence DoAnchoredPosition3DTwoAxis(RectTransform rectTransform, GameObject owner, int axis1, int axis2, float position1, float position2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector2, TweakVector2> DoAnchoredPosition3DTwoAxis(RectTransform rectTransform, GameObject owner, int axis1, int axis2, float position1, float position2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, rectTransform.anchoredPosition3D[axis1], position1, p => rectTransform.SetAnchoredPosition3D(axis1, p), duration));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, rectTransform.anchoredPosition3D[axis2], position2, p => rectTransform.SetAnchoredPosition3D(axis2, p), duration));
-
-            return sequence;
+            return Tween.Vector2(owner, owner.name, rectTransform.anchoredPosition3D.With(axis1, axis2), new Vector2(position1, position2), p => rectTransform.anchoredPosition3D = rectTransform.anchoredPosition3D.With(axis1, p.x, axis2, p.y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoAnchoredPosition3DXY(this RectTransform rectTransform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoAnchoredPosition3DXY(this RectTransform rectTransform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoAnchoredPosition3DTwoAxis(rectTransform, rectTransform.gameObject, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoAnchoredPosition3DXY(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoAnchoredPosition3DXY(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoAnchoredPosition3DTwoAxis(rectTransform, owner, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoAnchoredPosition3DXZ(this RectTransform rectTransform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoAnchoredPosition3DXZ(this RectTransform rectTransform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoAnchoredPosition3DTwoAxis(rectTransform, rectTransform.gameObject, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoAnchoredPosition3DXZ(this RectTransform rectTransform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoAnchoredPosition3DXZ(this RectTransform rectTransform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoAnchoredPosition3DTwoAxis(rectTransform, owner, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoAnchoredPosition3DYZ(this RectTransform rectTransform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoAnchoredPosition3DYZ(this RectTransform rectTransform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoAnchoredPosition3DTwoAxis(rectTransform, rectTransform.gameObject, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoAnchoredPosition3DYZ(this RectTransform rectTransform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoAnchoredPosition3DYZ(this RectTransform rectTransform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoAnchoredPosition3DTwoAxis(rectTransform, owner, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
         #endregion
 
         #region DoAnchoredPosition3D
-        private static Tween<Vector3, TweakVector3> DoAnchoredPosition3D(this RectTransform rectTransform,  float x, float y, float z, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector3, TweakVector3> DoAnchoredPosition3D(this RectTransform rectTransform,  float x, float y, float z, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoredPosition3D(rectTransform, rectTransform.gameObject, new Vector3(x, y, z), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector3, TweakVector3> DoAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, float x, float y, float z, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector3, TweakVector3> DoAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, float x, float y, float z, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoredPosition3D(rectTransform, owner, new Vector3(x, y, z), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector3, TweakVector3> DoAnchoredPosition3D(this RectTransform rectTransform, Vector3 position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector3, TweakVector3> DoAnchoredPosition3D(this RectTransform rectTransform, Vector3 position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoredPosition3D(rectTransform, rectTransform.gameObject, position, duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector3, TweakVector3> DoAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, Vector3 position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector3, TweakVector3> DoAnchoredPosition3D(this RectTransform rectTransform, GameObject owner, Vector3 position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Vector3(owner, owner.name, rectTransform.anchoredPosition3D, position, p => rectTransform.anchoredPosition3D = p, duration, ease, loopsCount, loopType, direction);
         }
@@ -173,7 +154,7 @@ namespace Redcode.Tweens
         #region DoAnchoreMaxOneAxis
         private static Tween<float, TweakFloat> DoAnchoreMaxOneAxis(RectTransform rectTransform, GameObject owner, int axis, float normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rectTransform.anchorMax[axis], normalizedPosition, np => rectTransform.SetAnchoreMax(axis, np), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rectTransform.anchorMax[axis], normalizedPosition, np => rectTransform.anchorMax = rectTransform.anchorMax.With(axis, np), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoAnchoreMaxX(this RectTransform rectTransform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -197,30 +178,23 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetAnchoreMax(this RectTransform rectTransform, int axis, float position)
-        {
-            var pos = rectTransform.anchorMax;
-            pos[axis] = position;
-            rectTransform.anchorMax = pos;
-        }
-
         #region DoAnchoreMax
-        private static Tween<Vector2, TweakVector2> DoAnchoreMax(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoreMax(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoreMax(rectTransform, rectTransform.gameObject, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoAnchoreMax(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoreMax(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoreMax(rectTransform, owner, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoAnchoreMax(this RectTransform rectTransform, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoreMax(this RectTransform rectTransform, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoreMax(rectTransform, rectTransform.gameObject, normalizedPosition, duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoAnchoreMax(this RectTransform rectTransform, GameObject owner, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoreMax(this RectTransform rectTransform, GameObject owner, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Vector2(owner, owner.name, rectTransform.anchorMax, normalizedPosition, np => rectTransform.anchorMax = np, duration, ease, loopsCount, loopType, direction);
         }
@@ -229,7 +203,7 @@ namespace Redcode.Tweens
         #region DoAnchoreMinOneAxis
         private static Tween<float, TweakFloat> DoAnchoreMinOneAxis(RectTransform rectTransform, GameObject owner, int axis, float normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rectTransform.anchorMin[axis], normalizedPosition, np => rectTransform.SetAnchoreMin(axis, np), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rectTransform.anchorMin[axis], normalizedPosition, np => rectTransform.anchorMax = rectTransform.anchorMax.With(axis, np), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoAnchoreMinX(this RectTransform rectTransform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -253,30 +227,23 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetAnchoreMin(this RectTransform rectTransform, int axis, float position)
-        {
-            var pos = rectTransform.anchorMin;
-            pos[axis] = position;
-            rectTransform.anchorMin = pos;
-        }
-
         #region DoAnchoreMin
-        private static Tween<Vector2, TweakVector2> DoAnchoreMin(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoreMin(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoreMin(rectTransform, rectTransform.gameObject, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoAnchoreMin(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoreMin(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoreMin(rectTransform, owner, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoAnchoreMin(this RectTransform rectTransform, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoreMin(this RectTransform rectTransform, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoAnchoreMin(rectTransform, rectTransform.gameObject, normalizedPosition, duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoAnchoreMin(this RectTransform rectTransform, GameObject owner, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoAnchoreMin(this RectTransform rectTransform, GameObject owner, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Vector2(owner, owner.name, rectTransform.anchorMin, normalizedPosition, np => rectTransform.anchorMin = np, duration, ease, loopsCount, loopType, direction);
         }
@@ -285,7 +252,7 @@ namespace Redcode.Tweens
         #region DoOffsetMaxOneAxis
         private static Tween<float, TweakFloat> DoOffsetMaxOneAxis(RectTransform rectTransform, GameObject owner, int axis, float offset, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rectTransform.offsetMax[axis], offset, o => rectTransform.SetOffsetMax(axis, o), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rectTransform.offsetMax[axis], offset, o => rectTransform.offsetMax = rectTransform.offsetMax.With(axis, o), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoOffsetMaxX(this RectTransform rectTransform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -309,30 +276,23 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetOffsetMax(this RectTransform rectTransform, int axis, float offset)
-        {
-            var offsetMax = rectTransform.offsetMax;
-            offsetMax[axis] = offset;
-            rectTransform.offsetMax = offsetMax;
-        }
-
         #region DoOffsetMax
-        private static Tween<Vector2, TweakVector2> DoOffsetMax(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoOffsetMax(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoOffsetMax(rectTransform, rectTransform.gameObject, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoOffsetMax(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoOffsetMax(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoOffsetMax(rectTransform, owner, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoOffsetMax(this RectTransform rectTransform, Vector2 offset, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoOffsetMax(this RectTransform rectTransform, Vector2 offset, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoOffsetMax(rectTransform, rectTransform.gameObject, offset, duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoOffsetMax(this RectTransform rectTransform, GameObject owner, Vector2 offset, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoOffsetMax(this RectTransform rectTransform, GameObject owner, Vector2 offset, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Vector2(owner, owner.name, rectTransform.offsetMax, offset, o => rectTransform.offsetMax = o, duration, ease, loopsCount, loopType, direction);
         }
@@ -341,7 +301,7 @@ namespace Redcode.Tweens
         #region DoOffsetMinOneAxis
         private static Tween<float, TweakFloat> DoOffsetMinOneAxis(RectTransform rectTransform, GameObject owner, int axis, float offset, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rectTransform.offsetMin[axis], offset, o => rectTransform.SetOffsetMin(axis, o), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rectTransform.offsetMin[axis], offset, o => rectTransform.offsetMax = rectTransform.offsetMax.With(axis, o), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoOffsetMinX(this RectTransform rectTransform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -365,46 +325,32 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetOffsetMin(this RectTransform rectTransform, int axis, float offset)
-        {
-            var offsetMin = rectTransform.offsetMin;
-            offsetMin[axis] = offset;
-            rectTransform.offsetMin = offsetMin;
-        }
-
         #region DoOffsetMin
-        private static Tween<Vector2, TweakVector2> DoOffsetMin(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoOffsetMin(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoOffsetMin(rectTransform, rectTransform.gameObject, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoOffsetMin(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoOffsetMin(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoOffsetMin(rectTransform, owner, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoOffsetMin(this RectTransform rectTransform, Vector2 offset, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoOffsetMin(this RectTransform rectTransform, Vector2 offset, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoOffsetMin(rectTransform, rectTransform.gameObject, offset, duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoOffsetMin(this RectTransform rectTransform, GameObject owner, Vector2 offset, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoOffsetMin(this RectTransform rectTransform, GameObject owner, Vector2 offset, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Vector2(owner, owner.name, rectTransform.offsetMin, offset, o => rectTransform.offsetMin = o, duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
-        private static void SetPivot(this RectTransform rectTransform, int axis, float normalizedPosition)
-        {
-            var piv = rectTransform.pivot;
-            piv[axis] = normalizedPosition;
-            rectTransform.pivot = piv;
-        }
-
         #region DoPivotOneAxis
         private static Tween<float, TweakFloat> DoPivotOneAxis(RectTransform rectTransform, GameObject owner, int axis, float normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rectTransform.pivot[axis], normalizedPosition, np => rectTransform.SetPivot(axis, np), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rectTransform.pivot[axis], normalizedPosition, np => rectTransform.pivot = rectTransform.pivot.With(axis, np), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoPivotX(this RectTransform rectTransform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -450,13 +396,6 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetPivotOnly(this RectTransform rectTransform, int axis, float normalizedPosition)
-        {
-            var piv = rectTransform.pivot;
-            piv[axis] = normalizedPosition;
-            rectTransform.SetPivotOnly(piv);
-        }
-
         #region DoPivotOnlyOneAxis
         private static Tween<float, TweakFloat> DoPivotOnlyOneAxis(RectTransform rectTransform, GameObject owner, int axis, float normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
@@ -485,38 +424,31 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoPivotOnly
-        private static Tween<Vector2, TweakVector2> DoPivotOnly(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoPivotOnly(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoPivotOnly(rectTransform, rectTransform.gameObject, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoPivotOnly(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoPivotOnly(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoPivotOnly(rectTransform, owner, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoPivotOnly(this RectTransform rectTransform, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoPivotOnly(this RectTransform rectTransform, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoPivotOnly(rectTransform, rectTransform.gameObject, normalizedPosition, duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoPivotOnly(this RectTransform rectTransform, GameObject owner, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoPivotOnly(this RectTransform rectTransform, GameObject owner, Vector2 normalizedPosition, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Vector2(owner, owner.name, rectTransform.pivot, normalizedPosition, np => rectTransform.SetPivotOnly(np), duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
-        private static void SetSizeDelta(this RectTransform rectTransform, int axis, float size)
-        {
-            var sizeDelta = rectTransform.sizeDelta;
-            sizeDelta[axis] = size;
-            rectTransform.sizeDelta = sizeDelta;
-        }
-
         #region DoSizeDeltaOneAxis
         private static Tween<float, TweakFloat> DoSizeDeltaOneAxis(RectTransform rectTransform, GameObject owner, int axis, float size, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rectTransform.sizeDelta[axis], size, s => rectTransform.SetSizeDelta(axis, s), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rectTransform.sizeDelta[axis], size, s => rectTransform.sizeDelta = rectTransform.sizeDelta.With(axis, s), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoSizeDeltaX(this RectTransform rectTransform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -541,22 +473,22 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoSizeDelta
-        private static Tween<Vector2, TweakVector2> DoSizeDelta(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoSizeDelta(this RectTransform rectTransform, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoSizeDelta(rectTransform, rectTransform.gameObject, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoSizeDelta(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoSizeDelta(this RectTransform rectTransform, GameObject owner, float x, float y, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoSizeDelta(rectTransform, owner, new Vector2(x, y), duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoSizeDelta(this RectTransform rectTransform, Vector2 size, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoSizeDelta(this RectTransform rectTransform, Vector2 size, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return DoSizeDelta(rectTransform, rectTransform.gameObject, size, duration, ease, loopsCount, loopType, direction);
         }
 
-        private static Tween<Vector2, TweakVector2> DoSizeDelta(this RectTransform rectTransform, GameObject owner, Vector2 size, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        public static Tween<Vector2, TweakVector2> DoSizeDelta(this RectTransform rectTransform, GameObject owner, Vector2 size, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
             return Tween.Vector2(owner, owner.name, rectTransform.sizeDelta, size, size => rectTransform.sizeDelta = size, duration, ease, loopsCount, loopType, direction);
         }

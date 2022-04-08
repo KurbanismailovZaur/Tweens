@@ -8,17 +8,10 @@ namespace Redcode.Tweens
 {
     public static class Rigidbody2DExtensions
     {
-        private static void SetPosition(this Rigidbody2D rigidbody, int axis, float position)
-        {
-            var pos = rigidbody.position;
-            pos[axis] = position;
-            rigidbody.position = pos;
-        }
-
         #region DoPositionOneAxis
         private static Tween<float, TweakFloat> DoPositionOneAxis(GameObject owner, Rigidbody2D rigidbody, int axis, float position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rigidbody.position[axis], position, p => rigidbody.SetPosition(axis, p), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rigidbody.position[axis], position, p => rigidbody.position = rigidbody.position.With(axis, p), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoPositionX(this Rigidbody2D rigidbody, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -177,6 +170,7 @@ namespace Redcode.Tweens
                 var pointData = path.GetPointAtDistance(p);
 
                 rigidbody.position = pointData.Position;
+
                 if (pathFollowOptions == PathFollowOptions.UsePointRotation)
                     rigidbody.rotation = pointData.Rotation.eulerAngles.z;
                 else if (pathFollowOptions == PathFollowOptions.UsePathDirection)

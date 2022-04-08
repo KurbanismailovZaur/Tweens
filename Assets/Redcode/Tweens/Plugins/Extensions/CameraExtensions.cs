@@ -1,5 +1,6 @@
 using Redcode.Tweens.Tweaks;
 using UnityEngine;
+using Redcode.Extensions;
 
 namespace Redcode.Tweens
 {
@@ -18,17 +19,10 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoBackgroundColor
-        private static void SetBackgroundColor(this Camera camera, int axis, float color)
-        {
-            var backgroundColor = camera.backgroundColor;
-            backgroundColor[axis] = color;
-            camera.backgroundColor = backgroundColor;
-        }
-
         #region DoBackgroundColorOneAxis
         private static Tween<float, TweakFloat> DoBackgroundColorOneAxis(Camera camera, GameObject owner, int axis, float color, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, camera.backgroundColor[axis], color, c => camera.SetBackgroundColor(axis, c), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, camera.backgroundColor[axis], color, c => camera.backgroundColor = camera.backgroundColor.With(axis, c), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoBackgroundColorR(this Camera camera, float r, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -73,127 +67,116 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoBackgroundColorTwoAxes
-        private static Sequence DoBackgroundColorTwoAxes(Camera camera, GameObject owner, int axis1, int axis2, float color1, float color2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector2, TweakVector2> DoBackgroundColorTwoChannels(Camera camera, GameObject owner, int channel1, int channel2, float value1, float value2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, camera.backgroundColor[axis1], color1, c => camera.SetBackgroundColor(axis1, c), duration, ease, loopsCount, loopType, direction));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, camera.backgroundColor[axis2], color2, c => camera.SetBackgroundColor(axis2, c), duration, ease, loopsCount, loopType, direction));
-
-            return sequence;
+            return Tween.Vector2(owner, owner.name, camera.backgroundColor.Get(channel1, channel2), new Vector2(value1, value2), c => camera.backgroundColor = camera.backgroundColor.With(channel1, c.x, channel2, c.y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoBackgroundColorRG(this Camera camera, float r, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorRG(this Camera camera, float r, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, camera.gameObject, 0, 1, r, g, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, camera.gameObject, 0, 1, r, g, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorRG(this Camera camera, GameObject owner, float r, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorRG(this Camera camera, GameObject owner, float r, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, owner, 0, 1, r, g, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, owner, 0, 1, r, g, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorRB(this Camera camera, float r, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorRB(this Camera camera, float r, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, camera.gameObject, 0, 2, r, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, camera.gameObject, 0, 2, r, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorRB(this Camera camera, GameObject owner, float r, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorRB(this Camera camera, GameObject owner, float r, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, owner, 0, 2, r, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, owner, 0, 2, r, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorRA(this Camera camera, float r, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorRA(this Camera camera, float r, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, camera.gameObject, 0, 3, r, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, camera.gameObject, 0, 3, r, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorRA(this Camera camera, GameObject owner, float r, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorRA(this Camera camera, GameObject owner, float r, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, owner, 0, 3, r, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, owner, 0, 3, r, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorGB(this Camera camera, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorGB(this Camera camera, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, camera.gameObject, 1, 2, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, camera.gameObject, 1, 2, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorGB(this Camera camera, GameObject owner, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorGB(this Camera camera, GameObject owner, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, owner, 1, 2, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, owner, 1, 2, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorGA(this Camera camera, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorGA(this Camera camera, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, camera.gameObject, 1, 3, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, camera.gameObject, 1, 3, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorGA(this Camera camera, GameObject owner, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorGA(this Camera camera, GameObject owner, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, owner, 1, 3, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, owner, 1, 3, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorBA(this Camera camera, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorBA(this Camera camera, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, camera.gameObject, 2, 3, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, camera.gameObject, 2, 3, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorBA(this Camera camera, GameObject owner, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoBackgroundColorBA(this Camera camera, GameObject owner, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorTwoAxes(camera, owner, 2, 3, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorTwoChannels(camera, owner, 2, 3, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
         #endregion
 
         #region DoBackgroundColorThreeAxes
-        private static Sequence DoBackgroundColorThreeAxes(Camera camera, GameObject owner, int axis1, int axis2, int axis3, float color1, float color2, float color3, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector3, TweakVector3> DoBackgroundColorThreeChannels(Camera camera, GameObject owner, int channel1, int channel2, int channel3, float value1, float value2, float value3, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, camera.backgroundColor[axis1], color1, c => camera.SetBackgroundColor(axis1, c), duration, ease, loopsCount, loopType, direction));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, camera.backgroundColor[axis2], color2, c => camera.SetBackgroundColor(axis2, c), duration, ease, loopsCount, loopType, direction));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, camera.backgroundColor[axis3], color3, c => camera.SetBackgroundColor(axis3, c), duration, ease, loopsCount, loopType, direction));
-
-            return sequence;
+            return Tween.Vector3(owner, owner.name, camera.backgroundColor.Get(channel1, channel2, channel3), new Vector3(value1, value2, value3), c => camera.backgroundColor = camera.backgroundColor.With(channel1, c.x, channel2, c.y, channel3, c.z), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoBackgroundColorRGB(this Camera camera, float r, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoBackgroundColorRGB(this Camera camera, float r, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorThreeAxes(camera, camera.gameObject, 0, 1, 2, r, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorThreeChannels(camera, camera.gameObject, 0, 1, 2, r, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorRGB(this Camera camera, GameObject owner, float r, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoBackgroundColorRGB(this Camera camera, GameObject owner, float r, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorThreeAxes(camera, owner, 0, 1, 2, r, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorThreeChannels(camera, owner, 0, 1, 2, r, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorRGA(this Camera camera, float r, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoBackgroundColorRGA(this Camera camera, float r, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorThreeAxes(camera, camera.gameObject, 0, 1, 3, r, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorThreeChannels(camera, camera.gameObject, 0, 1, 3, r, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorRGA(this Camera camera, GameObject owner, float r, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoBackgroundColorRGA(this Camera camera, GameObject owner, float r, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorThreeAxes(camera, owner, 0, 1, 3, r, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorThreeChannels(camera, owner, 0, 1, 3, r, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorRBA(this Camera camera, float r, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoBackgroundColorRBA(this Camera camera, float r, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorThreeAxes(camera, camera.gameObject, 0, 2, 3, r, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorThreeChannels(camera, camera.gameObject, 0, 2, 3, r, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorRBA(this Camera camera, GameObject owner, float r, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoBackgroundColorRBA(this Camera camera, GameObject owner, float r, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorThreeAxes(camera, owner, 0, 2, 3, r, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorThreeChannels(camera, owner, 0, 2, 3, r, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorGBA(this Camera camera, float g, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoBackgroundColorGBA(this Camera camera, float g, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorThreeAxes(camera, camera.gameObject, 1, 2, 3, g, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorThreeChannels(camera, camera.gameObject, 1, 2, 3, g, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoBackgroundColorGBA(this Camera camera, GameObject owner, float g, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoBackgroundColorGBA(this Camera camera, GameObject owner, float g, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoBackgroundColorThreeAxes(camera, owner, 1, 2, 3, g, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoBackgroundColorThreeChannels(camera, owner, 1, 2, 3, g, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
         #endregion
 
@@ -266,16 +249,9 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetLensShift(this Camera camera, int axis, float shift)
-        {
-            var lensShift = camera.lensShift;
-            lensShift[axis] = shift;
-            camera.lensShift = lensShift;
-        }
-
         private static Tween<float, TweakFloat> DoLensShiftOneAxis(Camera camera, GameObject owner, int axis, float shift, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, camera.lensShift[axis], shift, ls => camera.SetLensShift(axis, ls), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, camera.lensShift[axis], shift, ls => camera.lensShift = camera.lensShift.With(axis, ls), duration, ease, loopsCount, loopType, direction);
         }
 
         #region DoLensShiftOneAxis
@@ -370,16 +346,9 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetSensorSize(this Camera camera, int axis, float size)
-        {
-            var sensorSize = camera.sensorSize;
-            sensorSize[axis] = size;
-            camera.sensorSize = sensorSize;
-        }
-
         private static Tween<float, TweakFloat> DoSensorSizeOneAxis(this Camera camera, GameObject owner, int axis, float size, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, camera.sensorSize[axis], size, ss => camera.SetSensorSize(axis, ss), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, camera.sensorSize[axis], size, ss => camera.sensorSize = camera.sensorSize.With(axis, ss), duration, ease, loopsCount, loopType, direction);
         }
 
         #region DoSensorSizeOneAxis
@@ -450,17 +419,10 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetTransparencySortAxisOneAxis(this Camera camera, int axis, float value)
-        {
-            var transparencySortAxis = camera.transparencySortAxis;
-            transparencySortAxis[axis] = value;
-            camera.transparencySortAxis = transparencySortAxis;
-        }
-
         #region DoTransparencySortAxisOneAxis
         private static Tween<float, TweakFloat> DoTransparencySortAxisOneAxis(Camera camera, GameObject owner, int axis, float value, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, camera.transparencySortAxis[axis], value, v => camera.SetTransparencySortAxisOneAxis(axis, v), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, camera.transparencySortAxis[axis], value, v => camera.transparencySortAxis.With(axis, v), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoTransparencySortAxisX(this Camera camera, float r, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -495,42 +457,37 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoTransparencySortAxisTwoAxes
-        private static Sequence DoTransparencySortAxisTwoAxes(Camera camera, GameObject owner, int axis1, int axis2, float value1, float value2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector2, TweakVector2> DoTransparencySortAxisTwoAxes(Camera camera, GameObject owner, int axis1, int axis2, float value1, float value2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, camera.transparencySortAxis[axis1], value1, c => camera.SetTransparencySortAxisOneAxis(axis1, c), duration, ease, loopsCount, loopType, direction));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, camera.transparencySortAxis[axis2], value2, c => camera.SetTransparencySortAxisOneAxis(axis2, c), duration, ease, loopsCount, loopType, direction));
-
-            return sequence;
+            return Tween.Vector2(owner, owner.name, camera.transparencySortAxis.Get(axis1, axis2), new Vector2(value1, value2), c => camera.transparencySortAxis = camera.transparencySortAxis.With(axis1, c.x, axis2, c.y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoTransparencySortAxisXY(this Camera camera, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoTransparencySortAxisXY(this Camera camera, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoTransparencySortAxisTwoAxes(camera, camera.gameObject, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoTransparencySortAxisXY(this Camera camera, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoTransparencySortAxisXY(this Camera camera, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoTransparencySortAxisTwoAxes(camera, owner, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoTransparencySortAxisXZ(this Camera camera, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoTransparencySortAxisXZ(this Camera camera, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoTransparencySortAxisTwoAxes(camera, camera.gameObject, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoTransparencySortAxisXZ(this Camera camera, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoTransparencySortAxisXZ(this Camera camera, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoTransparencySortAxisTwoAxes(camera, owner, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoTransparencySortAxisYZ(this Camera camera, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoTransparencySortAxisYZ(this Camera camera, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoTransparencySortAxisTwoAxes(camera, camera.gameObject, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoTransparencySortAxisYZ(this Camera camera, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoTransparencySortAxisYZ(this Camera camera, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoTransparencySortAxisTwoAxes(camera, owner, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }

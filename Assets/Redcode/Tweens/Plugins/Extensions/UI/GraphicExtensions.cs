@@ -1,188 +1,171 @@
 using Redcode.Tweens.Tweaks;
 using UnityEngine;
 using UnityEngine.UI;
+using Redcode.Extensions;
 
 namespace Redcode.Tweens
 {
     public static class GraphicExtensions
     {
         #region DoColor
-        private static void SetColor(this Graphic graphic, int axis, float color)
-        {
-            var col = graphic.color;
-            col[axis] = color;
-            graphic.color = col;
-        }
-
         #region DoColorOneAxis
-        private static Tween<float, TweakFloat> DoColorOneAxis(Graphic graphic, GameObject owner, int axis, float color, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
+        private static Tween<float, TweakFloat> DoColorOneChannel(Graphic graphic, GameObject owner, int channel, float value, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, graphic.color[axis], color, c => graphic.SetColor(axis, c), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, graphic.color[channel], value, c => graphic.color = graphic.color.With(channel, c), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoColorR(this Graphic graphic, float r, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoColorOneAxis(graphic, graphic.gameObject, 0, r, duration, ease, loopsCount, loopType, direction);
+            return DoColorOneChannel(graphic, graphic.gameObject, 0, r, duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoColorR(this Graphic graphic, GameObject owner, float r, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoColorOneAxis(graphic, owner, 0, r, duration, ease, loopsCount, loopType, direction);
+            return DoColorOneChannel(graphic, owner, 0, r, duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoColorG(this Graphic graphic, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoColorOneAxis(graphic, graphic.gameObject, 1, g, duration, ease, loopsCount, loopType, direction);
+            return DoColorOneChannel(graphic, graphic.gameObject, 1, g, duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoColorG(this Graphic graphic, GameObject owner, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoColorOneAxis(graphic, owner, 1, g, duration, ease, loopsCount, loopType, direction);
+            return DoColorOneChannel(graphic, owner, 1, g, duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoColorB(this Graphic graphic, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoColorOneAxis(graphic, graphic.gameObject, 2, b, duration, ease, loopsCount, loopType, direction);
+            return DoColorOneChannel(graphic, graphic.gameObject, 2, b, duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoColorB(this Graphic graphic, GameObject owner, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoColorOneAxis(graphic, owner, 2, b, duration, ease, loopsCount, loopType, direction);
+            return DoColorOneChannel(graphic, owner, 2, b, duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoColorA(this Graphic graphic, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoColorOneAxis(graphic, graphic.gameObject, 3, a, duration, ease, loopsCount, loopType, direction);
+            return DoColorOneChannel(graphic, graphic.gameObject, 3, a, duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoColorA(this Graphic graphic, GameObject owner, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return DoColorOneAxis(graphic, owner, 3, a, duration, ease, loopsCount, loopType, direction);
+            return DoColorOneChannel(graphic, owner, 3, a, duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
         #region DoColorTwoAxes
-        private static Sequence DoColorTwoAxes(Graphic graphic, GameObject owner, int axis1, int axis2, float color1, float color2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector2, TweakVector2> DoColorTwoChannels(Graphic graphic, GameObject owner, int channel1, int channel2, float value1, float value2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, graphic.color[axis1], color1, c => graphic.SetColor(axis1, c), duration, ease, loopsCount, loopType, direction));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, graphic.color[axis2], color2, c => graphic.SetColor(axis2, c), duration, ease, loopsCount, loopType, direction));
-
-            return sequence;
+            return Tween.Vector2(owner, owner.name, graphic.color.Get(channel1, channel2), new Vector2(value1, value2), c => graphic.color = graphic.color.With(channel1, c.x, channel2, c.y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoColorRG(this Graphic graphic, float r, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorRG(this Graphic graphic, float r, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, graphic.gameObject, 0, 1, r, g, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, graphic.gameObject, 0, 1, r, g, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorRG(this Graphic graphic, GameObject owner, float r, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorRG(this Graphic graphic, GameObject owner, float r, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, owner, 0, 1, r, g, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, owner, 0, 1, r, g, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorRB(this Graphic graphic, float r, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorRB(this Graphic graphic, float r, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, graphic.gameObject, 0, 2, r, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, graphic.gameObject, 0, 2, r, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorRB(this Graphic graphic, GameObject owner, float r, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorRB(this Graphic graphic, GameObject owner, float r, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, owner, 0, 2, r, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, owner, 0, 2, r, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorRA(this Graphic graphic, float r, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorRA(this Graphic graphic, float r, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, graphic.gameObject, 0, 3, r, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, graphic.gameObject, 0, 3, r, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorRA(this Graphic graphic, GameObject owner, float r, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorRA(this Graphic graphic, GameObject owner, float r, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, owner, 0, 3, r, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, owner, 0, 3, r, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorGB(this Graphic graphic, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorGB(this Graphic graphic, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, graphic.gameObject, 1, 2, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, graphic.gameObject, 1, 2, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorGB(this Graphic graphic, GameObject owner, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorGB(this Graphic graphic, GameObject owner, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, owner, 1, 2, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, owner, 1, 2, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorGA(this Graphic graphic, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorGA(this Graphic graphic, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, graphic.gameObject, 1, 3, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, graphic.gameObject, 1, 3, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorGA(this Graphic graphic, GameObject owner, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorGA(this Graphic graphic, GameObject owner, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, owner, 1, 3, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, owner, 1, 3, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorBA(this Graphic graphic, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorBA(this Graphic graphic, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, graphic.gameObject, 2, 3, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, graphic.gameObject, 2, 3, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorBA(this Graphic graphic, GameObject owner, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoColorBA(this Graphic graphic, GameObject owner, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorTwoAxes(graphic, owner, 2, 3, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorTwoChannels(graphic, owner, 2, 3, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
         #endregion
 
         #region DoColorThreeAxes
-        private static Sequence DoColorThreeAxes(Graphic graphic, GameObject owner, int axis1, int axis2, int axis3, float color1, float color2, float color3, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector3, TweakVector3> DoColorThreeChannels(Graphic graphic, GameObject owner, int channel1, int channel2, int channel3, float value1, float value2, float value3, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, graphic.color[axis1], color1, c => graphic.SetColor(axis1, c), duration, ease, loopsCount, loopType, direction));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, graphic.color[axis2], color2, c => graphic.SetColor(axis2, c), duration, ease, loopsCount, loopType, direction));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, graphic.color[axis3], color3, c => graphic.SetColor(axis3, c), duration, ease, loopsCount, loopType, direction));
-
-            return sequence;
+            return Tween.Vector3(owner, owner.name, graphic.color.Get(channel1, channel2, channel3), new Vector3(value1, value2, value3), c => graphic.color = graphic.color.With(channel1, c.x, channel2, c.y, channel3, c.z), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoColorRGB(this Graphic graphic, float r, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoColorRGB(this Graphic graphic, float r, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorThreeAxes(graphic, graphic.gameObject, 0, 1, 2, r, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorThreeChannels(graphic, graphic.gameObject, 0, 1, 2, r, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorRGB(this Graphic graphic, GameObject owner, float r, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoColorRGB(this Graphic graphic, GameObject owner, float r, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorThreeAxes(graphic, owner, 0, 1, 2, r, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorThreeChannels(graphic, owner, 0, 1, 2, r, g, b, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorRGA(this Graphic graphic, float r, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoColorRGA(this Graphic graphic, float r, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorThreeAxes(graphic, graphic.gameObject, 0, 1, 3, r, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorThreeChannels(graphic, graphic.gameObject, 0, 1, 3, r, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorRGA(this Graphic graphic, GameObject owner, float r, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoColorRGA(this Graphic graphic, GameObject owner, float r, float g, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorThreeAxes(graphic, owner, 0, 1, 3, r, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorThreeChannels(graphic, owner, 0, 1, 3, r, g, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorRBA(this Graphic graphic, float r, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoColorRBA(this Graphic graphic, float r, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorThreeAxes(graphic, graphic.gameObject, 0, 2, 3, r, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorThreeChannels(graphic, graphic.gameObject, 0, 2, 3, r, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorRBA(this Graphic graphic, GameObject owner, float r, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoColorRBA(this Graphic graphic, GameObject owner, float r, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorThreeAxes(graphic, owner, 0, 2, 3, r, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorThreeChannels(graphic, owner, 0, 2, 3, r, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorGBA(this Graphic graphic, float g, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoColorGBA(this Graphic graphic, float g, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorThreeAxes(graphic, graphic.gameObject, 1, 2, 3, g, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorThreeChannels(graphic, graphic.gameObject, 1, 2, 3, g, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoColorGBA(this Graphic graphic, GameObject owner, float g, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector3, TweakVector3> DoColorGBA(this Graphic graphic, GameObject owner, float g, float b, float a, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
-            return DoColorThreeAxes(graphic, owner, 1, 2, 3, g, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
+            return DoColorThreeChannels(graphic, owner, 1, 2, 3, g, b, a, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
         #endregion
 

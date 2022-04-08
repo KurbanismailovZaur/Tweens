@@ -8,17 +8,10 @@ namespace Redcode.Tweens
 {
     public static class TransformExtensions
     {
-        private static void SetPosition(this Transform transform, int axis, float position)
-        {
-            var pos = transform.position;
-            pos[axis] = position;
-            transform.position = pos;
-        }
-
         #region DoPositionOneAxis
         private static Tween<float, TweakFloat> DoPositionOneAxis(GameObject owner, Transform transform, int axis, float position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, transform.position[axis], position, p => transform.SetPosition(axis, p), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, transform.position[axis], position, p => transform.position = transform.position.With(axis, p), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoPositionX(this Transform transform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -53,42 +46,37 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoPositionTwoAxes
-        private static Sequence DoPositionTwoAxes(GameObject owner, Transform transform, int axis1, int axis2, float position1, float position2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector2, TweakVector2> DoPositionTwoAxes(GameObject owner, Transform transform, int axis1, int axis2, float value1, float value2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, transform.position[axis1], position1, p => transform.SetPosition(axis1, p), duration));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, transform.position[axis2], position2, p => transform.SetPosition(axis2, p), duration));
-
-            return sequence;
+            return Tween.Vector2(owner, owner.name, transform.position.Get(axis1, axis2), new Vector2(value1, value2), c => transform.position = transform.position.With(axis1, c.x, axis2, c.y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoPositionXY(this Transform transform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoPositionXY(this Transform transform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoPositionTwoAxes(transform.gameObject, transform, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoPositionXY(this Transform transform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoPositionXY(this Transform transform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoPositionTwoAxes(owner, transform, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoPositionXZ(this Transform transform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoPositionXZ(this Transform transform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoPositionTwoAxes(transform.gameObject, transform, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoPositionXZ(this Transform transform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoPositionXZ(this Transform transform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoPositionTwoAxes(owner, transform, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoPositionYZ(this Transform transform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoPositionYZ(this Transform transform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoPositionTwoAxes(transform.gameObject, transform, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoPositionYZ(this Transform transform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoPositionYZ(this Transform transform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoPositionTwoAxes(owner, transform, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
@@ -116,17 +104,10 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetLocalPosition(this Transform transform, int axis, float position)
-        {
-            var pos = transform.localPosition;
-            pos[axis] = position;
-            transform.localPosition = pos;
-        }
-
         #region DoLocalPositionOneAxis
         private static Tween<float, TweakFloat> DoLocalPositionOneAxis(Transform transform, GameObject owner, int axis, float position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, transform.localPosition[axis], position, p => transform.SetLocalPosition(axis, p), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, transform.localPosition[axis], position, p => transform.localPosition = transform.localPosition.With(axis, p), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoLocalPositionX(this Transform transform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -161,42 +142,37 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoLocalPositionTwoAxes
-        private static Sequence DoLocalPositionTwoAxes(Transform transform, GameObject owner, int axis1, int axis2, float position1, float position2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector2, TweakVector2> DoLocalPositionTwoAxes(Transform transform, GameObject owner, int axis1, int axis2, float value1, float value2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, transform.localPosition[axis1], position1, p => transform.SetLocalPosition(axis1, p), duration));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, transform.localPosition[axis2], position2, p => transform.SetLocalPosition(axis2, p), duration));
-
-            return sequence;
+            return Tween.Vector2(owner, owner.name, transform.localPosition.Get(axis1, axis2), new Vector2(value1, value2), c => transform.localPosition = transform.localPosition.With(axis1, c.x, axis2, c.y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoLocalPositionXY(this Transform transform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalPositionXY(this Transform transform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalPositionTwoAxes(transform, transform.gameObject, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalPositionXY(this Transform transform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalPositionXY(this Transform transform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalPositionTwoAxes(transform, owner, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalPositionXZ(this Transform transform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalPositionXZ(this Transform transform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalPositionTwoAxes(transform, transform.gameObject, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalPositionXZ(this Transform transform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalPositionXZ(this Transform transform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalPositionTwoAxes(transform, owner, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalPositionYZ(this Transform transform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalPositionYZ(this Transform transform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalPositionTwoAxes(transform, transform.gameObject, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalPositionYZ(this Transform transform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalPositionYZ(this Transform transform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalPositionTwoAxes(transform, owner, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
@@ -224,17 +200,10 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetEulerAngle(this Transform transform, int axis, float angle)
-        {
-            var angles = transform.eulerAngles;
-            angles[axis] = angle;
-            transform.eulerAngles = angles;
-        }
-
         #region DoEulerAnglesOneAxis
         private static Tween<float, TweakFloat> DoEulerAnglesOneAxis(Transform transform, GameObject owner, int axis, float angle, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, transform.eulerAngles[axis], angle, a => transform.SetEulerAngle(axis, a), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, transform.eulerAngles[axis], angle, a => transform.eulerAngles = transform.eulerAngles.With(axis, a), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoEulerAnglesX(this Transform transform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -269,42 +238,37 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoEulerAnglesTwoAxes
-        private static Sequence DoEulerAnglesTwoAxis(Transform transform, GameObject owner, int axis1, int axis2, float angle1, float angle2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector2, TweakVector2> DoEulerAnglesTwoAxis(Transform transform, GameObject owner, int axis1, int axis2, float angle1, float angle2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, transform.eulerAngles[axis1], angle1, a => transform.SetEulerAngle(axis1, a), duration));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, transform.eulerAngles[axis2], angle2, a => transform.SetEulerAngle(axis2, a), duration));
-
-            return sequence;
+            return Tween.Vector2(owner, owner.name, transform.eulerAngles.Get(axis1, axis2), new Vector2(angle1, angle2), c => transform.eulerAngles = transform.eulerAngles.With(axis1, c.x, axis2, c.y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoEulerAnglesXY(this Transform transform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoEulerAnglesXY(this Transform transform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoEulerAnglesTwoAxis(transform, transform.gameObject, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoEulerAnglesXY(this Transform transform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoEulerAnglesXY(this Transform transform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoEulerAnglesTwoAxis(transform, owner, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoEulerAnglesXZ(this Transform transform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoEulerAnglesXZ(this Transform transform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoEulerAnglesTwoAxis(transform, transform.gameObject, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoEulerAnglesXZ(this Transform transform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoEulerAnglesXZ(this Transform transform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoEulerAnglesTwoAxis(transform, owner, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoEulerAnglesYZ(this Transform transform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoEulerAnglesYZ(this Transform transform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoEulerAnglesTwoAxis(transform, transform.gameObject, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoEulerAnglesYZ(this Transform transform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoEulerAnglesYZ(this Transform transform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoEulerAnglesTwoAxis(transform, owner, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
@@ -332,17 +296,10 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetLocalEulerAngle(this Transform transform, int axis, float angle)
-        {
-            var angles = transform.localEulerAngles;
-            angles[axis] = angle;
-            transform.localEulerAngles = angles;
-        }
-
         #region DoLocalEulerAnglesOneAxis
         private static Tween<float, TweakFloat> DoLocalEulerAnglesOneAxis(Transform transform, GameObject owner, int axis, float angle, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, transform.localEulerAngles[axis], angle, a => transform.SetLocalEulerAngle(axis, a), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, transform.localEulerAngles[axis], angle, a => transform.localEulerAngles = transform.localEulerAngles.With(axis, a), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoLocalEulerAnglesX(this Transform transform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -377,42 +334,37 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoLocalEulerAnglesTwoAxes
-        private static Sequence DoLocalEulerAnglesTwoAxis(Transform transform, GameObject owner, int axis1, int axis2, float angle1, float angle2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector2, TweakVector2> DoLocalEulerAnglesTwoAxis(Transform transform, GameObject owner, int axis1, int axis2, float angle1, float angle2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, transform.localEulerAngles[axis1], angle1, a => transform.SetLocalEulerAngle(axis1, a), duration));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, transform.localEulerAngles[axis2], angle2, a => transform.SetLocalEulerAngle(axis2, a), duration));
-
-            return sequence;
+            return Tween.Vector2(owner, owner.name, transform.localEulerAngles.Get(axis1, axis2), new Vector2(angle1, angle2), c => transform.localEulerAngles = transform.localEulerAngles.With(axis1, c.x, axis2, c.y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoLocalEulerAnglesXY(this Transform transform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalEulerAnglesXY(this Transform transform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalEulerAnglesTwoAxis(transform, transform.gameObject, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalEulerAnglesXY(this Transform transform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalEulerAnglesXY(this Transform transform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalEulerAnglesTwoAxis(transform, owner, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalEulerAnglesXZ(this Transform transform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalEulerAnglesXZ(this Transform transform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalEulerAnglesTwoAxis(transform, transform.gameObject, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalEulerAnglesXZ(this Transform transform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalEulerAnglesXZ(this Transform transform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalEulerAnglesTwoAxis(transform, owner, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalEulerAnglesYZ(this Transform transform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalEulerAnglesYZ(this Transform transform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalEulerAnglesTwoAxis(transform, transform.gameObject, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalEulerAnglesYZ(this Transform transform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalEulerAnglesYZ(this Transform transform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalEulerAnglesTwoAxis(transform, owner, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
@@ -464,17 +416,10 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        private static void SetLocalScale(this Transform transform, int axis, float scale)
-        {
-            var locScale = transform.localScale;
-            locScale[axis] = scale;
-            transform.localScale = locScale;
-        }
-
         #region DoLocalScaleOneAxis
         private static Tween<float, TweakFloat> DoLocalScaleOneAxis(Transform transform, GameObject owner, int axis, float scale, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, transform.localScale[axis], scale, s => transform.SetLocalScale(axis, s), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, transform.localScale[axis], scale, s => transform.localScale = transform.localScale.With(axis, s), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoLocalScaleX(this Transform transform, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -509,42 +454,37 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoLocalScaleTwoAxes
-        private static Sequence DoLocalScaleTwoAxes(Transform transform, GameObject owner, int axis1, int axis2, float scale1, float scale2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
+        private static Tween<Vector2, TweakVector2> DoLocalScaleTwoAxes(Transform transform, GameObject owner, int axis1, int axis2, float scale1, float scale2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
-
-            sequence.Insert(0f, Tween.Float(owner, owner.name, transform.localScale[axis1], scale1, s => transform.SetLocalScale(axis1, s), duration));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, transform.localScale[axis2], scale2, s => transform.SetLocalScale(axis2, s), duration));
-
-            return sequence;
+            return Tween.Vector2(owner, owner.name, transform.localScale.Get(axis1, axis2), new Vector2(scale1, scale2), c => transform.localScale = transform.localScale.With(axis1, c.x, axis2, c.y), duration, ease, loopsCount, loopType, direction);
         }
 
-        public static Sequence DoLocalScaleXY(this Transform transform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalScaleXY(this Transform transform, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalScaleTwoAxes(transform, transform.gameObject, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalScaleXY(this Transform transform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalScaleXY(this Transform transform, GameObject owner, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalScaleTwoAxes(transform, owner, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalScaleXZ(this Transform transform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalScaleXZ(this Transform transform, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalScaleTwoAxes(transform, transform.gameObject, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalScaleXZ(this Transform transform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalScaleXZ(this Transform transform, GameObject owner, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalScaleTwoAxes(transform, owner, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalScaleYZ(this Transform transform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalScaleYZ(this Transform transform, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalScaleTwoAxes(transform, transform.gameObject, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
-        public static Sequence DoLocalScaleYZ(this Transform transform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
+        public static Tween<Vector2, TweakVector2> DoLocalScaleYZ(this Transform transform, GameObject owner, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoLocalScaleTwoAxes(transform, owner, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }

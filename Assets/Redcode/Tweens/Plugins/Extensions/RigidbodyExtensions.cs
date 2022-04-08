@@ -8,17 +8,10 @@ namespace Redcode.Tweens
 {
     public static class RigidbodyExtensions
     {
-        private static void SetPosition(this Rigidbody rigidbody, int axis, float position)
-        {
-            var pos = rigidbody.position;
-            pos[axis] = position;
-            rigidbody.position = pos;
-        }
-
         #region DoPositionOneAxis
         private static Tween<float, TweakFloat> DoPositionOneAxis(GameObject owner, Rigidbody rigidbody, int axis, float position, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner.name, rigidbody.position[axis], position, p => rigidbody.SetPosition(axis, p), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner.name, rigidbody.position[axis], position, p => rigidbody.position = rigidbody.position.With(axis, p), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoPositionX(this Rigidbody rigidbody, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -57,8 +50,8 @@ namespace Redcode.Tweens
         {
             var sequence = new Sequence(owner, owner.name, ease, loopsCount, loopType, loopResetBehaviour, direction);
 
-            sequence.Insert(0f, Tween.Float(owner, owner.name, rigidbody.position[axis1], position1, p => rigidbody.SetPosition(axis1, p), duration));
-            sequence.Insert(0f, Tween.Float(owner, owner.name, rigidbody.position[axis2], position2, p => rigidbody.SetPosition(axis2, p), duration));
+            sequence.Insert(0f, Tween.Float(owner, owner.name, rigidbody.position[axis1], position1, p => rigidbody.position = rigidbody.position.With(axis1, p), duration));
+            sequence.Insert(0f, Tween.Float(owner, owner.name, rigidbody.position[axis2], position2, p => rigidbody.position = rigidbody.position.With(axis2, p), duration));
 
             return sequence;
         }
@@ -327,6 +320,7 @@ namespace Redcode.Tweens
                 var pointData = path.GetPointAtDistance(p);
 
                 rigidbody.position = pointData.Position;
+
                 if (pathFollowOptions != PathFollowOptions.None)
                     rigidbody.rotation = pathFollowOptions == PathFollowOptions.UsePointRotation ? pointData.Rotation : Quaternion.LookRotation(pointData.Direction);
             }, duration);

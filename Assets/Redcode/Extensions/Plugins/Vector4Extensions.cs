@@ -11,7 +11,7 @@ namespace Redcode.Extensions
         /// <param name="axis">Axis index of the vector.</param>
         /// <param name="value">Value to set.</param>
         /// <returns>Changed copy of the vector.</returns>
-        public static Vector2 With(this Vector4 vector, int axis, float value)
+        public static Vector4 With(this Vector4 vector, int axis, float value)
         {
             vector[axis] = value;
             return vector;
@@ -58,7 +58,7 @@ namespace Redcode.Extensions
         /// <param name="axis2">Second axis index of the vector.</param>
         /// <param name="value2">Second value to set.</param>
         /// <returns>Changed copy of the vector.</returns>
-        public static Vector2 With(this Vector4 vector, int axis1, float value1, int axis2, float value2)
+        public static Vector4 With(this Vector4 vector, int axis1, float value1, int axis2, float value2)
         {
             vector[axis1] = value1;
             vector[axis2] = value2;
@@ -179,7 +179,7 @@ namespace Redcode.Extensions
         /// <param name="axis3">Second axis index of the vector.</param>
         /// <param name="value3">Second value to set.</param>
         /// <returns>Changed copy of the vector.</returns>
-        public static Vector2 With(this Vector4 vector, int axis1, float value1, int axis2, float value2, int axis3, float value3)
+        public static Vector4 With(this Vector4 vector, int axis1, float value1, int axis2, float value2, int axis3, float value3)
         {
             vector[axis1] = value1;
             vector[axis2] = value2;
@@ -267,7 +267,7 @@ namespace Redcode.Extensions
         /// <param name="axis1">First axis.</param>
         /// <param name="axis2">Second axis.</param>
         /// <returns><see cref="Vector2"/> vector.</returns>
-        public static Vector2 Get(this Vector4 vector, int axis1, int axis2) => new Vector2(vector[axis1], vector[axis2]);
+        public static Vector4 Get(this Vector4 vector, int axis1, int axis2) => new Vector2(vector[axis1], vector[axis2]);
 
         /// <summary>
         /// Gets <see cref="Vector2"/> by x and y axes.
