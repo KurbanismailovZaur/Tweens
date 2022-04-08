@@ -3796,12 +3796,30 @@ namespace Redcode.Tweens
         #endregion
     }
 
+    public interface ITween
+    {
+        Type Type { get; }
+
+        float LoopDuration { get; }
+
+        UnityEngine.Object Target { get; set; }
+
+        string TargetParameterName { get; set; }
+
+        bool AutoFromInSequences { get; set; }
+    }
+
+    internal interface IAutoFromTween : ITween
+    {
+        void CopyFromTo(IAutoFromTween target);
+    }
+
     /// <summary>
     /// Represents a class capable of animating values over time.
     /// </summary>
     /// <typeparam name="T">Source type of animated value. Must be a structure.</typeparam>
     /// <typeparam name="U">Tweak type which can interpolate source type. Must have default constructor.</typeparam>
-    public sealed class Tween<T, U> : Playable<Tween<T, U>> where T : struct where U : Tweak<T>, new()
+    public sealed class Tween<T, U> : Playable<Tween<T, U>>, IAutoFromTween where T : struct where U : Tweak<T>, new()
     {
         public override Type Type => Type.Tween;
 
@@ -3833,6 +3851,21 @@ namespace Redcode.Tweens
         /// Callback which applied when playing this tween.
         /// </summary>
         public Action<T> Action { private get; set; }
+
+        /// <summary>
+        /// Represent object which parameter will tweened.
+        /// </summary>
+        public UnityEngine.Object Target { get; set; }
+
+        /// <summary>
+        /// Represent parameter name which will be animated. <see langword="null"/> means no association.
+        /// </summary>
+        public string TargetParameterName { get; set; }
+
+        /// <summary>
+        /// If <see langword="true"/> then sequences will auto set <c>From</c> value when tween added.
+        /// </summary>
+        public bool AutoFromInSequences { get; set; }
 
         #region Constructors
         /// <summary>
@@ -4074,6 +4107,7 @@ namespace Redcode.Tweens
         }
         #endregion
 
+        #region Set From and To
         /// <summary>
         /// Sets <see langword=""="From"/> value.
         /// </summary>
@@ -4109,6 +4143,22 @@ namespace Redcode.Tweens
             To = to;
             return this;
         }
+        #endregion
+
+        void IAutoFromTween.CopyFromTo(IAutoFromTween target) => ((Tween<T, U>)target).From = From;
+
+        /// <summary>
+        /// Clears <see langword="TargetObject"/> and <see langword="ParameterNameID"/>.
+        /// </summary>
+        /// <returns></returns>
+        public Tween<T, U> ClearTargetData()
+        {
+            Target = null;
+            TargetParameterName = null;
+            AutoFromInSequences = false;
+
+            return this;
+        }
 
         /// <summary>
         /// Sets loop duration of the tween.
@@ -4136,36 +4186,36 @@ namespace Redcode.Tweens
 
         private Ease InvertIfRequiredAndGetease(Direction direction) => direction == Direction.Forward ? Ease : Ease.Invertion.With(Ease);
 
+        private void EvaluateFromTo(ref T from, ref T to, float fromInterlopation, float toInterpolation) => (from, to) = (Tweak.Evaluate(from, to, fromInterlopation), Tweak.Evaluate(from, to, toInterpolation));
+
         protected override void RewindZeroHandler(int loop, float loopedNormalizedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             var (from, to) = (From(), To());
 
-            (T, T) Evaluate(float fromInterlopation, float toInterpolation) => (Tweak.Evaluate(from, to, fromInterlopation), Tweak.Evaluate(from, to, toInterpolation));
-
             if (LoopType == LoopType.Reset)
             {
                 if (direction == Direction.Forward)
-                    (from, to) = Evaluate(parentContinueLoopIndex, parentContinueLoopIndex + 1f);
+                    EvaluateFromTo(ref from, ref to, parentContinueLoopIndex, parentContinueLoopIndex + 1f);
                 else
-                    (from, to) = Evaluate(continueMaxLoopsCount - parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1f);
+                    EvaluateFromTo(ref from, ref to, continueMaxLoopsCount - parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1f);
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, Ease);
             }
             else if (LoopType == LoopType.Continue)
             {
                 if (direction == Direction.Forward)
-                    (from, to) = Evaluate(parentContinueLoopIndex * LoopsCount + loop, parentContinueLoopIndex * LoopsCount + loop + 1f);
+                    EvaluateFromTo(ref from, ref to, parentContinueLoopIndex * LoopsCount + loop, parentContinueLoopIndex * LoopsCount + loop + 1f);
                 else
-                    (from, to) = Evaluate(continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop, continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop - 1f);
+                    EvaluateFromTo(ref from, ref to, continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop, continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop - 1f);
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, Ease);
             }
             else if (LoopType == LoopType.Mirror)
             {
                 if (direction == Direction.Forward)
-                    (from, to) = Evaluate(parentContinueLoopIndex, parentContinueLoopIndex + 1f);
+                    EvaluateFromTo(ref from, ref to, parentContinueLoopIndex, parentContinueLoopIndex + 1f);
                 else
-                    (from, to) = Evaluate(continueMaxLoopsCount - parentContinueLoopIndex - 1f, continueMaxLoopsCount - parentContinueLoopIndex);
+                    EvaluateFromTo(ref from, ref to, continueMaxLoopsCount - parentContinueLoopIndex - 1f, continueMaxLoopsCount - parentContinueLoopIndex);
 
                 var loopedMirroredNormalizedTime = loopedNormalizedTime * 2f;
 
@@ -4179,35 +4229,32 @@ namespace Redcode.Tweens
         protected override void RewindHandler(int loop, float loopedTime, Direction direction, bool emitEvents, int parentContinueLoopIndex, int continueMaxLoopsCount)
         {
             var (from, to) = (From(), To());
-
-            (T, T) Evaluate(float fromInterlopation, float toInterpolation) => (Tweak.Evaluate(from, to, fromInterlopation), Tweak.Evaluate(from, to, toInterpolation));
-
             var loopedNormalizedTime = loopedTime / LoopDuration;
 
             if (LoopType == LoopType.Reset)
             {
                 if (direction == Direction.Forward)
-                    (from, to) = Evaluate(parentContinueLoopIndex, parentContinueLoopIndex + 1f);
+                    EvaluateFromTo(ref from, ref to, parentContinueLoopIndex, parentContinueLoopIndex + 1f);
                 else
-                    (from, to) = Evaluate(continueMaxLoopsCount - parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1f);
+                    EvaluateFromTo(ref from, ref to, continueMaxLoopsCount - parentContinueLoopIndex, continueMaxLoopsCount - parentContinueLoopIndex - 1f);
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, InvertIfRequiredAndGetease(direction));
             }
             else if (LoopType == LoopType.Continue)
             {
                 if (direction == Direction.Forward)
-                    (from, to) = Evaluate(parentContinueLoopIndex * LoopsCount + loop, parentContinueLoopIndex * LoopsCount + loop + 1f);
+                    EvaluateFromTo(ref from, ref to, parentContinueLoopIndex * LoopsCount + loop, parentContinueLoopIndex * LoopsCount + loop + 1f);
                 else
-                    (from, to) = Evaluate(continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop, continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop - 1f);
+                    EvaluateFromTo(ref from, ref to, continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop, continueMaxLoopsCount * LoopsCount - (parentContinueLoopIndex * LoopsCount) - loop - 1f);
 
                 Tweak.Apply(from, to, loopedNormalizedTime, Action, InvertIfRequiredAndGetease(direction));
             }
             else if (LoopType == LoopType.Mirror)
             {
                 if (direction == Direction.Forward)
-                    (from, to) = Evaluate(parentContinueLoopIndex, parentContinueLoopIndex + 1f);
+                    EvaluateFromTo(ref from, ref to, parentContinueLoopIndex, parentContinueLoopIndex + 1f);
                 else
-                    (from, to) = Evaluate(continueMaxLoopsCount - parentContinueLoopIndex - 1f, continueMaxLoopsCount - parentContinueLoopIndex);
+                    EvaluateFromTo(ref from, ref to, continueMaxLoopsCount - parentContinueLoopIndex - 1f, continueMaxLoopsCount - parentContinueLoopIndex);
 
                 var loopedMirroredNormalizedTime = loopedNormalizedTime * 2f;
 
@@ -4215,6 +4262,69 @@ namespace Redcode.Tweens
                     loopedMirroredNormalizedTime = 2f - loopedMirroredNormalizedTime;
 
                 Tweak.Apply(from, to, loopedMirroredNormalizedTime, Action, Ease);
+            }
+        }
+
+        /// <summary>
+        /// Evaluate <c>Tweak</c> with tween <c>LoopsCount</c> and <c>LoopType</c> options. <br/>
+        /// Zero duration tweens are always return end value.
+        /// </summary>
+        /// <param name="time">Time where to evaluate.</param>
+        /// <returns>Evaluated value.</returns>
+        public T Evaluate(float time)
+        {
+            if (LoopDuration.Approximately(0f))
+                return EvaluateZero(LoopsCount - 1, 1f);
+            else
+            {
+                var (loop, loopedTime) = LoopIndexTime(Mathf.Clamp(time, 0f, Duration));
+                return Evaluate(loop, loopedTime);
+            }
+        }
+
+        private T EvaluateZero(int loop, float loopedNormalizedTime)
+        {
+            var (from, to) = (From(), To());
+
+            if (LoopType == LoopType.Reset)
+                return Tweak.Evaluate(from, to, loopedNormalizedTime, Ease);
+            else if (LoopType == LoopType.Continue)
+            {
+                EvaluateFromTo(ref from, ref to, loop, loop + 1f);
+                return Tweak.Evaluate(from, to, loopedNormalizedTime, Ease);
+            }
+            else // LoopType.Mirror
+            {
+                var loopedMirroredNormalizedTime = loopedNormalizedTime * 2f;
+
+                if (loopedMirroredNormalizedTime > 1f)
+                    loopedMirroredNormalizedTime = 2f - loopedMirroredNormalizedTime;
+
+                return Tweak.Evaluate(from, to, loopedMirroredNormalizedTime, Ease);
+            }
+        }
+
+        private T Evaluate(int loop, float loopedTime)
+        {
+            var (from, to) = (From(), To());
+
+            var loopedNormalizedTime = loopedTime / LoopDuration;
+
+            if (LoopType == LoopType.Reset)
+                return Tweak.Evaluate(from, to, loopedNormalizedTime, Ease);
+            else if (LoopType == LoopType.Continue)
+            {
+                EvaluateFromTo(ref from, ref to, loop, loop + 1f);
+                return Tweak.Evaluate(from, to, loopedNormalizedTime, Ease);
+            }
+            else // LoopType.Mirror
+            {
+                var loopedMirroredNormalizedTime = loopedNormalizedTime * 2f;
+
+                if (loopedMirroredNormalizedTime > 1f)
+                    loopedMirroredNormalizedTime = 2f - loopedMirroredNormalizedTime;
+
+                return Tweak.Evaluate(from, to, loopedMirroredNormalizedTime, Ease);
             }
         }
     }

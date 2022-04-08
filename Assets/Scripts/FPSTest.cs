@@ -24,8 +24,6 @@ namespace Redcode.Tweens
 
         private IEnumerator Start()
         {
-            Light light = null;
-
             if (Application.platform == RuntimePlatform.Android)
             {
                 Application.targetFrameRate = 10000;

@@ -921,6 +921,29 @@ namespace Redcode.Tweens
         }
         #endregion
 
+        //private Playable FindPreviousNearestElement(Element sourceElement)
+        //{
+        //    Element previousElement = null;
+
+        //    foreach (var element in _elements)
+        //    {
+        //        if (element.Playable.Type != Type.Tween)
+        //            continue;
+
+        //        var tween = ((IAutoFromTween)element.Playable);
+
+        //        if (previousElement == null && element.StartTime <=)
+        //        {
+        //            previousElement = tween;
+        //            continue;
+        //        }
+
+
+        //    }
+
+        //    return null;
+        //}
+
         #region Adding elements
         /// <summary>
         /// Adds a <paramref name="playable"/> to the left of all elements in the sequence.
