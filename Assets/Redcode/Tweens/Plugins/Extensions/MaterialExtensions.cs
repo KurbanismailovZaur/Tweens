@@ -10,7 +10,7 @@ namespace Redcode.Tweens
         #region DoColorOneAxis
         private static Tween<float, TweakFloat> DoColorOneAxis(GameObject owner, Material material, int axis, float color, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner?.name, material.color[axis], color, c => material.color = material.color.With(axis, c), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.color[axis], color, c => material.color = material.color.With(axis, c), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoColorR(this Material material, float r, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -186,7 +186,7 @@ namespace Redcode.Tweens
 
         public static Tween<Color, TweakColor> DoColor(this Material material, GameObject owner, Color color, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Color(owner, owner?.name, material.color, color, c => material.color = c, duration, ease, loopsCount, loopType, direction);
+            return Tween.Color(owner, owner == null ? null : owner.name, material.color, color, c => material.color = c, duration, ease, loopsCount, loopType, direction);
         }
         #endregion
         #endregion
@@ -199,7 +199,7 @@ namespace Redcode.Tweens
 
         public static Tween<float, TweakFloat> DoMainTextureOffsetX(this Material material, GameObject owner, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Float(owner, owner?.name, material.mainTextureOffset.x, x, ox => material.mainTextureOffset = material.mainTextureOffset.WithX(ox), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.mainTextureOffset.x, x, ox => material.mainTextureOffset = material.mainTextureOffset.WithX(ox), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoMainTextureOffsetY(this Material material, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -209,7 +209,7 @@ namespace Redcode.Tweens
 
         public static Tween<float, TweakFloat> DoMainTextureOffsetY(this Material material, GameObject owner, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Float(owner, owner?.name, material.mainTextureOffset.y, y, oy => material.mainTextureOffset = material.mainTextureOffset.WithY(oy), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.mainTextureOffset.y, y, oy => material.mainTextureOffset = material.mainTextureOffset.WithY(oy), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<Vector2, TweakVector2> DoMainTextureOffset(this Material material, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -229,7 +229,7 @@ namespace Redcode.Tweens
 
         public static Tween<Vector2, TweakVector2> DoMainTextureOffset(this Material material, GameObject owner, Vector2 offset, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Vector2(owner, owner?.name, material.mainTextureOffset, offset, o => material.mainTextureOffset = o, duration, ease, loopsCount, loopType, direction);
+            return Tween.Vector2(owner, owner == null ? null : owner.name, material.mainTextureOffset, offset, o => material.mainTextureOffset = o, duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
@@ -241,7 +241,7 @@ namespace Redcode.Tweens
 
         public static Tween<float, TweakFloat> DoMainTextureScaleX(this Material material, GameObject owner, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Float(owner, owner?.name, material.mainTextureScale.x, x, ox => material.mainTextureScale = material.mainTextureScale.WithX(ox), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.mainTextureScale.x, x, ox => material.mainTextureScale = material.mainTextureScale.WithX(ox), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoMainTextureScaleY(this Material material, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -251,7 +251,7 @@ namespace Redcode.Tweens
 
         public static Tween<float, TweakFloat> DoMainTextureScaleY(this Material material, GameObject owner, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Float(owner, owner?.name, material.mainTextureScale.y, y, oy => material.mainTextureScale = material.mainTextureScale.WithY(oy), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.mainTextureScale.y, y, oy => material.mainTextureScale = material.mainTextureScale.WithY(oy), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<Vector2, TweakVector2> DoMainTextureScale(this Material material, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -271,7 +271,7 @@ namespace Redcode.Tweens
 
         public static Tween<Vector2, TweakVector2> DoMainTextureScale(this Material material, GameObject owner, Vector2 scale, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Vector2(owner, owner?.name, material.mainTextureScale, scale, s => material.mainTextureScale = s, duration, ease, loopsCount, loopType, direction);
+            return Tween.Vector2(owner, owner == null ? null : owner.name, material.mainTextureScale, scale, s => material.mainTextureScale = s, duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
@@ -279,7 +279,7 @@ namespace Redcode.Tweens
         #region DoColorPropertyOneAxis
         private static Tween<float, TweakFloat> DoColorPropertyOneChannel(GameObject owner, Material material, string property, int channel, float value, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner?.name, material.GetColor(property)[channel], value, c => material.SetColor(property, material.GetColor(property).With(channel, c)), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.GetColor(property)[channel], value, c => material.SetColor(property, material.GetColor(property).With(channel, c)), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoColorPropertyR(this Material material, string property, float r, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -326,7 +326,7 @@ namespace Redcode.Tweens
         #region DoColorPropertyTwoAxes
         private static Tween<Vector2, TweakVector2> DoColorPropertyTwoChannels(GameObject owner, Material material, string property, int channel1, int channel2, float value1, float value2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            return Tween.Vector2(owner, owner?.name, material.GetColor(property).Get(channel1, channel2), new Vector2(value1, value2), c => material.SetColor(property, material.GetColor(property).With(channel1, c.x, channel2, c.y)), duration, ease, loopsCount, loopType, direction);
+            return Tween.Vector2(owner, owner == null ? null : owner.name, material.GetColor(property).Get(channel1, channel2), new Vector2(value1, value2), c => material.SetColor(property, material.GetColor(property).With(channel1, c.x, channel2, c.y)), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<Vector2, TweakVector2> DoColorPropertyRG(this Material material, string property, float r, float g, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
@@ -393,7 +393,7 @@ namespace Redcode.Tweens
         #region DoColorPropertyThreeAxes
         private static Tween<Vector3, TweakVector3> DoColorPropertyThreeChannels(GameObject owner, Material material, string property, int channel1, int channel2, int channel3, float value1, float value2, float value3, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            return Tween.Vector3(owner, owner?.name, material.GetColor(property).Get(channel1, channel2, channel3), new Vector3(value1, value2, value3), c => material.SetColor(property, material.GetColor(property).With(channel1, c.x, channel2, c.y, channel3, c.z)), duration, ease, loopsCount, loopType, direction);
+            return Tween.Vector3(owner, owner == null ? null : owner.name, material.GetColor(property).Get(channel1, channel2, channel3), new Vector3(value1, value2, value3), c => material.SetColor(property, material.GetColor(property).With(channel1, c.x, channel2, c.y, channel3, c.z)), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<Vector3, TweakVector3> DoColorPropertyRGB(this Material material, string property, float r, float g, float b, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
@@ -455,7 +455,7 @@ namespace Redcode.Tweens
 
         public static Tween<Color, TweakColor> DoColorProperty(this Material material, GameObject owner, string property, Color color, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Color(owner, owner?.name, material.GetColor(property), color, c => material.SetColor(property, c), duration, ease, loopsCount, loopType, direction);
+            return Tween.Color(owner, owner == null ? null : owner.name, material.GetColor(property), color, c => material.SetColor(property, c), duration, ease, loopsCount, loopType, direction);
         }
         #endregion
         #endregion
@@ -478,7 +478,7 @@ namespace Redcode.Tweens
 
         public static Tween<float, TweakFloat> DoMainTextureOffsetPropertyX(this Material material, GameObject owner,  string property, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Float(owner, owner?.name, material.GetTextureOffset(property).x, x, ox => material.SetTextureOffset(property, material.GetTextureOffset(property).WithX(ox)), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.GetTextureOffset(property).x, x, ox => material.SetTextureOffset(property, material.GetTextureOffset(property).WithX(ox)), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoMainTextureOffsetPropertyY(this Material material, string property, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -488,7 +488,7 @@ namespace Redcode.Tweens
 
         public static Tween<float, TweakFloat> DoMainTextureOffsetPropertyY(this Material material, GameObject owner, string property, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Float(owner, owner?.name, material.GetTextureOffset(property).y, y, oy => material.SetTextureOffset(property, material.GetTextureOffset(property).WithY(oy)), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.GetTextureOffset(property).y, y, oy => material.SetTextureOffset(property, material.GetTextureOffset(property).WithY(oy)), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<Vector2, TweakVector2> DoMainTextureOffsetProperty(this Material material, string property, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -508,7 +508,7 @@ namespace Redcode.Tweens
 
         public static Tween<Vector2, TweakVector2> DoMainTextureOffsetProperty(this Material material, GameObject owner, string property, Vector2 offset, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Vector2(owner, owner?.name, material.GetTextureOffset(property), offset, o => material.SetTextureOffset(property, o), duration, ease, loopsCount, loopType, direction);
+            return Tween.Vector2(owner, owner == null ? null : owner.name, material.GetTextureOffset(property), offset, o => material.SetTextureOffset(property, o), duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
@@ -520,7 +520,7 @@ namespace Redcode.Tweens
 
         public static Tween<float, TweakFloat> DoMainTextureScalePropertyX(this Material material, GameObject owner, string property, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Float(owner, owner?.name, material.GetTextureScale(property).x, x, ox => material.SetTextureScale(property, material.GetTextureScale(property).WithX(ox)), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.GetTextureScale(property).x, x, ox => material.SetTextureScale(property, material.GetTextureScale(property).WithX(ox)), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoMainTextureScalePropertyY(this Material material, string property, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -530,7 +530,7 @@ namespace Redcode.Tweens
 
         public static Tween<float, TweakFloat> DoMainTextureScalePropertyY(this Material material, GameObject owner, string property, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Float(owner, owner?.name, material.GetTextureScale(property).y, y, oy => material.SetTextureScale(property, material.GetTextureScale(property).WithY(oy)), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.GetTextureScale(property).y, y, oy => material.SetTextureScale(property, material.GetTextureScale(property).WithY(oy)), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<Vector2, TweakVector2> DoMainTextureScaleProperty(this Material material, string property, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -550,7 +550,7 @@ namespace Redcode.Tweens
 
         public static Tween<Vector2, TweakVector2> DoMainTextureScaleProperty(this Material material, GameObject owner, string property, Vector2 offset, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Vector2(owner, owner?.name, material.GetTextureScale(property), offset, o => material.SetTextureScale(property, o), duration, ease, loopsCount, loopType, direction);
+            return Tween.Vector2(owner, owner == null ? null : owner.name, material.GetTextureScale(property), offset, o => material.SetTextureScale(property, o), duration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
@@ -558,7 +558,7 @@ namespace Redcode.Tweens
         #region DoVectorPropertyOneAxis
         private static Tween<float, TweakFloat> DoVectorPropertyOneAxis(GameObject owner, Material material, string property, int axis, float value, float duration, Ease ease, int loopsCount, LoopType loopType, Direction direction)
         {
-            return Tween.Float(owner, owner?.name, material.GetVector(property)[axis], value, v => material.SetVector(property, material.GetVector(property).With(axis, v)), duration, ease, loopsCount, loopType, direction);
+            return Tween.Float(owner, owner == null ? null : owner.name, material.GetVector(property)[axis], value, v => material.SetVector(property, material.GetVector(property).With(axis, v)), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<float, TweakFloat> DoVectorPropertyX(this Material material, string property, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
@@ -605,7 +605,7 @@ namespace Redcode.Tweens
         #region DoVectorPropertyTwoAxes
         private static Tween<Vector2, TweakVector2> DoVectorPropertyTwoAxes(GameObject owner, Material material, string property, int axis1, int axis2, float value1, float value2, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            return Tween.Vector2(owner, owner?.name, material.GetVector(property).With(axis1, axis2), new Vector2(value1, value2), v => material.SetVector(property, material.GetVector(property).With(axis1, v.x, axis2, v.y)), duration, ease, loopsCount, loopType, direction);
+            return Tween.Vector2(owner, owner == null ? null : owner.name, material.GetVector(property).With(axis1, axis2), new Vector2(value1, value2), v => material.SetVector(property, material.GetVector(property).With(axis1, v.x, axis2, v.y)), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<Vector2, TweakVector2> DoVectorPropertyXY(this Material material, string property, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
@@ -672,7 +672,7 @@ namespace Redcode.Tweens
         #region DoVectorPropertyThreeAxes
         private static Tween<Vector3, TweakVector3> DoVectorPropertyThreeAxes(GameObject owner, Material material, string property, int axis1, int axis2, int axis3, float value1, float value2, float value3, float duration, Ease ease, int loopsCount, LoopType loopType, LoopResetBehaviour loopResetBehaviour, Direction direction)
         {
-            return Tween.Vector3(owner, owner?.name, material.GetVector(property).Get(axis1, axis2, axis3), new Vector3(value1, value2, value3), v => material.SetVector(property, material.GetVector(property).With(axis1, v.x, axis2, v.y, axis3, v.z)), duration, ease, loopsCount, loopType, direction);
+            return Tween.Vector3(owner, owner == null ? null : owner.name, material.GetVector(property).Get(axis1, axis2, axis3), new Vector3(value1, value2, value3), v => material.SetVector(property, material.GetVector(property).With(axis1, v.x, axis2, v.y, axis3, v.z)), duration, ease, loopsCount, loopType, direction);
         }
 
         public static Tween<Vector3, TweakVector3> DoVectorPropertyXYZ(this Material material, string property, float x, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
@@ -734,7 +734,7 @@ namespace Redcode.Tweens
 
         public static Tween<Color, TweakColor> DoVectorProperty(this Material material, GameObject owner, string property, Color color, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Tween.Color(owner, owner?.name, material.GetColor(property), color, c => material.SetColor(property, c), duration, ease, loopsCount, loopType, direction);
+            return Tween.Color(owner, owner == null ? null : owner.name, material.GetColor(property), color, c => material.SetColor(property, c), duration, ease, loopsCount, loopType, direction);
         }
         #endregion
         #endregion
