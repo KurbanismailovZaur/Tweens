@@ -41,5 +41,11 @@ namespace Redcode.Tweens
         /// Interpolation type which will used when tweak values.
         /// </summary>
         public InterpolationType InterpolationType { get; set; }
+
+        public TweakDirectional<T> SetInterpolationType(InterpolationType type)
+        {
+            InterpolationType = type;
+            return this;
+        }
     }
 }

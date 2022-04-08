@@ -3796,22 +3796,16 @@ namespace Redcode.Tweens
         #endregion
     }
 
-    public interface ITween
+    /// <summary>
+    /// Represent interface to work with tween object.
+    /// </summary>
+    public interface ITween : IPlayable
     {
-        Type Type { get; }
+        new float LoopDuration { get; set; }
 
-        float LoopDuration { get; }
+        ITween SetLoopDuration(float loopDuration);
 
-        UnityEngine.Object Target { get; set; }
-
-        string TargetParameterName { get; set; }
-
-        bool AutoFromInSequences { get; set; }
-    }
-
-    internal interface IAutoFromTween : ITween
-    {
-        void CopyFromTo(IAutoFromTween target);
+        ITween SetTweakInterpolationType(InterpolationType type);
     }
 
     /// <summary>
@@ -3819,7 +3813,7 @@ namespace Redcode.Tweens
     /// </summary>
     /// <typeparam name="T">Source type of animated value. Must be a structure.</typeparam>
     /// <typeparam name="U">Tweak type which can interpolate source type. Must have default constructor.</typeparam>
-    public sealed class Tween<T, U> : Playable<Tween<T, U>>, IAutoFromTween where T : struct where U : Tweak<T>, new()
+    public sealed class Tween<T, U> : Playable<Tween<T, U>>, ITween where T : struct where U : Tweak<T>, new()
     {
         public override Type Type => Type.Tween;
 
@@ -3851,21 +3845,6 @@ namespace Redcode.Tweens
         /// Callback which applied when playing this tween.
         /// </summary>
         public Action<T> Action { private get; set; }
-
-        /// <summary>
-        /// Represent object which parameter will tweened.
-        /// </summary>
-        public UnityEngine.Object Target { get; set; }
-
-        /// <summary>
-        /// Represent parameter name which will be animated. <see langword="null"/> means no association.
-        /// </summary>
-        public string TargetParameterName { get; set; }
-
-        /// <summary>
-        /// If <see langword="true"/> then sequences will auto set <c>From</c> value when tween added.
-        /// </summary>
-        public bool AutoFromInSequences { get; set; }
 
         #region Constructors
         /// <summary>
@@ -4145,21 +4124,6 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        void IAutoFromTween.CopyFromTo(IAutoFromTween target) => ((Tween<T, U>)target).From = From;
-
-        /// <summary>
-        /// Clears <see langword="TargetObject"/> and <see langword="ParameterNameID"/>.
-        /// </summary>
-        /// <returns></returns>
-        public Tween<T, U> ClearTargetData()
-        {
-            Target = null;
-            TargetParameterName = null;
-            AutoFromInSequences = false;
-
-            return this;
-        }
-
         /// <summary>
         /// Sets loop duration of the tween.
         /// </summary>
@@ -4170,6 +4134,13 @@ namespace Redcode.Tweens
             LoopDuration = loopDuration;
             return this;
         }
+
+        /// <summary>
+        /// <inheritdoc cref="SetLoopDuration(float)"/>
+        /// </summary>
+        /// <param name="loopDuration"><inheritdoc cref="SetLoopDuration(float)"/></param>
+        /// <returns><inheritdoc cref="SetLoopDuration(float)"/></returns>
+        ITween ITween.SetLoopDuration(float loopDuration) => SetLoopDuration(loopDuration);
 
         /// <summary>
         /// Set tweak interpolation type if tweak inherited by TweakDirectional<![CDATA[<]]>T<![CDATA[>]]>.
@@ -4183,6 +4154,13 @@ namespace Redcode.Tweens
 
             return this;
         }
+
+        /// <summary>
+        /// <inheritdoc cref="SetTweakInterpolationType(InterpolationType)"/>
+        /// </summary>
+        /// <param name="type"><inheritdoc cref="SetTweakInterpolationType(InterpolationType)"/></param>
+        /// <returns><inheritdoc cref="SetTweakInterpolationType(InterpolationType)"/></returns>
+        ITween ITween.SetTweakInterpolationType(InterpolationType type) => SetTweakInterpolationType(type);
 
         private Ease InvertIfRequiredAndGetease(Direction direction) => direction == Direction.Forward ? Ease : Ease.Invertion.With(Ease);
 

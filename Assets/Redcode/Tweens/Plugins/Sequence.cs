@@ -921,29 +921,6 @@ namespace Redcode.Tweens
         }
         #endregion
 
-        //private Playable FindPreviousNearestElement(Element sourceElement)
-        //{
-        //    Element previousElement = null;
-
-        //    foreach (var element in _elements)
-        //    {
-        //        if (element.Playable.Type != Type.Tween)
-        //            continue;
-
-        //        var tween = ((IAutoFromTween)element.Playable);
-
-        //        if (previousElement == null && element.StartTime <=)
-        //        {
-        //            previousElement = tween;
-        //            continue;
-        //        }
-
-
-        //    }
-
-        //    return null;
-        //}
-
         #region Adding elements
         /// <summary>
         /// Adds a <paramref name="playable"/> to the left of all elements in the sequence.
@@ -1021,10 +998,11 @@ namespace Redcode.Tweens
             var element = new Element(Mathf.Max(time, 0f), (Playable)playable, order);
             ++_nextOrder;
 
-            return InsertElement(element);
+            InsertElement(element);
+            return element;
         }
 
-        private Element InsertElement(Element element)
+        private void InsertElement(Element element)
         {
             element.Sequence = this;
             _elements.Insert(element.Order, element);
@@ -1042,8 +1020,6 @@ namespace Redcode.Tweens
             // We need subscribe only first time when playable was added.
             if (GetElements(element.Playable).Count == 1)
                 ((Playable)element.Playable).StateChanged += Playable_StateChanged;
-
-            return element;
         }
         #endregion
 

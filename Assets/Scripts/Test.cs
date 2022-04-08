@@ -14,21 +14,15 @@ namespace Tweens
 {
 	public class Test : MonoBehaviour
 	{
-        [ContextMenuItem("Evaluate", "Evaluate")]
         [SerializeField]
-        [Range(0f, 3f)]
-        private float _interpolation;
-
-        private Tween<float, TweakFloat> _tween;
+        private Transform _target;
 
         private void Start()
         {
-            _tween = Tween.Float(0f, 1f, v => { }, 0f, null, 3, LoopType.Mirror);
-        }
-
-        public void Evaluate()
-        {
-            print(_tween.Evaluate(_interpolation));
+            var sequence = new Sequence();
+            sequence.Append(_target.DoPositionX(1f, 1f));
+            sequence.Append(_target.DoPositionX(2f, 1f));
+            sequence.Play();
         }
     }
 }
