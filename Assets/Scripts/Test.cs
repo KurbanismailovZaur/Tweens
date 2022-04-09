@@ -17,14 +17,21 @@ namespace Tweens
         [SerializeField]
         private Transform _target;
 
-        private void Start()
+        private IEnumerator Start()
         {
-            var tween = (IPlayable)_target.DoPositionX(1f, 1f);
+            var tween = _target.DoPositionX(1f, 10f).Play();
             
-            var sequence = new Sequence();
-            sequence.Append(_target.DoPositionX(1f, 1f));
-            sequence.Append(_target.DoPositionX(2f, 1f).SetFrom(1f));
-            sequence.Play();
+            yield return new WaitForSeconds(2f);
+            tween.SetOwner(this);
+            print("THIS");
+
+            yield return new WaitForSeconds(2f);
+            tween.SetOwner(_target);
+            print("TARGET");
+
+            yield return new WaitForSeconds(2f);
+            tween.MakeUnowned();
+            print("NULL");
         }
     }
 }

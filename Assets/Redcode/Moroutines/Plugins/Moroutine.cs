@@ -282,8 +282,6 @@ namespace Redcode.Moroutines
             _enumerable = enumerable ?? throw new ArgumentNullException(nameof(enumerable));
             _enumerator = _enumerable.GetEnumerator();
             
-            SetOwner(owner);
-
             if (owner == null)
             {
                 MoroutinesExecuter.Instance.Owner.Add(this);

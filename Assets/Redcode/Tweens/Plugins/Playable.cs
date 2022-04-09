@@ -736,7 +736,7 @@ namespace Redcode.Tweens
         /// </summary>
         /// <param name="component"><inheritdoc cref="IPlayable.SetOwner(Component)" path="/param[@name='component']"/></param>
         /// <returns><inheritdoc cref="IPlayable.SetOwner(Component)"/></returns>
-        Playable SetOwner(Component component)
+        public Playable SetOwner(Component component)
         {
             _playingMoroutine.SetOwner(component);
             return this;
@@ -749,7 +749,7 @@ namespace Redcode.Tweens
         /// </summary>
         /// <param name="gameObject"><inheritdoc cref="IPlayable.SetOwner(GameObject)" path="/param[@name='gameObject']"/></param>
         /// <returns><inheritdoc cref="IPlayable.SetOwner(GameObject)"/></returns>
-        Playable SetOwner(GameObject gameObject)
+        public Playable SetOwner(GameObject gameObject)
         {
             _playingMoroutine.SetOwner(gameObject);
             return this;
@@ -761,7 +761,7 @@ namespace Redcode.Tweens
         /// <inheritdoc cref="IPlayable.MakeUnowned()"/>
         /// </summary>
         /// <returns><inheritdoc cref="IPlayable.MakeUnowned()"/></returns>
-        Playable MakeUnowned()
+        public Playable MakeUnowned()
         {
             _playingMoroutine.MakeUnowned();
             return this;
