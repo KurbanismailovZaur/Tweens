@@ -96,6 +96,26 @@ namespace Redcode.Tweens
         #endregion
 
         /// <summary>
+        /// Sets owner for the playable.
+        /// </summary>
+        /// <param name="component">Component whose game object used as owner.</param>
+        /// <returns>The playable</returns>
+        IPlayable SetOwner(Component component);
+
+        /// <summary>
+        /// Sets owner to the playable.
+        /// </summary>
+        /// <param name="gameObject">Owner for the playable.</param>
+        /// <returns>The playable.</returns>
+        IPlayable SetOwner(GameObject gameObject);
+
+        /// <summary>
+        /// Make playable unowned.
+        /// </summary>
+        /// <returns>The playable.</returns>
+        IPlayable MakeUnowned();
+
+        /// <summary>
         /// Sets name of the playable.
         /// </summary>
         /// <param name="name">Name to set.</param>
@@ -709,18 +729,42 @@ namespace Redcode.Tweens
             _playingMoroutine = Moroutine.Create(owner, PlayRoutine());
         }
 
-        protected void RecalculateDuration()
-        {
-            Duration = LoopDuration * LoopsCount;
-            PlayedTime = Mathf.Clamp(PlayedTime, 0f, Duration);
+        IPlayable IPlayable.SetOwner(Component component) => SetOwner(component);
 
-            RecalculatePlayTimes();
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetOwner(Component)"/>
+        /// </summary>
+        /// <param name="component"><inheritdoc cref="IPlayable.SetOwner(Component)" path="/param[@name='component']"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetOwner(Component)"/></returns>
+        Playable SetOwner(Component component)
+        {
+            _playingMoroutine.SetOwner(component);
+            return this;
         }
 
-        protected void RecalculatePlayTimes()
+        IPlayable IPlayable.SetOwner(GameObject gameObject) => SetOwner(gameObject);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetOwner(GameObject)"/>
+        /// </summary>
+        /// <param name="gameObject"><inheritdoc cref="IPlayable.SetOwner(GameObject)" path="/param[@name='gameObject']"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetOwner(GameObject)"/></returns>
+        Playable SetOwner(GameObject gameObject)
         {
-            _startTime = Direction == Direction.Forward ? _timeSelector() - PlayedTime : _timeSelector() - (Duration - PlayedTime);
-            _endTime = _startTime + Duration;
+            _playingMoroutine.SetOwner(gameObject);
+            return this;
+        }
+
+        IPlayable IPlayable.MakeUnowned() => MakeUnowned();
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.MakeUnowned()"/>
+        /// </summary>
+        /// <returns><inheritdoc cref="IPlayable.MakeUnowned()"/></returns>
+        Playable MakeUnowned()
+        {
+            _playingMoroutine.MakeUnowned();
+            return this;
         }
 
         IPlayable IPlayable.SetName(string name) => SetName(name);
@@ -786,6 +830,20 @@ namespace Redcode.Tweens
         {
             Direction = direction;
             return this;
+        }
+
+        protected void RecalculateDuration()
+        {
+            Duration = LoopDuration * LoopsCount;
+            PlayedTime = Mathf.Clamp(PlayedTime, 0f, Duration);
+
+            RecalculatePlayTimes();
+        }
+
+        protected void RecalculatePlayTimes()
+        {
+            _startTime = Direction == Direction.Forward ? _timeSelector() - PlayedTime : _timeSelector() - (Duration - PlayedTime);
+            _endTime = _startTime + Duration;
         }
 
         #region Loops
