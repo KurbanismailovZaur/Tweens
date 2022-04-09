@@ -175,8 +175,6 @@ namespace Redcode.Moroutines
         }
 
         #region Owner and routines
-        private bool _isUnowned;
-
         /// <summary>
         /// Reference to the <see cref="Redcode.Moroutines.Owner"/> component of the owner object.
         /// </summary>
@@ -281,11 +279,12 @@ namespace Redcode.Moroutines
 
         private Moroutine(GameObject owner, IEnumerable enumerable)
         {
-            _isUnowned = owner == null;
             _enumerable = enumerable ?? throw new ArgumentNullException(nameof(enumerable));
             _enumerator = _enumerable.GetEnumerator();
+            
+            SetOwner(owner);
 
-            if (_isUnowned)
+            if (owner == null)
             {
                 MoroutinesExecuter.Instance.Owner.Add(this);
                 return;
@@ -515,7 +514,7 @@ namespace Redcode.Moroutines
             if (IsDestroyed)
                 throw new PlayControlException("Moroutine already destroyed.");
 
-            if (!_isUnowned)
+            if (Owner != null)
             {
                 if (Owner == null)
                     throw new PlayControlException($"Moroutine couldn't be started because the game object's Owner component is missing.");
@@ -598,6 +597,54 @@ namespace Redcode.Moroutines
         /// <returns>The moroutine.</returns>
         public Moroutine Rerun() => Reset().Run();
         #endregion
+
+        /// <summary>
+        /// Sets owner to the moroutine.
+        /// </summary>
+        /// <param name="component">Component whose game object used as owner.</param>
+        /// <returns>The moroutine.</returns>
+        public Moroutine SetOwner(Component component) => SetOwner(component.gameObject);
+
+        /// <summary>
+        /// Sets owner to the moroutine.
+        /// </summary>
+        /// <param name="component">Owner for the moroutine.</param>
+        /// <returns>The moroutine.</returns>
+        public Moroutine SetOwner(GameObject gameObject)
+        {
+            if (IsDestroyed)
+                throw new PlayControlException($"Destroyed moroutine can't change its owner.");
+
+            if (Owner == null && gameObject == null || Owner != null && Owner.gameObject == gameObject)
+                return this;
+
+            if (Owner == null)
+                MoroutinesExecuter.Instance.Owner.Remove(this);
+            else
+            {
+                Owner.Remove(this);
+                Owner.TryDestroy();
+            }
+
+            if (gameObject == null)
+                MoroutinesExecuter.Instance.Owner.Add(this);
+            else
+            {
+                Owner = gameObject.TryGetComponent(out Owner existingOwner) ? existingOwner : gameObject.AddComponent<Owner>();
+                Owner.Add(this);
+
+                if (!Owner.gameObject.activeInHierarchy)
+                    Stop();
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Make moroutine unowned.
+        /// </summary>
+        /// <returns>The moroutine.</returns>
+        public Moroutine MakeUnowned() => SetOwner((GameObject)null);
 
         internal void OnOwnerDeactivated()
         {
@@ -695,7 +742,7 @@ namespace Redcode.Moroutines
             if (IsRunning)
                 Stop();
 
-            if (_isUnowned)
+            if (Owner == null)
                 MoroutinesExecuter.Instance.Owner.Remove(this);
             else
             {

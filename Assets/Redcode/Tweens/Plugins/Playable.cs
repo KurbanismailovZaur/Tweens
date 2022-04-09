@@ -26,7 +26,7 @@ namespace Redcode.Tweens
         /// <summary>
         /// Name of the playable (useful for debugging and in sequences).
         /// </summary>
-        string Name { get; }
+        string Name { get; set; }
 
         /// <summary>
         /// Loop duration of the playable. Can't be a negative value.
@@ -96,6 +96,13 @@ namespace Redcode.Tweens
         #endregion
 
         /// <summary>
+        /// Sets name of the playable.
+        /// </summary>
+        /// <param name="name">Name to set.</param>
+        /// <returns>The playable.</returns>
+        IPlayable SetName(string name);
+
+        /// <summary>
         /// Sets easing formula.
         /// </summary>
         /// <param name="ease">Easing formula for playing.</param>
@@ -129,14 +136,14 @@ namespace Redcode.Tweens
         /// </summary>
         /// <param name="emitEvents">Shoud events be emitted?</param>
         /// <returns>The playable.</returns>
-        Playable RewindToStart(bool emitEvents = true);
+        IPlayable RewindToStart(bool emitEvents = true);
 
         /// <summary>
         /// Rewind to end time (Duration).
         /// </summary>
         /// <param name="emitEvents">Shoud events be emitted?</param>
         /// <returns>The playable.</returns>
-        Playable RewindToEnd(bool emitEvents = true);
+        IPlayable RewindToEnd(bool emitEvents = true);
 
         /// <summary>
         /// Rewind to the <paramref name="time"/>.
@@ -144,7 +151,7 @@ namespace Redcode.Tweens
         /// <param name="time">The time up to which you need to rewind.</param>
         /// <param name="emitEvents">Shoud events be emitted?</param>
         /// <returns>The playable.</returns>
-        Playable RewindTo(float time, bool emitEvents = true);
+        IPlayable RewindTo(float time, bool emitEvents = true);
         #endregion
 
         #region Skips
@@ -152,7 +159,7 @@ namespace Redcode.Tweens
         /// Skip playing to start time (0). The method will ignore any events and callbacks.
         /// </summary>
         /// <returns>The playable.</returns>
-        Playable SkipToStart();
+        IPlayable SkipToStart();
 
         /// <summary>
         /// Skip playing to the end (Duration). The method will ignore any events and callbacks.
@@ -162,14 +169,14 @@ namespace Redcode.Tweens
         /// </code>
         /// </summary>
         /// <returns>The playable.</returns>
-        Playable SkipToEnd();
+        IPlayable SkipToEnd();
 
         /// <summary>
         /// Skip playing to <paramref name="time"/>. The method will ignore any events and callbacks.
         /// </summary>
         /// <param name="time">The time up to which you need to skip.</param>
         /// <returns>The playable.</returns>
-        Playable SkipTo(float time);
+        IPlayable SkipTo(float time);
         #endregion
 
         #region Playing
@@ -179,40 +186,40 @@ namespace Redcode.Tweens
         /// </summary>
         /// <param name="type">The type of time used in the playback methods.</param>
         /// <returns>The playable.</returns>
-        Playable SetTimeType(TimeType type);
+        IPlayable SetTimeType(TimeType type);
 
         /// <summary>
         /// Starts playing in forward direction.
         /// </summary>
         /// <param name="resetIfCompleted">Should we reset playable if it in complete state?</param>
         /// <returns>The playable.</returns>
-        Playable PlayForward(bool resetIfCompleted = true);
+        IPlayable PlayForward(bool resetIfCompleted = true);
 
         /// <summary>
         /// Starts playing in backward direction.
         /// </summary>
         /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.PlayForward(bool)" path="/param[@name='resetIfCompleted']"/></param>
         /// <returns><inheritdoc cref="IPlayable.PlayForward(bool)"/></returns>
-        Playable PlayBackward(bool resetIfCompleted = true);
+        IPlayable PlayBackward(bool resetIfCompleted = true);
 
         /// <summary>
         /// Starts playing in <see cref="Direction"/> direction.
         /// </summary>
         /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.PlayBackward(bool)" path="/param[@name='resetIfCompleted']"/></param>
         /// <returns><inheritdoc cref="IPlayable.PlayBackward(bool)"/></returns>
-        Playable Play(bool resetIfCompleted = true);
+        IPlayable Play(bool resetIfCompleted = true);
 
         /// <summary>
         /// Pause the playable. Can be continued later with <see cref="Play(bool)"/> method.
         /// </summary>
         /// <returns>The playble.</returns>
-        Playable Pause();
+        IPlayable Pause();
 
         /// <summary>
         /// Reset the playable if it in non reset state.
         /// </summary>
-        /// <returns></returns>
-        Playable Reset();
+        /// <returns>The playable.</returns>
+        IPlayable Reset();
         #endregion
 
         #region Repeat
@@ -520,7 +527,7 @@ namespace Redcode.Tweens
 
         public abstract Type Type { get; }
 
-        public string Name { get; protected set; }
+        public string Name { get; set; }
 
         private float _loopDuration;
 
@@ -716,25 +723,66 @@ namespace Redcode.Tweens
             _endTime = _startTime + Duration;
         }
 
-        public IPlayable SetEase(Ease ease)
+        IPlayable IPlayable.SetName(string name) => SetName(name);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetName(string)"/>
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="IPlayable.SetName(string)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetName(string)"/></returns>
+        public Playable SetName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        IPlayable IPlayable.SetEase(Ease ease) => SetEase(ease);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetEase(Ease)"/>
+        /// </summary>
+        /// <param name="ease"><inheritdoc cref="IPlayable.SetEase(Ease)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetEase(Ease)"/></returns>
+        public Playable SetEase(Ease ease)
         {
             _ease = ease;
             return this;
         }
 
-        public IPlayable SetLoopCount(int loopsCount)
+        IPlayable IPlayable.SetLoopCount(int loopsCount) => SetLoopCount(loopsCount);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetLoopCount(int)"/>
+        /// </summary>
+        /// <param name="loopsCount"><inheritdoc cref="IPlayable.SetLoopCount(int)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetLoopCount(int)"/></returns>
+        public Playable SetLoopCount(int loopsCount)
         {
             LoopsCount = loopsCount;
             return this;
         }
 
-        public IPlayable SetLoopType(LoopType loopType)
+        IPlayable IPlayable.SetLoopType(LoopType loopType) => SetLoopType(loopType);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetLoopType(LoopType)"/>
+        /// </summary>
+        /// <param name="loopType"><inheritdoc cref="IPlayable.SetLoopType(LoopType)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetLoopType(LoopType)"/></returns>
+        public Playable SetLoopType(LoopType loopType)
         {
             LoopType = loopType;
             return this;
         }
 
-        public IPlayable SetDirection(Direction direction)
+        IPlayable IPlayable.SetDirection(Direction direction) => SetDirection(direction);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetDirection(Direction)"/>
+        /// </summary>
+        /// <param name="direction"><inheritdoc cref="IPlayable.SetDirection(Direction)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetDirection(Direction)"/></returns>
+        public Playable SetDirection(Direction direction)
         {
             Direction = direction;
             return this;
@@ -826,14 +874,36 @@ namespace Redcode.Tweens
         protected virtual void BeforeStarting(Direction direction, int loop, int parentContinueLoopIndex, int continueMaxLoopsCount) { }
 
         #region Rewinds
+        IPlayable IPlayable.RewindToStart(bool emitEvents) => RewindToStart(emitEvents);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.RewindToStart(bool)"/>
+        /// </summary>
+        /// <param name="emitEvents"><inheritdoc cref="IPlayable.RewindToStart(bool)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.RewindToStart(bool)"/></returns>
         public Playable RewindToStart(bool emitEvents = true) => RewindToStart(0, 1, emitEvents);
 
         internal Playable RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => Duration.Approximately(0f) ? RewindTo(-1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(0f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
+        IPlayable IPlayable.RewindToEnd(bool emitEvents) => RewindToEnd(emitEvents);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.RewindToEnd(bool)"/>
+        /// </summary>
+        /// <param name="emitEvents"><inheritdoc cref="IPlayable.RewindToEnd(bool)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.RewindToEnd(bool)"/></returns>
         public Playable RewindToEnd(bool emitEvents = true) => RewindToEnd(0, 1, emitEvents);
 
         internal Playable RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => Duration.Approximately(0f) ? RewindTo(1f, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents) : RewindTo(Duration, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
+        IPlayable IPlayable.RewindTo(float time, bool emitEvents) => RewindTo(time, emitEvents);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.RewindTo(float, bool)"/>
+        /// </summary>
+        /// <param name="time"><inheritdoc cref="IPlayable.RewindTo(float, bool)" path="/param[@name='time']"/></param>
+        /// <param name="emitEvents"><inheritdoc cref="IPlayable.RewindTo(float, bool)" path="/param[@name='emitEvents']"/></param>
+        /// <returns><inheritdoc cref="IPlayable.RewindTo(float, bool)"/></returns>
         public Playable RewindTo(float time, bool emitEvents = true) => RewindTo(time, 0, 1, emitEvents);
 
         internal Playable RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents)
@@ -1344,10 +1414,29 @@ namespace Redcode.Tweens
         #endregion
 
         #region Skips
+        IPlayable IPlayable.SkipToStart() => SkipToStart();
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SkipToStart()"/>
+        /// </summary>
+        /// <returns><inheritdoc cref="IPlayable.SkipToStart()"/></returns>
         public Playable SkipToStart() => SkipTo(0f);
 
+        IPlayable IPlayable.SkipToEnd() => SkipToEnd();
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SkipToEnd()"/>
+        /// </summary>
+        /// <returns><inheritdoc cref="IPlayable.SkipToEnd()"/></returns>
         public Playable SkipToEnd() => SkipTo(Duration);
 
+        IPlayable IPlayable.SkipTo(float time) => SkipTo(time);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SkipTo(float)"/>
+        /// </summary>
+        /// <param name="time"><inheritdoc cref="IPlayable.SkipTo(float)" path="/param[@name='time']"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SkipTo(float)"/></returns>
         public Playable SkipTo(float time)
         {
             CheckLock();
@@ -1378,16 +1467,44 @@ namespace Redcode.Tweens
         }
 
         #region Playing
+        IPlayable IPlayable.SetTimeType(TimeType type) => SetTimeType(type);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetTimeType(TimeType)"/>
+        /// </summary>
+        /// <param name="type"><inheritdoc cref="IPlayable.SetTimeType(TimeType)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetTimeType(TimeType)"/></returns>
         public Playable SetTimeType(TimeType type)
         {
             TimeType = type;
             return this;
         }
 
+        IPlayable IPlayable.PlayForward(bool resetIfCompleted) => PlayForward(resetIfCompleted);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.PlayForward(bool)"/>
+        /// </summary>
+        /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.PlayForward(bool)" path="/param[@name='resetIfCompleted']"/></param>
+        /// <returns><inheritdoc cref="IPlayable.PlayForward(bool)"/></returns>
         public Playable PlayForward(bool resetIfCompleted = true) => Play(resetIfCompleted, Direction.Forward);
 
+        IPlayable IPlayable.PlayBackward(bool resetIfCompleted) => PlayBackward(resetIfCompleted);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.PlayBackward(bool)"/>
+        /// </summary>
+        /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.PlayBackward(bool)" path="/param[@name='resetIfCompleted']"/></param>
+        /// <returns><inheritdoc cref="IPlayable.PlayBackward(bool)"/></returns>
         public Playable PlayBackward(bool resetIfCompleted = true) => Play(resetIfCompleted, Direction.Backward);
 
+        IPlayable IPlayable.Play(bool resetIfCompleted) => Play(resetIfCompleted);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.Play(bool)"/>
+        /// </summary>
+        /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.PlayBackward(bool)" path="/param[@name='resetIfCompleted']"/></param>
+        /// <returns><inheritdoc cref="IPlayable.Play(bool)"/></returns>
         public Playable Play(bool resetIfCompleted = true) => Play(resetIfCompleted, Direction);
 
         private Playable Play(bool resetIfCompleted, Direction direction)
@@ -1452,6 +1569,12 @@ namespace Redcode.Tweens
             State = State.Completed;
         }
 
+        IPlayable IPlayable.Pause() => Pause();
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.Pause()"/>
+        /// </summary>
+        /// <returns><inheritdoc cref="IPlayable.Pause()"/></returns>
         public Playable Pause() => Pause(true);
 
         public Playable Pause(bool stopMoroutine)
@@ -1479,6 +1602,12 @@ namespace Redcode.Tweens
             return this;
         }
 
+        IPlayable IPlayable.Reset() => Reset();
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.Reset()"/>
+        /// </summary>
+        /// <returns><inheritdoc cref="IPlayable.Reset()"/></returns>
         public Playable Reset() => Reset(true);
 
         private Playable Reset(bool resetMoroutine)

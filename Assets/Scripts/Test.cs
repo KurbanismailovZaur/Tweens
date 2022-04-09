@@ -19,6 +19,8 @@ namespace Tweens
 
         private void Start()
         {
+            var tween = (IPlayable)_target.DoPositionX(1f, 1f);
+            
             var sequence = new Sequence();
             sequence.Append(_target.DoPositionX(1f, 1f));
             sequence.Append(_target.DoPositionX(2f, 1f).SetFrom(1f));

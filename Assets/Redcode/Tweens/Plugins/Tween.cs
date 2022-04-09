@@ -65,62 +65,7 @@ namespace Redcode.Tweens
         /// <returns>Byte tween.</returns>
         public static Tween<byte, TweakByte> Byte(byte from, byte to, Action<byte> action, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Byte((string)null, from, to, action, loopDuration, ease, loopsCount, loopType, direction);
-        }
-
-        /// <summary>
-        /// <inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/>
-        /// </summary>
-        /// <param name="name">Tween's name (useful for debugging and nesting in sequences).</param>
-        /// <param name="from"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='from']"/></param>
-        /// <param name="to"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='to']"/></param>
-        /// <param name="action"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='action']"/></param>
-        /// <param name="loopDuration"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopDuration']"/></param>
-        /// <param name="ease"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
-        /// <param name="direction"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        /// <returns><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/></returns>
-        public static Tween<byte, TweakByte> Byte(string name, byte from, byte to, Action<byte> action, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
-        {
-            return Byte(null, name, from, to, action, loopDuration, ease, loopsCount, loopType, direction);
-        }
-
-        /// <summary>
-        /// <inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/>
-        /// </summary>
-        /// <param name="owner">Game object to which this tween will be attached.</param>
-        /// <param name="from"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='from']"/></param>
-        /// <param name="to"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='to']"/></param>
-        /// <param name="action"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='action']"/></param>
-        /// <param name="loopDuration"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopDuration']"/></param>
-        /// <param name="ease"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
-        /// <param name="direction"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        /// <returns><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/></returns>
-        public static Tween<byte, TweakByte> Byte(GameObject owner, byte from, byte to, Action<byte> action, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
-        {
-            return Byte(owner, null, from, to, action, loopDuration, ease, loopsCount, loopType, direction);
-        }
-
-        /// <summary>
-        /// <inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/>
-        /// </summary>
-        /// <param name="owner"><inheritdoc cref="Byte(GameObject, byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='owner']"/></param>
-        /// <param name="name"><inheritdoc cref="Byte(string, byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='name']"/></param>
-        /// <param name="from"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='from']"/></param>
-        /// <param name="to"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='to']"/></param>
-        /// <param name="action"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='action']"/></param>
-        /// <param name="loopDuration"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopDuration']"/></param>
-        /// <param name="ease"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
-        /// <param name="direction"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        /// <returns><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/></returns>
-        public static Tween<byte, TweakByte> Byte(GameObject owner, string name, byte from, byte to, Action<byte> action, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
-        {
-            return Byte(owner, name, () => from, () => to, action, loopDuration, ease, loopsCount, loopType, direction);
+            return Byte(() => from, () => to, action, loopDuration, ease, loopsCount, loopType, direction);
         }
 
         /// <summary>
@@ -137,62 +82,7 @@ namespace Redcode.Tweens
         /// <returns><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/></returns>
         public static Tween<byte, TweakByte> Byte(Func<byte> from, Func<byte> to, Action<byte> action, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            return Byte((string)null, from, to, action, loopDuration, ease, loopsCount, loopType, direction);
-        }
-
-        /// <summary>
-        /// <inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/>
-        /// </summary>
-        /// <param name="name"><inheritdoc cref="Byte(string, byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='name']"/></param>
-        /// <param name="from"><inheritdoc cref="Byte(Func{byte}, Func{byte}, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='from']"/></param>
-        /// <param name="to"><inheritdoc cref="Byte(Func{byte}, Func{byte}, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='to']"/></param>
-        /// <param name="action"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='action']"/></param>
-        /// <param name="loopDuration"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopDuration']"/></param>
-        /// <param name="ease"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
-        /// <param name="direction"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        /// <returns><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/></returns>
-        public static Tween<byte, TweakByte> Byte(string name, Func<byte> from, Func<byte> to, Action<byte> action, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
-        {
-            return Byte(null, name, from, to, action, loopDuration, ease, loopsCount, loopType, direction);
-        }
-
-        /// <summary>
-        /// <inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/>
-        /// </summary>
-        /// <param name="owner"><inheritdoc cref="Byte(GameObject, byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='owner']"/></param>
-        /// <param name="from"><inheritdoc cref="Byte(Func{byte}, Func{byte}, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='from']"/></param>
-        /// <param name="to"><inheritdoc cref="Byte(Func{byte}, Func{byte}, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='to']"/></param>
-        /// <param name="action"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='action']"/></param>
-        /// <param name="loopDuration"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopDuration']"/></param>
-        /// <param name="ease"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
-        /// <param name="direction"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        /// <returns><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/></returns>
-        public static Tween<byte, TweakByte> Byte(GameObject owner, Func<byte> from, Func<byte> to, Action<byte> action, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
-        {
-            return Byte(owner, null, from, to, action, loopDuration, ease, loopsCount, loopType, direction);
-        }
-
-        /// <summary>
-        /// <inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/>
-        /// </summary>
-        /// <param name="owner"><inheritdoc cref="Byte(GameObject, byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='owner']"/></param>
-        /// <param name="name"><inheritdoc cref="Byte(string, byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='name']"/></param>
-        /// <param name="from"><inheritdoc cref="Byte(Func{byte}, Func{byte}, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='from']"/></param>
-        /// <param name="to"><inheritdoc cref="Byte(Func{byte}, Func{byte}, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='to']"/></param>
-        /// <param name="action"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='action']"/></param>
-        /// <param name="loopDuration"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopDuration']"/></param>
-        /// <param name="ease"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
-        /// <param name="direction"><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        /// <returns><inheritdoc cref="Byte(byte, byte, Action{byte}, float, Ease, int, LoopType, Direction)"/></returns>
-        public static Tween<byte, TweakByte> Byte(GameObject owner, string name, Func<byte> from, Func<byte> to, Action<byte> action, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
-        {
-            return new Tween<byte, TweakByte>(owner, name, new TweakByte(), from, to, action, loopDuration, ease, loopsCount, loopType, direction);
+            return new Tween<byte, TweakByte>(null, null, new TweakByte(), from, to, action, loopDuration, ease, loopsCount, loopType, direction);
         }
         #endregion
 
