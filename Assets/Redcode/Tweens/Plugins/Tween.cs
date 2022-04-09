@@ -3801,10 +3801,23 @@ namespace Redcode.Tweens
     /// </summary>
     public interface ITween : IPlayable
     {
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.LoopDuration"/>
+        /// </summary>
         new float LoopDuration { get; set; }
 
+        /// <summary>
+        /// <inheritdoc cref="Tween{T, U}.SetLoopDuration(float)"/>
+        /// </summary>
+        /// <param name="loopDuration"><inheritdoc cref="Tween{T, U}.SetLoopDuration(float)"/></param>
+        /// <returns><inheritdoc cref="Tween{T, U}.SetLoopDuration(float)"/></returns>
         ITween SetLoopDuration(float loopDuration);
 
+        /// <summary>
+        /// <inheritdoc cref="Tween{T, U}.SetTweakInterpolationType(InterpolationType)"/>
+        /// </summary>
+        /// <param name="type"><inheritdoc cref="Tween{T, U}.SetTweakInterpolationType(InterpolationType)"/></param>
+        /// <returns><inheritdoc cref="Tween{T, U}.SetTweakInterpolationType(InterpolationType)"/></returns>
         ITween SetTweakInterpolationType(InterpolationType type);
     }
 
@@ -3817,9 +3830,6 @@ namespace Redcode.Tweens
     {
         public override Type Type => Type.Tween;
 
-        /// <summary>
-        /// <inheritdoc cref="IPlayable.LoopDuration"/>
-        /// </summary>
         public new float LoopDuration
         {
             get => base.LoopDuration;
@@ -4135,11 +4145,6 @@ namespace Redcode.Tweens
             return this;
         }
 
-        /// <summary>
-        /// <inheritdoc cref="SetLoopDuration(float)"/>
-        /// </summary>
-        /// <param name="loopDuration"><inheritdoc cref="SetLoopDuration(float)"/></param>
-        /// <returns><inheritdoc cref="SetLoopDuration(float)"/></returns>
         ITween ITween.SetLoopDuration(float loopDuration) => SetLoopDuration(loopDuration);
 
         /// <summary>
@@ -4155,11 +4160,6 @@ namespace Redcode.Tweens
             return this;
         }
 
-        /// <summary>
-        /// <inheritdoc cref="SetTweakInterpolationType(InterpolationType)"/>
-        /// </summary>
-        /// <param name="type"><inheritdoc cref="SetTweakInterpolationType(InterpolationType)"/></param>
-        /// <returns><inheritdoc cref="SetTweakInterpolationType(InterpolationType)"/></returns>
         ITween ITween.SetTweakInterpolationType(InterpolationType type) => SetTweakInterpolationType(type);
 
         private Ease InvertIfRequiredAndGetease(Direction direction) => direction == Direction.Forward ? Ease : Ease.Invertion.With(Ease);
