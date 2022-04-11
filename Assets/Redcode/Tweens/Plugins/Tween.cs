@@ -1461,7 +1461,7 @@ namespace Redcode.Tweens
     }
 
     /// <summary>
-    /// Represents a class capable of animating values over time.
+    /// Represents a class which can animate values over time.
     /// </summary>
     /// <typeparam name="T">Source type of animated value. Must be a structure.</typeparam>
     /// <typeparam name="U">Tweak type which can interpolate source type. Must have default constructor.</typeparam>
