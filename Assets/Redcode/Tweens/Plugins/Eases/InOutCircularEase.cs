@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace Redcode.Tweens.Eases
 {
+    /// <summary>
+    /// Represent sine formula. <see href="https://easings.net/en#easeInOutCirc">See documentation here.</see>
+    /// </summary>
     public sealed class InOutCircularEase : Ease
     {
         public override float Remap(float value)

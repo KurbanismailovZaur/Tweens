@@ -1,5 +1,8 @@
 namespace Redcode.Tweens.Eases
 {
+    /// <summary>
+    /// Represent quartic formula. <see href="https://easings.net/en#easeInOutQuart">See documentation here.</see>
+    /// </summary>
     public sealed class InOutQuarticEase : Ease
     {
         public override float Remap(float value)

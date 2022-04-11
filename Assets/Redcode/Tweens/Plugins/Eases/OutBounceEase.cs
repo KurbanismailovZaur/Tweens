@@ -1,5 +1,8 @@
 namespace Redcode.Tweens.Eases
 {
+    /// <summary>
+    /// Represent bounce formula. <see href="https://easings.net/en#easeOutBounce">See documentation here.</see>
+    /// </summary>
     public sealed class OutBounceEase : Ease
     {
         public override float Remap(float value)

@@ -14,16 +14,49 @@ namespace Redcode.Tweens
             return Tween.Float(rigidbody.position[axis], position, p => rigidbody.position = rigidbody.position.With(axis, p), duration, ease, loopsCount, loopType, direction).SetOwner(owner).SetName(owner.name);
         }
 
+        /// <summary>
+		/// Tweens rigidbody's position x.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="x">Target position x.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<float, TweakFloat> DoPositionX(this Rigidbody rigidbody, float x, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return DoPositionOneAxis(rigidbody.gameObject, rigidbody, 0, x, duration, ease, loopsCount, loopType, direction);
         }
 
+        /// <summary>
+		/// Tweens rigidbody's position y.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="y">Target position y.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<float, TweakFloat> DoPositionY(this Rigidbody rigidbody, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return DoPositionOneAxis(rigidbody.gameObject, rigidbody, 1, y, duration, ease, loopsCount, loopType, direction);
         }
 
+        /// <summary>
+		/// Tweens rigidbody's position z.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="z">Target position z.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<float, TweakFloat> DoPositionZ(this Rigidbody rigidbody, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return DoPositionOneAxis(rigidbody.gameObject, rigidbody, 2, z, duration, ease, loopsCount, loopType, direction);
@@ -36,16 +69,52 @@ namespace Redcode.Tweens
             return Tween.Vector2(rigidbody.position.Get(axis1, axis2), new Vector2(position1, position2), p => rigidbody.position = rigidbody.position.With(axis1, p.x, axis2, p.y), duration).SetOwner(owner).SetName(owner.name);
         }
 
+        /// <summary>
+		/// Tweens rigidbody's position x and y.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="x">Target position x.</param>
+		/// <param name="y">Target position y.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<Vector2, TweakVector2> DoPositionXY(this Rigidbody rigidbody, float x, float y, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoPositionTwoAxes(rigidbody.gameObject, rigidbody, 0, 1, x, y, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
+        /// <summary>
+		/// Tweens rigidbody's position x and z.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="x">Target position x.</param>
+		/// <param name="z">Target position z.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<Vector2, TweakVector2> DoPositionXZ(this Rigidbody rigidbody, float x, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoPositionTwoAxes(rigidbody.gameObject, rigidbody, 0, 2, x, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
         }
 
+        /// <summary>
+		/// Tweens rigidbody's position y and z.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="y">Target position y.</param>
+		/// <param name="z">Target position z.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<Vector2, TweakVector2> DoPositionYZ(this Rigidbody rigidbody, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward)
         {
             return DoPositionTwoAxes(rigidbody.gameObject, rigidbody, 1, 2, y, z, duration, ease, loopsCount, loopType, loopResetBehaviour, direction);
@@ -53,33 +122,101 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoPosition
+        /// <summary>
+		/// Tweens rigidbody's position.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="x">Target position x.</param>
+		/// <param name="y">Target position y.</param>
+		/// <param name="z">Target position z.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<Vector3, TweakVector3> DoPosition(this Rigidbody rigidbody, float x, float y, float z, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return DoPosition(rigidbody, new Vector3(x, y, z), duration, ease, loopsCount, loopType, direction);
         }
 
+        /// <summary>
+		/// Tweens rigidbody's position.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="position">Target position.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<Vector3, TweakVector3> DoPosition(this Rigidbody rigidbody, Vector3 position, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return Tween.Vector3(rigidbody.position, position, p => rigidbody.position = p, duration, ease, loopsCount, loopType, direction).SetOwner(rigidbody).SetName(rigidbody.name);
         }
         #endregion
 
+        /// <summary>
+		/// Tweens rigidbody's position.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="rotation">Target rotation.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<Quaternion, TweakQuaternion> DoRotation(this Rigidbody rigidbody, Quaternion rotation, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return Tween.Quaternion(rigidbody.rotation, rotation, r => rigidbody.rotation = r, duration, ease, loopsCount, loopType, direction).SetOwner(rigidbody).SetName(rigidbody.name);
         }
 
         #region DoLookAt
+        /// <summary>
+		/// Tweens rigidbody's position.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="gameObject">Target object.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Rigidbody rigidbody, GameObject gameObject, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return DoLookAt(rigidbody, gameObject.transform.position, duration, ease, loopsCount, loopType, direction);
         }
 
+        /// <summary>
+		/// Tweens rigidbody's position.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="target">Target target.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Rigidbody rigidbody, Transform target, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return DoLookAt(rigidbody, target.position, duration, ease, loopsCount, loopType, direction);
         }
 
+        /// <summary>
+		/// Tweens rigidbody's position.
+		/// </summary>
+		/// <param name="rigidbody">Target rigidbody.</param>
+		/// <param name="point">Target point.</param>
+		/// <param name="duration">Tween's duration.</param>
+		/// <param name="ease">Tween's ease formula.</param>
+		/// <param name="loopsCount">Tweenls loops count.</param>
+		/// <param name="loopType">Tween's loop type.</param>
+		/// <param name="direction">Tween's direction.</param>
+		/// <returns>The tween.</returns>
         public static Tween<Quaternion, TweakQuaternion> DoLookAt(this Rigidbody rigidbody, Vector3 point, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
             return DoRotation(rigidbody, Quaternion.LookRotation(point - rigidbody.position), duration, ease, loopsCount, loopType, direction);
@@ -88,21 +225,61 @@ namespace Redcode.Tweens
 
         #region DoShake
         #region DoShakePosition
+        /// <summary>
+        /// Create sequence which shakes rigidbody's position.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Shakes count.</param>
+        /// <param name="strenght">Shakes strenght.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Sequence DoShakePosition(this Rigidbody rigidbody, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakePosition(rigidbody, count, strenght, duration, leftSmoothness, rightSmoothness);
+            return DoShakePosition(rigidbody, new Vector3Int(count, count), strenght, duration, leftSmoothness, rightSmoothness);
         }
 
+        /// <summary>
+        /// Create sequence which shakes rigidbody's position.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Shakes count.</param>
+        /// <param name="strenght">Shakes strenght.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Sequence DoShakePosition(this Rigidbody rigidbody, Vector3Int count, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakePosition(rigidbody, count, strenght, duration, leftSmoothness, rightSmoothness);
+            return DoShakePosition(rigidbody, count, new Vector3(strenght, strenght, strenght), duration, leftSmoothness, rightSmoothness);
         }
 
+        /// <summary>
+        /// Create sequence which shakes rigidbody's position.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Shakes count.</param>
+        /// <param name="strenght">Shakes strenght.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Sequence DoShakePosition(this Rigidbody rigidbody, int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakePosition(rigidbody, count, strenght, duration, leftSmoothness, rightSmoothness);
+            return DoShakePosition(rigidbody, new Vector3Int(count, count), strenght, duration, leftSmoothness, rightSmoothness);
         }
 
+        /// <summary>
+        /// Create sequence which shakes rigidbody's position.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Shakes count.</param>
+        /// <param name="strenght">Shakes strenght.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Sequence DoShakePosition(this Rigidbody rigidbody, Vector3Int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             var sequence = new Sequence(rigidbody.gameObject, rigidbody.name);
@@ -116,21 +293,61 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoShakeEulerAngles
+        /// <summary>
+        /// Create sequence which shakes rigidbody's euler angles.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Shakes count.</param>
+        /// <param name="angles">Shakes rotation.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, int count = 8, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeEulerAngles(rigidbody, count, angles, duration, leftSmoothness, rightSmoothness);
+            return DoShakeEulerAngles(rigidbody, new Vector3Int(count, count), angles, duration, leftSmoothness, rightSmoothness);
         }
 
+        /// <summary>
+        /// Create sequence which shakes rigidbody's euler angles.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Shakes count.</param>
+        /// <param name="angles">Shakes rotation.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, Vector3Int count, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeEulerAngles(rigidbody, count, angles, duration, leftSmoothness, rightSmoothness);
+            return DoShakeEulerAngles(rigidbody, count, new Vector3(angles, angles, angles), duration, leftSmoothness, rightSmoothness);
         }
 
+        /// <summary>
+        /// Create sequence which shakes rigidbody's euler angles.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Shakes count.</param>
+        /// <param name="angles">Shakes rotation.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, int count, Vector3 angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeEulerAngles(rigidbody, count, angles, duration, leftSmoothness, rightSmoothness);
+            return DoShakeEulerAngles(rigidbody, new Vector3Int(count, count), angles, duration, leftSmoothness, rightSmoothness);
         }
 
+        /// <summary>
+        /// Create sequence which shakes rigidbody's euler angles.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Shakes count.</param>
+        /// <param name="angles">Shakes rotation.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, Vector3Int count, Vector3 angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             var sequence = new Sequence(rigidbody.gameObject, rigidbody.name);
@@ -145,6 +362,16 @@ namespace Redcode.Tweens
         #endregion
 
         #region DoPunch
+        /// <summary>
+        /// Create sequence which bounce rigidbody's position.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="vector">Bounce rotation.</param>
+        /// <param name="count">Bounce count.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Sequence DoPunchPosition(this Rigidbody rigidbody, Vector3 vector, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
         {
             var sequence = new Sequence(rigidbody.gameObject, rigidbody.name);
@@ -156,6 +383,16 @@ namespace Redcode.Tweens
             return sequence;
         }
 
+        /// <summary>
+        /// Create tween which bounce rigidbody's euler angles.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Bounce count.</param>
+        /// <param name="angles">Bounce angles values.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Sequence DoPunchEulerAngles(this Rigidbody rigidbody, Vector3 angles, int count, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
         {
             var sequence = new Sequence(rigidbody.gameObject, rigidbody.name);
@@ -168,11 +405,31 @@ namespace Redcode.Tweens
         }
 
         #region DoPunchRotation
+        /// <summary>
+        /// Create tween which bounce rigidbody's rotation.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Bounce count.</param>
+        /// <param name="direction">Bounce direction.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Tween<float, TweakFloat> DoPunchRotation(this Rigidbody rigidbody, Vector3 direction, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
         {
             return DoPunchRotation(rigidbody, Quaternion.LookRotation(direction), count, duration, leftSmoothness, rightSmoothness);
         }
 
+        /// <summary>
+        /// Create tween which bounce rigidbody's rotation.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="count">Bounce count.</param>
+        /// <param name="rotation">Bounce rotation.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="leftSmoothness">Smothness from start.</param>
+        /// <param name="rightSmoothness">Smothness at end.</param>
+        /// <returns>The sequence.</returns>
         public static Tween<float, TweakFloat> DoPunchRotation(this Rigidbody rigidbody, Quaternion rotation, int count = 4, float duration = 1f, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
         {
             return Tween.Punch(rigidbody.rotation, count, rotation, duration, rot => rigidbody.rotation = rot, leftSmoothness, rightSmoothness).SetOwner(rigidbody).SetName(rigidbody.name);
@@ -180,6 +437,14 @@ namespace Redcode.Tweens
         #endregion
         #endregion
 
+        /// <summary>
+        /// Create tween which animates rigidbody's position and rotation along path.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="path">Path to follow.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <param name="pathFollowOptions">Following options.</param>
+        /// <returns>The sequence.</returns>
         public static Tween<float, TweakFloat> DoMoveAlongPath(this Rigidbody rigidbody, Path path, float duration, PathFollowOptions pathFollowOptions = PathFollowOptions.UsePathDirection)
         {
             return Tween.Float(0f, 1f, p =>
@@ -193,6 +458,14 @@ namespace Redcode.Tweens
             }, duration).SetOwner(rigidbody).SetName(rigidbody.name);
         }
 
+        /// <summary>
+        /// Create tween and path which animates rigidbody's position along path, so that it looks like a jump.
+        /// </summary>
+        /// <param name="rigidbody">Target rigidbody.</param>
+        /// <param name="height">Jump height.</param>
+        /// <param name="endPoint">Jump end point.</param>
+        /// <param name="duration">Sequence's duration.</param>
+        /// <returns>The sequence.</returns>
         public static (Tween<float, TweakFloat> tween, Path path) DoJump(this Rigidbody rigidbody, float height, Vector3 endPoint, float duration)
         {
             height = Mathf.Max(endPoint.y - rigidbody.position.y, 0f) + height;

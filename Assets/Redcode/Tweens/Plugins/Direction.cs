@@ -5,7 +5,14 @@ namespace Redcode.Tweens
     /// </summary>
     public enum Direction : byte
 	{
+        /// <summary>
+        /// Playing in forward direction.
+        /// </summary>
 		Forward,
+
+        /// <summary>
+        /// Playing in backward direction.
+        /// </summary>
 		Backward
 	}
 }

@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace Redcode.Tweens.Tweaks
 {
+    /// <summary>
+    /// Represent quaternions tweak. You can also set interpolation type.
+    /// </summary>
     public sealed class TweakQuaternion : TweakDirectional<Quaternion>
     {
         public TweakQuaternion() => InterpolationType = InterpolationType.Spherical;

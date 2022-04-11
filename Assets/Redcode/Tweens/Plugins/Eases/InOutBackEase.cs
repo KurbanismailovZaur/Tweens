@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace Redcode.Tweens.Eases
 {
+    /// <summary>
+    /// Represent back formula. <see href="https://easings.net/en#easeInOutBack">See documentation here.</see>
+    /// </summary>
     public sealed class InOutBackEase : Ease
     {
         public override float Remap(float value)

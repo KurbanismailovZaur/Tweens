@@ -13,6 +13,16 @@ namespace Redcode.Tweens
         #region Static fields
         public static class AudioListener
         {
+            /// <summary>
+            /// Tweens volume.
+            /// </summary>
+            /// <param name="volume">Target volume.</param>
+            /// <param name="duration">Tweens one loop duration.</param>
+            /// <param name="ease">Easing formula which applied to tween.</param>
+            /// <param name="loopsCount">Loops count.</param>
+            /// <param name="loopType">Loops type.</param>
+            /// <param name="direction">Initial tweening direction.</param>
+            /// <returns>The tween.</returns>
             public static Tween<float, TweakFloat> DoVolume(float volume, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
             {
                 return Float(UnityEngine.AudioListener.volume, volume, v => UnityEngine.AudioListener.volume = v, duration, ease, loopsCount, loopType, direction);
@@ -21,6 +31,16 @@ namespace Redcode.Tweens
 
         public static class Time
         {
+            /// <summary>
+            /// Tweens time scale.
+            /// </summary>
+            /// <param name="timeScale">Target time scale.</param>
+            /// <param name="duration">Tweens one loop duration.</param>
+            /// <param name="ease">Easing formula which applied to tween.</param>
+            /// <param name="loopsCount">Loops count.</param>
+            /// <param name="loopType">Loops type.</param>
+            /// <param name="direction">Initial tweening direction.</param>
+            /// <returns>The tween.</returns>
             public static Tween<float, TweakFloat> DoTimeScale(float timeScale, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
             {
                 return Float(UnityEngine.Time.timeScale, timeScale, ts => UnityEngine.Time.timeScale = ts, duration, ease, loopsCount, loopType, direction);
@@ -29,11 +49,31 @@ namespace Redcode.Tweens
 
         public static class Physics
         {
+            /// <summary>
+            /// Tweens gravity.
+            /// </summary>
+            /// <param name="gravity">Target gravity.</param>
+            /// <param name="duration">Tweens one loop duration.</param>
+            /// <param name="ease">Easing formula which applied to tween.</param>
+            /// <param name="loopsCount">Loops count.</param>
+            /// <param name="loopType">Loops type.</param>
+            /// <param name="direction">Initial tweening direction.</param>
+            /// <returns>The tween.</returns>
             public static Tween<Vector3, TweakVector3> DoGravity(Vector3 gravity, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
             {
                 return Vector3(UnityEngine.Physics.gravity, gravity, g => UnityEngine.Physics.gravity = g, duration, ease, loopsCount, loopType, direction);
             }
 
+            /// <summary>
+            /// Tweens cloth gravity.
+            /// </summary>
+            /// <param name="gravity">Target cloth gravity.</param>
+            /// <param name="duration">Tweens one loop duration.</param>
+            /// <param name="ease">Easing formula which applied to tween.</param>
+            /// <param name="loopsCount">Loops count.</param>
+            /// <param name="loopType">Loops type.</param>
+            /// <param name="direction">Initial tweening direction.</param>
+            /// <returns>The tween.</returns>
             public static Tween<Vector3, TweakVector3> DoClothGravity(Vector3 gravity, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
             {
                 return Vector3(UnityEngine.Physics.clothGravity, gravity, g => UnityEngine.Physics.clothGravity = g, duration, ease, loopsCount, loopType, direction);
@@ -42,6 +82,16 @@ namespace Redcode.Tweens
 
         public static class Physics2D
         {
+            /// <summary>
+            /// Tweens gravity.
+            /// </summary>
+            /// <param name="gravity">Target cloth gravity.</param>
+            /// <param name="duration">Tweens one loop duration.</param>
+            /// <param name="ease">Easing formula which applied to tween.</param>
+            /// <param name="loopsCount">Loops count.</param>
+            /// <param name="loopType">Loops type.</param>
+            /// <param name="direction">Initial tweening direction.</param>
+            /// <returns>The tween.</returns>
             public static Tween<Vector2, TweakVector2> DoGravity(Vector2 gravity, float duration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
             {
                 return Vector2(UnityEngine.Physics2D.gravity, gravity, g => UnityEngine.Physics2D.gravity = g, duration, ease, loopsCount, loopType, direction);
@@ -952,6 +1002,17 @@ namespace Redcode.Tweens
         #endregion
 
         #region Shake
+        /// <summary>
+        /// Create shake tween.
+        /// </summary>
+        /// <param name="from">Value from which starts.</param>
+        /// <param name="count">How many shakes should be applied?</param>
+        /// <param name="strenght">How strong shakes are?</param>
+        /// <param name="duration">Shakes duration.</param>
+        /// <param name="action">Shakes action callback.</param>
+        /// <param name="leftSmoothness">Smoothness on the start.</param>
+        /// <param name="rightSmoothness">Smoothness on the end.</param>
+        /// <returns>The tween.</returns>
         public static Tween<float, TweakFloat> Shake(float from, int count, float strenght, float duration, Action<float> action, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
             var startX = UnityEngine.Random.Range(0f, 100f);
@@ -985,6 +1046,17 @@ namespace Redcode.Tweens
         #endregion
 
         #region Punch
+        /// <summary>
+        /// Create punch tween.
+        /// </summary>
+        /// <param name="from">Value from which starts.</param>
+        /// <param name="count">How many times to bounce?</param>
+        /// <param name="strenght">How strong punch is?</param>
+        /// <param name="duration"></param>
+        /// <param name="action"></param>
+        /// <param name="leftSmoothness"></param>
+        /// <param name="rightSmoothness"></param>
+        /// <returns></returns>
         public static Tween<float, TweakFloat> Punch(float from, int count, float strenght, float duration, Action<float> action, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
         {
             var totalCount = count * 2f;
@@ -1007,6 +1079,16 @@ namespace Redcode.Tweens
             }, duration);
         }
 
+        /// <summary>
+        /// Create punch tween.
+        /// </summary>
+        /// <param name="from">Rotation from which starts bouncing.</param>
+        /// <param name="count">How many times to bounce?</param>
+        /// <param name="to">Rotation to which bounce.</param>
+        /// <param name="duration"></param>
+        /// <param name="action"></param>
+        /// <param name="leftSmoothness"></param>
+        /// <param name="rightSmoothness"></param>
         public static Tween<float, TweakFloat> Punch(Quaternion from, int count, Quaternion to, float duration, Action<Quaternion> action, float leftSmoothness = 0.1f, float rightSmoothness = 0.9f)
         {
             var totalCount = count * 2f;

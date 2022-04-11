@@ -443,22 +443,39 @@ namespace Redcode.Tweens
 
         public Sequence(Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(null, null, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
 
-        public Sequence(string name, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(null, name, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
-
-        public Sequence(GameObject owner, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(owner, null, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
-
-
         /// <summary>
         /// Create sequence object.
         /// </summary>
-        /// <param name="owner">Owner of the sequence.</param>
         /// <param name="name">Name of the sequence.</param>
         /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
         /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
         /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
         /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
         /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(string name, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(null, name, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
 
+        /// <summary>
+        /// Create sequence object.
+        /// </summary>
+        /// <param name="owner">Owner of the sequence.</param>
+        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(GameObject owner, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(owner, null, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
+
+
+        /// <summary>
+        /// Create sequence object.
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="Sequence(string, Ease, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='name']"/></param>
+        /// <param name="name"><inheritdoc cref="Sequence(GameObject, Ease, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='owner']"/></param>
+        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
         public Sequence(GameObject owner, string name, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : base(0f, ease, loopsCount, loopType, direction)
         {
             Elements = _elements.AsReadOnly();
@@ -754,32 +771,89 @@ namespace Redcode.Tweens
         #endregion
 
         #region Rewinds
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.RewindTo(float, bool)"/>
+        /// </summary>
+        /// <param name="time"><inheritdoc cref="IPlayable{T}.RewindTo(float, bool)" path="/param[@name='time']"/></param>
+        /// <param name="emitEvents"><inheritdoc cref="IPlayable{T}.RewindTo(float, bool)" path="/param[@name='emitEvents']"/></param>
+        /// <returns>The sequence.</returns>
         public new Sequence RewindTo(float time, bool emitEvents = true) => (Sequence)base.RewindTo(time, emitEvents);
 
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.RewindToStart(bool)"/>
+        /// </summary>
+        /// <param name="emitEvents"><inheritdoc cref="IPlayable{T}.RewindToStart(bool)"/></param>
+        /// <returns>The sequence.</returns>
         public new Sequence RewindToStart(bool emitEvents = true) => (Sequence)base.RewindToStart(emitEvents);
 
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.RewindToEnd(bool)"/>
+        /// </summary>
+        /// <param name="emitEvents"><inheritdoc cref="IPlayable{T}.RewindToEnd(bool)"/></param>
+        /// <returns>The sequence.</returns>
         public new Sequence RewindToEnd(bool emitEvents = true) => (Sequence)base.RewindToEnd(emitEvents);
         #endregion
 
         #region Skips
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.SkipTo(float)"/>
+        /// </summary>
+        /// <param name="time"><inheritdoc cref="IPlayable{T}.SkipTo(float)"/></param>
+        /// <returns>The sequence.</returns>
         public new Sequence SkipTo(float time) => (Sequence)base.SkipTo(time);
 
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.SkipToStart()"/>
+        /// </summary>
+        /// <returns>The sequence.</returns>
         public new Sequence SkipToStart() => (Sequence)base.SkipToStart();
 
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.SkipToEnd()"/>
+        /// </summary>
+        /// <returns>The sequence.</returns>
         public new Sequence SkipToEnd() => (Sequence)base.SkipToEnd();
         #endregion
 
         #region Playing
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.SetTimeType(TimeType)"/>
+        /// </summary>
+        /// <param name="type"><inheritdoc cref="IPlayable{T}.SetTimeType(TimeType)"/></param>
+        /// <returns>The sequence.</returns>
         public new Sequence SetTimeType(TimeType type) => (Sequence)base.SetTimeType(type);
 
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.PlayForward(bool)"/>
+        /// </summary>
+        /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable{T}.PlayForward(bool)"/></param>
+        /// <returns>The sequence.</returns>
         public new Sequence PlayForward(bool resetIfCompleted = true) => (Sequence)base.PlayForward(resetIfCompleted);
 
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.PlayBackward(bool)"/>
+        /// </summary>
+        /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable{T}.PlayBackward(bool)"/></param>
+        /// <returns>The sequence.</returns>
         public new Sequence PlayBackward(bool resetIfCompleted = true) => (Sequence)base.PlayBackward(resetIfCompleted);
 
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.Play(bool)"/>
+        /// </summary>
+        /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable{T}.Play(bool)"/></param>
+        /// <returns>The sequence.</returns>
         public new Sequence Play(bool resetIfCompleted = true) => (Sequence)base.Play(resetIfCompleted);
 
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.Pause()"/>
+        /// </summary>
+        /// <returns>The sequence.</returns>
         public new Sequence Pause() => (Sequence)base.Pause();
 
+        /// <summary>
+        /// <inheritdoc cref="IPlayable{T}.Reset()"/>
+        /// </summary>
+        /// <returns>The sequence.</returns>
         public new Sequence Reset() => (Sequence)base.Reset();
         #endregion
         #endregion

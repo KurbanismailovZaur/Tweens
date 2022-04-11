@@ -30,155 +30,158 @@ namespace Redcode.Tweens
         /// </summary>
         public static CurveEase Curve => new();
 
+        /// <summary>
+        /// Linear easing.
+        /// </summary>
         public static LinearEase Linear { get; private set; } = new();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInQuad">See documentation here.</see>
+        /// <inheritdoc cref="InQuadraticEase"/>
         /// </summary>
         public static InQuadraticEase InQuad { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeOutQuad">See documentation here.</see>
+        /// <inheritdoc cref="OutQuadraticEase"/>
         /// </summary>
         public static OutQuadraticEase OutQuad { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInOutQuad">See documentation here.</see>
+        /// <inheritdoc cref="InOutQuadraticEase"/>
         /// </summary>
         public static InOutQuadraticEase InOutQuad { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInCubic">See documentation here.</see>
+        /// <inheritdoc cref="InCubicEase"/>
         /// </summary>
         public static InCubicEase InCubic { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeOutCubic">See documentation here.</see>
+        /// <inheritdoc cref="OutCubicEase"/>
         /// </summary>
         public static OutCubicEase OutCubic { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInOutCubic">See documentation here.</see>
+        /// <inheritdoc cref="InOutCubicEase"/>
         /// </summary>
         public static InOutCubicEase InOutCubic { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInQuart">See documentation here.</see>
+        /// <inheritdoc cref="InQuarticEase"/>
         /// </summary>
         public static InQuarticEase InQuart { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeOutQuart">See documentation here.</see>
+        /// <inheritdoc cref="OutQuarticEase"/>
         /// </summary>
         public static OutQuarticEase OutQuart { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInOutQuart">See documentation here.</see>
+        /// <inheritdoc cref="InOutQuarticEase"/>
         /// </summary>
         public static InOutQuarticEase InOutQuart { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInQuint">See documentation here.</see>
+        /// <inheritdoc cref="InQuinticEase"/>
         /// </summary>
         public static InQuinticEase InQuint { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeOutQuint">See documentation here.</see>
+        /// <inheritdoc cref="OutQuinticEase"/>
         /// </summary>
         public static OutQuinticEase OutQuint { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInOutQuint">See documentation here.</see>
+        /// <inheritdoc cref="InOutQuinticEase"/>
         /// </summary>
         public static InOutQuinticEase InOutQuint { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInSine">See documentation here.</see>
+        /// <inheritdoc cref="InSineEase"/>
         /// </summary>
         public static InSineEase InSine { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeOutSine">See documentation here.</see>
+        /// <inheritdoc cref="OutSineEase"/>
         /// </summary>
         public static OutSineEase OutSine { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInOutSine">See documentation here.</see>
+        /// <inheritdoc cref="InOutSineEase"/>
         /// </summary>
         public static InOutSineEase InOutSine { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInCirc">See documentation here.</see>
+        /// <inheritdoc cref="InCircularEase"/>
         /// </summary>
         public static InCircularEase InCirc { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeOutCirc">See documentation here.</see>
+        /// <inheritdoc cref="OutCircularEase"/>
         /// </summary>
         public static OutCircularEase OutCirc { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInOutCirc">See documentation here.</see>
+        /// <inheritdoc cref="InOutCircularEase"/>
         /// </summary>
         public static InOutCircularEase InOutCirc { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInExpo">See documentation here.</see>
+        /// <inheritdoc cref="InExponentialEase"/>
         /// </summary>
         public static InExponentialEase InExpo { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeOutExpo">See documentation here.</see>
+        /// <inheritdoc cref="OutExponentialEase"/>
         /// </summary>
         public static OutExponentialEase OutExpo { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInOutExpo">See documentation here.</see>
+        /// <inheritdoc cref="InOutExponentialEase"/>
         /// </summary>
         public static InOutExponentialEase InOutExpo { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInElastic">See documentation here.</see>
+        /// <inheritdoc cref="InElasticEase"/>
         /// </summary>
         public static InElasticEase InElastic { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeOutElastic">See documentation here.</see>
+        /// <inheritdoc cref="OutElasticEase"/>
         /// </summary>
         public static OutElasticEase OutElastic { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInOutElastic">See documentation here.</see>
+        /// <inheritdoc cref="InOutElasticEase"/>
         /// </summary>
         public static InOutElasticEase InOutElastic { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInBack">See documentation here.</see>
+        /// <inheritdoc cref="InBackEase"/>
         /// </summary>
         public static InBackEase InBack { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeOutBack">See documentation here.</see>
+        /// <inheritdoc cref="OutBackEase"/>
         /// </summary>
         public static OutBackEase OutBack { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInOutBack">See documentation here.</see>
+        /// <inheritdoc cref="InOutBackEase"/>
         /// </summary>
         public static InOutBackEase InOutBack { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInBounce">See documentation here.</see>
+        /// <inheritdoc cref="InBounceEase"/>
         /// </summary>
         public static InBounceEase InBounce { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeOutBounce">See documentation here.</see>
+        /// <inheritdoc cref="OutBounceEase"/>
         /// </summary>
         public static OutBounceEase OutBounce { get; private set; } = new ();
 
         /// <summary>
-        /// <see href="https://easings.net/en#easeInOutBounce">See documentation here.</see>
+        /// <inheritdoc cref="InOutBounceEase"/>
         /// </summary>
         public static InOutBounceEase InOutBounce { get; private set; } = new ();
         #endregion

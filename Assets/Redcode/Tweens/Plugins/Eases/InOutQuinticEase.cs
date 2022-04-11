@@ -2,6 +2,9 @@ namespace Redcode.Tweens.Eases
 {
     public sealed class InOutQuinticEase : Ease
     {
+        /// <summary>
+        /// Represent quintic formula. <see href="https://easings.net/en#easeInOutQuint">See documentation here.</see>
+        /// </summary>
         public override float Remap(float value)
         {
             if (value < 0.5f)

@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace Redcode.Tweens.Eases
 {
+    /// <summary>
+    /// Represent elastic formula. <see href="https://easings.net/en#easeInOutElastic">See documentation here.</see>
+    /// </summary>
     public sealed class InOutElasticEase : Ease
     {
         public override float Remap(float value)

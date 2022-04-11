@@ -1,5 +1,8 @@
 namespace Redcode.Tweens.Eases
 {
+    /// <summary>
+    /// Represent cubic formula. <see href="https://easings.net/en#easeInOutCubic">See documentation here.</see>
+    /// </summary>
     public sealed class InOutCubicEase : Ease
     {
         public override float Remap(float value)

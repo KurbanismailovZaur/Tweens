@@ -21,8 +21,8 @@ namespace Tweens
         { 
             yield return null;
 
-            var tween = Tween.Float(0f, 1f, _target.SetPositionX, 1f);
-            tween.SkipToEnd().PlayBackward();
+            var tween = (IPlayable<ITween>)Tween.Float(0f, 1f, _target.SetPositionX, 1f);
+            
         }
     }
 }
