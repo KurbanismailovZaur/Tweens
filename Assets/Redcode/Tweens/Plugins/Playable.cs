@@ -251,7 +251,7 @@ namespace Redcode.Tweens
         /// </code>
         /// </summary>
         /// <returns>Repeater.</returns>
-        Playable.IRepeater<Playable> GetRepeater();
+        Playable.IRepeater<IPlayable> GetRepeater();
 
         /// <summary>
         /// Create repeater for the playable and starts repeating playable's playing in <see cref="Playable.IRepeater{T}.Direction"/> property.
@@ -261,7 +261,7 @@ namespace Redcode.Tweens
         /// </code>
         /// </summary>
         /// <returns>Repeater.</returns>
-        Playable.IRepeater<Playable> Repeat();
+        Playable.IRepeater<IPlayable> Repeat();
 
         /// <summary>
         /// Create repeater for the playable and starts repeating playable's playing in forward direction.
@@ -271,7 +271,7 @@ namespace Redcode.Tweens
         /// </code>
         /// </summary>
         /// <returns>Repeater.</returns>
-        Playable.IRepeater<Playable> RepeatForward();
+        Playable.IRepeater<IPlayable> RepeatForward();
 
         /// <summary>
         /// Create repeater for the playable and starts repeating playable's playing in backward direction.
@@ -281,7 +281,7 @@ namespace Redcode.Tweens
         /// </code>
         /// </summary>
         /// <returns>Repeater.</returns>
-        Playable.IRepeater<Playable> RepeatBackward();
+        Playable.IRepeater<IPlayable> RepeatBackward();
         #endregion
 
         #region Awaiters
@@ -333,7 +333,7 @@ namespace Redcode.Tweens
         /// Represent repeater for any playable.
         /// </summary>
         /// <typeparam name="T">Playable type.</typeparam>
-        public interface IRepeater<out T> where T : Playable
+        public interface IRepeater<out T> where T : IPlayable
         {
             /// <summary>
             /// Playable which will be repeated.
@@ -412,7 +412,7 @@ namespace Redcode.Tweens
         /// <inheritdoc cref="Playable.IRepeater{T}"/>
         /// </summary>
         /// <typeparam name="T"><inheritdoc cref="Playable.IRepeater{T}"/></typeparam>
-        public class Repeater<T> : IRepeater<T> where T : Playable
+        public class Repeater<T> : IRepeater<T> where T : IPlayable
         {
             #region Awaiter classes
             /// <summary>
@@ -509,7 +509,11 @@ namespace Redcode.Tweens
                     _stateCode++;
                 }
 
-                Target.Play(true, Direction);
+                if (Direction == Direction.Forward)
+                    Target.PlayForward(true);
+                else
+                    Target.PlayBackward(true);
+
                 return this;
             }
 
@@ -518,7 +522,11 @@ namespace Redcode.Tweens
                 while (true)
                 {
                     yield return Target.WaitForComplete();
-                    Target.Play(true, Direction);
+
+                    if (Direction == Direction.Forward)
+                        Target.PlayForward(true);
+                    else
+                        Target.PlayBackward(true);
                 }
             }
 
@@ -710,23 +718,20 @@ namespace Redcode.Tweens
         /// <summary>
         /// Create <see cref="Playable"/> object.
         /// </summary>
-        /// <param name="owner">Game object to which this playable will be attached.</param>
-        /// <param name="name">Name of the playable.</param>
         /// <param name="loopDuration">Loop duration of the playable.</param>
         /// <param name="ease">Easing formula which used when playable animate values.</param>
         /// <param name="loopsCount">Loops count of the playable.</param>
         /// <param name="loopType">Loop type which used between loops in the playable.</param>
         /// <param name="direction">Direction in which the playable starts playing animation.</param>
-        protected Playable(GameObject owner, string name, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
+        protected Playable(float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward)
         {
-            Name = name;
             LoopDuration = loopDuration;
             Ease = ease ?? Ease.Linear;
             LoopsCount = loopsCount;
             LoopType = loopType;
             Direction = direction;
 
-            _playingMoroutine = Moroutine.Create(owner, PlayRoutine());
+            _playingMoroutine = Moroutine.Create(PlayRoutine());
         }
 
         IPlayable IPlayable.SetOwner(Component component) => SetOwner(component);
@@ -1612,7 +1617,7 @@ namespace Redcode.Tweens
             {
                 RewindTo(Direction == Direction.Forward ? 1f : -1f, 0, 1, true);
                 State = State.Completed;
-                
+
                 yield break;
             }
 
@@ -1699,15 +1704,15 @@ namespace Redcode.Tweens
         #endregion
 
         #region Repeat
-        protected abstract IRepeater<Playable> CreateRepeater();
+        protected IRepeater<Playable> CreateRepeater() => new Repeater<Playable>(this);
 
-        public IRepeater<Playable> GetRepeater() => CreateRepeater();
+        public IRepeater<IPlayable> GetRepeater() => CreateRepeater();
 
-        public IRepeater<Playable> Repeat() => GetRepeater().Play();
+        public IRepeater<IPlayable> Repeat() => GetRepeater().Play();
 
-        public IRepeater<Playable> RepeatForward() => GetRepeater().PlayForward();
+        public IRepeater<IPlayable> RepeatForward() => GetRepeater().PlayForward();
 
-        public IRepeater<Playable> RepeatBackward() => GetRepeater().PlayBackward();
+        public IRepeater<IPlayable> RepeatBackward() => GetRepeater().PlayBackward();
         #endregion
 
         #region Awaiters
@@ -1722,7 +1727,7 @@ namespace Redcode.Tweens
     /// <summary>
     /// Represent interface to work with any <see cref="Playable{T}"/>.
     /// </summary>
-    public interface IPlayable<out T> : IPlayable where T : Playable
+    public interface IPlayable<out T> : IPlayable where T : IPlayable
     {
         #region Phase events
         event Action<T, Direction> PhaseStarting;
@@ -1762,252 +1767,284 @@ namespace Redcode.Tweens
 
         #region Subscribes
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseStarting"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseStarting</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseStarting(Action callback);
+        IPlayable<T> OnPhaseStarting(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseStarting(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseStarting(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseStarting(Action)"/></returns>
-        public T OnPhaseStarting(Action<T, Direction> callback);
+        IPlayable<T> OnPhaseStarting(Action<T, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseStarted"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseStarted</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseStarted(Action callback);
+        IPlayable<T> OnPhaseStarted(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseStarted(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseStarted(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseStarted(Action)"/></returns>
-        public T OnPhaseStarted(Action<T, Direction> callback);
+        IPlayable<T> OnPhaseStarted(Action<T, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseLoopStarting"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopStarting</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseLoopStarting(Action callback);
+        IPlayable<T> OnPhaseLoopStarting(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseLoopStarting(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseLoopStarting(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseLoopStarting(Action)"/></returns>
-        public T OnPhaseLoopStarting(Action<T, int, Direction> callback);
+        IPlayable<T> OnPhaseLoopStarting(Action<T, int, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseLoopStarted"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopStarted</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseLoopStarted(Action callback);
+        IPlayable<T> OnPhaseLoopStarted(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseLoopStarted(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseLoopStarted(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseLoopStarted(Action)"/></returns>
-        public T OnPhaseLoopStarted(Action<T, int, Direction> callback);
+        IPlayable<T> OnPhaseLoopStarted(Action<T, int, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseLoopUpdating"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopUpdating</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseLoopUpdating(Action callback);
+        IPlayable<T> OnPhaseLoopUpdating(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseLoopUpdating(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseLoopUpdating(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseLoopUpdating(Action)"/></returns>
-        public T OnPhaseLoopUpdating(Action<T, int, float, Direction> callback);
+        IPlayable<T> OnPhaseLoopUpdating(Action<T, int, float, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseLoopUpdated"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopUpdated</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseLoopUpdated(Action callback);
+        IPlayable<T> OnPhaseLoopUpdated(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseLoopUpdated(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseLoopUpdated(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseLoopUpdated(Action)"/></returns>
-        public T OnPhaseLoopUpdated(Action<T, int, float, Direction> callback);
+        IPlayable<T> OnPhaseLoopUpdated(Action<T, int, float, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseUpdating"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseUpdating</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseUpdating(Action callback);
+        IPlayable<T> OnPhaseUpdating(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseUpdating(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseUpdating(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseUpdating(Action)"/></returns>
-        public T OnPhaseUpdating(Action<T, float, Direction> callback);
+        IPlayable<T> OnPhaseUpdating(Action<T, float, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseUpdated"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseUpdated</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseUpdated(Action callback);
+        IPlayable<T> OnPhaseUpdated(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseUpdated(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseUpdated(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseUpdated(Action)"/></returns>
-        public T OnPhaseUpdated(Action<T, float, Direction> callback);
+        IPlayable<T> OnPhaseUpdated(Action<T, float, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseLoopCompleting"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopCompleting</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseLoopCompleting(Action callback);
+        IPlayable<T> OnPhaseLoopCompleting(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseLoopCompleting(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseLoopCompleting(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseLoopCompleting(Action)"/></returns>
-        public T OnPhaseLoopCompleting(Action<T, int, Direction> callback);
+        IPlayable<T> OnPhaseLoopCompleting(Action<T, int, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseLoopCompleted"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopCompleted</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseLoopCompleted(Action callback);
+        IPlayable<T> OnPhaseLoopCompleted(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseLoopCompleted(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseLoopCompleted(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseLoopCompleted(Action)"/></returns>
-        public T OnPhaseLoopCompleted(Action<T, int, Direction> callback);
+        IPlayable<T> OnPhaseLoopCompleted(Action<T, int, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseCompleting"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseCompleting</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseCompleting(Action callback);
+        IPlayable<T> OnPhaseCompleting(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseCompleting(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseCompleting(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseCompleting(Action)"/></returns>
-        public T OnPhaseCompleting(Action<T, Direction> callback);
+        IPlayable<T> OnPhaseCompleting(Action<T, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="PhaseCompleted"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseCompleted</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPhaseCompleted(Action callback);
+        IPlayable<T> OnPhaseCompleted(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPhaseCompleted(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPhaseCompleted(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPhaseCompleted(Action)"/></returns>
-        public T OnPhaseCompleted(Action<T, Direction> callback);
+        IPlayable<T> OnPhaseCompleted(Action<T, Direction> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="Reseted"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>Reseted</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnReseted(Action callback);
+        IPlayable<T> OnReseted(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnReseted(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnReseted(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnReseted(Action)"/></returns>
-        public T OnReseted(Action<T> callback);
+        IPlayable<T> OnReseted(Action<T> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="Playing"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>Playing</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPlaying(Action callback);
+        IPlayable<T> OnPlaying(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPlaying(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPlaying(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPlaying(Action)"/></returns>
-        public T OnPlaying(Action<T> callback);
+        IPlayable<T> OnPlaying(Action<T> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="Paused"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>Paused</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnPaused(Action callback);
+        IPlayable<T> OnPaused(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnPaused(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnPaused(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnPaused(Action)"/></returns>
-        public T OnPaused(Action<T> callback);
+        IPlayable<T> OnPaused(Action<T> callback);
 
         /// <summary>
-        /// Subscribe passed <paramref name="callback"/> to <see cref="Completed"/> event.
+        /// Subscribe passed <paramref name="callback"/> to <c>Completed</c> event.
         /// </summary>
         /// <param name="callback">Callback to subscribe.</param>
         /// <returns>The playable.</returns>
-        public T OnCompleted(Action callback);
+        IPlayable<T> OnCompleted(Action callback);
 
         /// <summary>
         /// <inheritdoc cref="OnCompleted(Action)"/>
         /// </summary>
         /// <param name="callback"><inheritdoc cref="OnCompleted(Action)" path="/param[@name='callback']"/></param>
         /// <returns><inheritdoc cref="OnCompleted(Action)"/></returns>
-        public T OnCompleted(Action<T> callback);
+        IPlayable<T> OnCompleted(Action<T> callback);
         #endregion
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetOwner(Component)"/>
+        /// </summary>
+        /// <param name="component"><inheritdoc cref="IPlayable.SetOwner(Component)" path="/param[@name='component']"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetOwner(Component)"/></returns>
+        new IPlayable<T> SetOwner(Component component);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetOwner(GameObject)"/>
+        /// </summary>
+        /// <param name="gameObject"><inheritdoc cref="IPlayable.SetOwner(GameObject)" path="/param[@name='gameObject']"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetOwner(GameObject)"/></returns>
+        new IPlayable<T> SetOwner(GameObject gameObject);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.MakeUnowned()"/>
+        /// </summary>
+        /// <returns><inheritdoc cref="IPlayable.MakeUnowned()"/></returns>
+        new IPlayable<T> MakeUnowned();
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetName(string)"/>
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="IPlayable.SetName(string)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetName(string)"/></returns>
+        new IPlayable<T> SetName(string name);
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.SetEase(Ease)"/>
         /// </summary>
         /// <param name="ease"><inheritdoc cref="IPlayable.SetEase(Ease)"/></param>
         /// <returns><inheritdoc cref="IPlayable.SetEase(Ease)"/></returns>
-        new T SetEase(Ease ease);
+        new IPlayable<T> SetEase(Ease ease);
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.SetEase(Ease)"/>
         /// </summary>
-        /// <param name="loopsCount"><inheritdoc cref="IPlayable.SetLoopCount(int)(Ease)"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="IPlayable.SetLoopCount(int)"/></param>
         /// <returns><inheritdoc cref="IPlayable.SetEase(Ease)"/></returns>
-        new T SetLoopCount(int loopsCount);
+        new IPlayable<T> SetLoopCount(int loopsCount);
 
-        new T SetLoopType(LoopType loopType);
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetLoopType(LoopType)"/>
+        /// </summary>
+        /// <param name="loopType"><inheritdoc cref="IPlayable.SetLoopType(LoopType)"/></param>
+        /// <returns><inheritdoc cref="IPlayable.SetLoopType(LoopType)"/></returns>
+        new IPlayable<T> SetLoopType(LoopType loopType);
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.SetDirection(Direction)"/>
         /// </summary>
         /// <param name="direction"><inheritdoc cref="IPlayable.SetDirection(Direction)"/></param>
         /// <returns><inheritdoc cref="IPlayable.SetDirection(Direction)"/></returns>
-        new T SetDirection(Direction direction);
+        new IPlayable<T> SetDirection(Direction direction);
 
         #region Rewinds
         /// <summary>
@@ -2015,14 +2052,14 @@ namespace Redcode.Tweens
         /// </summary>
         /// <param name="emitEvents"><inheritdoc cref="IPlayable.RewindToStart(bool)"/></param>
         /// <returns><inheritdoc cref="IPlayable.RewindToStart(bool)"/></returns>
-        new T RewindToStart(bool emitEvents = true);
+        new IPlayable<T> RewindToStart(bool emitEvents = true);
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.RewindToEnd(bool)"/>
         /// </summary>
         /// <param name="emitEvents"><inheritdoc cref="IPlayable.RewindToEnd(bool)"/></param>
         /// <returns><inheritdoc cref="IPlayable.RewindToEnd(bool)"/></returns>
-        new T RewindToEnd(bool emitEvents = true);
+        new IPlayable<T> RewindToEnd(bool emitEvents = true);
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.RewindTo(float, bool)"/>
@@ -2030,7 +2067,7 @@ namespace Redcode.Tweens
         /// <param name="time"><inheritdoc cref="IPlayable.RewindTo(float, bool)"/></param>
         /// <param name="emitEvents"><inheritdoc cref="IPlayable.RewindTo(float, bool)"/></param>
         /// <returns><inheritdoc cref="IPlayable.RewindTo(float, bool)"/></returns>
-        new T RewindTo(float time, bool emitEvents = true);
+        new IPlayable<T> RewindTo(float time, bool emitEvents = true);
         #endregion
 
         #region Skips
@@ -2038,20 +2075,20 @@ namespace Redcode.Tweens
         /// <inheritdoc cref="IPlayable.SkipToStart"/>
         /// </summary>
         /// <returns><inheritdoc cref="IPlayable.SkipToStart"/></returns>
-        new T SkipToStart();
+        new IPlayable<T> SkipToStart();
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.SkipToEnd"/>
         /// </summary>
         /// <returns><inheritdoc cref="IPlayable.SkipToEnd"/></returns>
-        new T SkipToEnd();
+        new IPlayable<T> SkipToEnd();
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.SkipTo(float)"/>
         /// </summary>
         /// <param name="time"><inheritdoc cref="IPlayable.SkipTo(float)"/></param>
         /// <returns><inheritdoc cref="IPlayable.SkipTo(float)"/></returns>
-        new T SkipTo(float time);
+        new IPlayable<T> SkipTo(float time);
         #endregion
 
         #region Playing
@@ -2060,42 +2097,42 @@ namespace Redcode.Tweens
         /// </summary>
         /// <param name="type"><inheritdoc cref="IPlayable.SetTimeType(TimeType)"/></param>
         /// <returns><inheritdoc cref="IPlayable.SetTimeType(TimeType)"/></returns>
-        new T SetTimeType(TimeType type);
+        new IPlayable<T> SetTimeType(TimeType type);
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.PlayForward(bool)"/>
         /// </summary>
         /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.PlayForward(bool)"/></param>
         /// <returns><inheritdoc cref="IPlayable.PlayForward(bool)"/></returns>
-        new T PlayForward(bool resetIfCompleted = true);
+        new IPlayable<T> PlayForward(bool resetIfCompleted = true);
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.PlayBackward(bool)"/>
         /// </summary>
         /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.PlayBackward(bool)"/></param>
         /// <returns><inheritdoc cref="IPlayable.PlayBackward(bool)"/></returns>
-        new T PlayBackward(bool resetIfCompleted = true);
+        new IPlayable<T> PlayBackward(bool resetIfCompleted = true);
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.Play(bool)"/>
         /// </summary>
         /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.Play(bool)"/></param>
         /// <returns><inheritdoc cref="IPlayable.Play(bool)"/></returns>
-        new T Play(bool resetIfCompleted = true);
+        new IPlayable<T> Play(bool resetIfCompleted = true);
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.Pause"/>
         /// </summary>
         /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.Pause"/></param>
         /// <returns><inheritdoc cref="IPlayable.Pause"/></returns>
-        new T Pause();
+        new IPlayable<T> Pause();
 
         /// <summary>
         /// <inheritdoc cref="IPlayable.Reset"/>
         /// </summary>
         /// <param name="resetIfCompleted"><inheritdoc cref="IPlayable.Reset"/></param>
         /// <returns><inheritdoc cref="IPlayable.Reset"/></returns>
-        new T Reset();
+        new IPlayable<T> Reset();
         #endregion
 
         #region Repeat
@@ -2129,7 +2166,7 @@ namespace Redcode.Tweens
     /// Base class for <see cref="Tween{T, U}"/>, <see cref="Sequence"/>, <see cref="Callback"/> and <see cref="Interval"/> classes, or any other playable.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class Playable<T> : Playable, IPlayable<T> where T : Playable
+    public abstract class Playable<T> : Playable, IPlayable<T> where T : IPlayable
     {
         #region Phase events
         public event Action<T, Direction> PhaseStarting;
@@ -2170,229 +2207,339 @@ namespace Redcode.Tweens
         /// <summary>
         /// Create <see cref="Playable{T}"/> object.
         /// </summary>
-        /// <param name="owner"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='owner']"/></param>
-        /// <param name="name"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='name']"/></param>
-        /// <param name="loopDuration"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopDuration']"/></param>
-        /// <param name="ease"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
-        /// <param name="direction"><inheritdoc cref="Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        protected Playable(GameObject owner, string name, float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : base(owner, name, loopDuration, ease, loopsCount, loopType, direction) { }
+        /// <param name="loopDuration"><inheritdoc cref="Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopDuration']"/></param>
+        /// <param name="ease"><inheritdoc cref="Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="direction"><inheritdoc cref="Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        protected Playable(float loopDuration, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, Direction direction = Direction.Forward) : base(loopDuration, ease, loopsCount, loopType, direction) { }
 
         #region Phase calls
-        protected override void CallPhaseStarting(Direction direction) => PhaseStarting?.Invoke((T)(Playable)this, direction);
+        protected override void CallPhaseStarting(Direction direction) => PhaseStarting?.Invoke((T)(IPlayable)this, direction);
 
-        protected override void CallPhaseStarted(Direction direction) => PhaseStarted?.Invoke((T)(Playable)this, direction);
+        protected override void CallPhaseStarted(Direction direction) => PhaseStarted?.Invoke((T)(IPlayable)this, direction);
 
-        protected override void CallPhaseLoopStarting(int loop, Direction direction) => PhaseLoopStarting?.Invoke((T)(Playable)this, loop, direction);
+        protected override void CallPhaseLoopStarting(int loop, Direction direction) => PhaseLoopStarting?.Invoke((T)(IPlayable)this, loop, direction);
 
-        protected override void CallPhaseLoopStarted(int loop, Direction direction) => PhaseLoopStarted?.Invoke((T)(Playable)this, loop, direction);
+        protected override void CallPhaseLoopStarted(int loop, Direction direction) => PhaseLoopStarted?.Invoke((T)(IPlayable)this, loop, direction);
 
-        protected override void CallPhaseLoopCompleting(int loop, Direction direction) => PhaseLoopCompleting?.Invoke((T)(Playable)this, loop, direction);
+        protected override void CallPhaseLoopCompleting(int loop, Direction direction) => PhaseLoopCompleting?.Invoke((T)(IPlayable)this, loop, direction);
 
-        protected override void CallPhaseLoopCompleted(int loop, Direction direction) => PhaseLoopCompleted?.Invoke((T)(Playable)this, loop, direction);
+        protected override void CallPhaseLoopCompleted(int loop, Direction direction) => PhaseLoopCompleted?.Invoke((T)(IPlayable)this, loop, direction);
 
-        protected override void CallPhaseUpdating(float time, Direction direction) => PhaseUpdating?.Invoke((T)(Playable)this, time, direction);
+        protected override void CallPhaseUpdating(float time, Direction direction) => PhaseUpdating?.Invoke((T)(IPlayable)this, time, direction);
 
-        protected override void CallPhaseUpdated(float time, Direction direction) => PhaseUpdated?.Invoke((T)(Playable)this, time, direction);
+        protected override void CallPhaseUpdated(float time, Direction direction) => PhaseUpdated?.Invoke((T)(IPlayable)this, time, direction);
 
-        protected override void CallPhaseLoopUpdating(int loop, float time, Direction direction) => PhaseLoopUpdating?.Invoke((T)(Playable)this, loop, time, direction);
+        protected override void CallPhaseLoopUpdating(int loop, float time, Direction direction) => PhaseLoopUpdating?.Invoke((T)(IPlayable)this, loop, time, direction);
 
-        protected override void CallPhaseLoopUpdated(int loop, float time, Direction direction) => PhaseLoopUpdated?.Invoke((T)(Playable)this, loop, time, direction);
+        protected override void CallPhaseLoopUpdated(int loop, float time, Direction direction) => PhaseLoopUpdated?.Invoke((T)(IPlayable)this, loop, time, direction);
 
-        protected override void CallPhaseCompleting(Direction direction) => PhaseCompleting?.Invoke((T)(Playable)this, direction);
+        protected override void CallPhaseCompleting(Direction direction) => PhaseCompleting?.Invoke((T)(IPlayable)this, direction);
 
-        protected override void CallPhaseCompleted(Direction direction) => PhaseCompleted?.Invoke((T)(Playable)this, direction);
+        protected override void CallPhaseCompleted(Direction direction) => PhaseCompleted?.Invoke((T)(IPlayable)this, direction);
         #endregion
 
         #region Routine calls
-        protected override void CallReseted() => Reseted?.Invoke((T)(Playable)this);
+        protected override void CallReseted() => Reseted?.Invoke((T)(IPlayable)this);
 
-        protected override void CallPlaying() => Playing?.Invoke((T)(Playable)this);
+        protected override void CallPlaying() => Playing?.Invoke((T)(IPlayable)this);
 
-        protected override void CallPaused() => Paused?.Invoke((T)(Playable)this);
+        protected override void CallPaused() => Paused?.Invoke((T)(IPlayable)this);
 
-        protected override void CallCompleted() => Completed?.Invoke((T)(Playable)this);
+        protected override void CallCompleted() => Completed?.Invoke((T)(IPlayable)this);
         #endregion
 
         #region Subscribes
-        public T OnPhaseStarting(Action callback) => OnPhaseStarting((p, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseStarting(Action callback) => OnPhaseStarting(callback);
 
-        public T OnPhaseStarting(Action<T, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseStarting(Action<T, Direction> callback) => OnPhaseStarting(callback);
+
+        public Playable<T> OnPhaseStarting(Action callback) => OnPhaseStarting((p, d) => callback());
+
+        public Playable<T> OnPhaseStarting(Action<T, Direction> callback)
         {
             PhaseStarting += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseStarted(Action callback) => OnPhaseStarted((p, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseStarted(Action callback) => OnPhaseStarted(callback);
 
-        public T OnPhaseStarted(Action<T, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseStarted(Action<T, Direction> callback) => OnPhaseStarted(callback);
+
+        public Playable<T> OnPhaseStarted(Action callback) => OnPhaseStarted((p, d) => callback());
+
+        public Playable<T> OnPhaseStarted(Action<T, Direction> callback)
         {
             PhaseStarted += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseLoopStarting(Action callback) => OnPhaseLoopStarting((p, l, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseLoopStarting(Action callback) => OnPhaseLoopStarting(callback);
 
-        public T OnPhaseLoopStarting(Action<T, int, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseLoopStarting(Action<T, int, Direction> callback) => OnPhaseLoopStarting(callback);
+
+        public Playable<T> OnPhaseLoopStarting(Action callback) => OnPhaseLoopStarting((p, l, d) => callback());
+
+        public Playable<T> OnPhaseLoopStarting(Action<T, int, Direction> callback)
         {
             PhaseLoopStarting += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseLoopStarted(Action callback) => OnPhaseLoopStarted((p, l, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseLoopStarted(Action callback) => OnPhaseLoopStarted(callback);
 
-        public T OnPhaseLoopStarted(Action<T, int, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseLoopStarted(Action<T, int, Direction> callback) => OnPhaseLoopStarted(callback);
+
+        public Playable<T> OnPhaseLoopStarted(Action callback) => OnPhaseLoopStarted((p, l, d) => callback());
+
+        public Playable<T> OnPhaseLoopStarted(Action<T, int, Direction> callback)
         {
             PhaseLoopStarted += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseLoopUpdating(Action callback) => OnPhaseLoopUpdating((p, l, lt, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseLoopUpdating(Action callback) => OnPhaseLoopUpdating(callback);
 
-        public T OnPhaseLoopUpdating(Action<T, int, float, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseLoopUpdating(Action<T, int, float, Direction> callback) => OnPhaseLoopUpdating(callback);
+
+        public Playable<T> OnPhaseLoopUpdating(Action callback) => OnPhaseLoopUpdating((p, l, lt, d) => callback());
+
+        public Playable<T> OnPhaseLoopUpdating(Action<T, int, float, Direction> callback)
         {
             PhaseLoopUpdating += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseLoopUpdated(Action callback) => OnPhaseLoopUpdated((p, l, lt, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseLoopUpdated(Action callback) => OnPhaseLoopUpdated(callback);
 
-        public T OnPhaseLoopUpdated(Action<T, int, float, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseLoopUpdated(Action<T, int, float, Direction> callback) => OnPhaseLoopUpdated(callback);
+
+        public Playable<T> OnPhaseLoopUpdated(Action callback) => OnPhaseLoopUpdated((p, l, lt, d) => callback());
+
+        public Playable<T> OnPhaseLoopUpdated(Action<T, int, float, Direction> callback)
         {
             PhaseLoopUpdated += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseUpdating(Action callback) => OnPhaseUpdating((p, t, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseUpdating(Action callback) => OnPhaseUpdating(callback);
 
-        public T OnPhaseUpdating(Action<T, float, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseUpdating(Action<T, float, Direction> callback) => OnPhaseUpdating(callback);
+
+        public Playable<T> OnPhaseUpdating(Action callback) => OnPhaseUpdating((p, t, d) => callback());
+
+        public Playable<T> OnPhaseUpdating(Action<T, float, Direction> callback)
         {
             PhaseUpdating += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseUpdated(Action callback) => OnPhaseUpdated((p, t, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseUpdated(Action callback) => OnPhaseUpdated(callback);
 
-        public T OnPhaseUpdated(Action<T, float, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseUpdated(Action<T, float, Direction> callback) => OnPhaseUpdated(callback);
+
+        public Playable<T> OnPhaseUpdated(Action callback) => OnPhaseUpdated((p, t, d) => callback());
+
+        public Playable<T> OnPhaseUpdated(Action<T, float, Direction> callback)
         {
             PhaseUpdated += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseLoopCompleting(Action callback) => OnPhaseLoopCompleting((p, l, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseLoopCompleting(Action callback) => OnPhaseLoopCompleting(callback);
 
-        public T OnPhaseLoopCompleting(Action<T, int, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseLoopCompleting(Action<T, int, Direction> callback) => OnPhaseLoopCompleting(callback);
+
+        public Playable<T> OnPhaseLoopCompleting(Action callback) => OnPhaseLoopCompleting((p, l, d) => callback());
+
+        public Playable<T> OnPhaseLoopCompleting(Action<T, int, Direction> callback)
         {
             PhaseLoopCompleting += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseLoopCompleted(Action callback) => OnPhaseLoopCompleted((p, l, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseLoopCompleted(Action callback) => OnPhaseLoopCompleted(callback);
 
-        public T OnPhaseLoopCompleted(Action<T, int, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseLoopCompleted(Action<T, int, Direction> callback) => OnPhaseLoopCompleted(callback);
+
+        public Playable<T> OnPhaseLoopCompleted(Action callback) => OnPhaseLoopCompleted((p, l, d) => callback());
+
+        public Playable<T> OnPhaseLoopCompleted(Action<T, int, Direction> callback)
         {
             PhaseLoopCompleted += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseCompleting(Action callback) => OnPhaseCompleting((p, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseCompleting(Action callback) => OnPhaseCompleting(callback);
 
-        public T OnPhaseCompleting(Action<T, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseCompleting(Action<T, Direction> callback) => OnPhaseCompleting(callback);
+
+        public Playable<T> OnPhaseCompleting(Action callback) => OnPhaseCompleting((p, d) => callback());
+
+        public Playable<T> OnPhaseCompleting(Action<T, Direction> callback)
         {
             PhaseCompleting += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPhaseCompleted(Action callback) => OnPhaseCompleted((p, d) => callback());
+        IPlayable<T> IPlayable<T>.OnPhaseCompleted(Action callback) => OnPhaseCompleted(callback);
 
-        public T OnPhaseCompleted(Action<T, Direction> callback)
+        IPlayable<T> IPlayable<T>.OnPhaseCompleted(Action<T, Direction> callback) => OnPhaseCompleted(callback);
+
+        public Playable<T> OnPhaseCompleted(Action callback) => OnPhaseCompleted((p, d) => callback());
+
+        public Playable<T> OnPhaseCompleted(Action<T, Direction> callback)
         {
             PhaseCompleted += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnReseted(Action callback) => OnReseted(p => callback());
+        IPlayable<T> IPlayable<T>.OnReseted(Action callback) => OnReseted(callback);
 
-        public T OnReseted(Action<T> callback)
+        IPlayable<T> IPlayable<T>.OnReseted(Action<T> callback) => OnReseted(callback);
+
+        public Playable<T> OnReseted(Action callback) => OnReseted(p => callback());
+
+        public Playable<T> OnReseted(Action<T> callback)
         {
             Reseted += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPlaying(Action callback) => OnPlaying(p => callback());
+        IPlayable<T> IPlayable<T>.OnPlaying(Action callback) => OnPlaying(callback);
 
-        public T OnPlaying(Action<T> callback)
+        IPlayable<T> IPlayable<T>.OnPlaying(Action<T> callback) => OnPlaying(callback);
+
+        public Playable<T> OnPlaying(Action callback) => OnPlaying(p => callback());
+
+        public Playable<T> OnPlaying(Action<T> callback)
         {
             Playing += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnPaused(Action callback) => OnPaused(p => callback());
+        IPlayable<T> IPlayable<T>.OnPaused(Action callback) => OnPaused(callback);
 
-        public T OnPaused(Action<T> callback)
+        IPlayable<T> IPlayable<T>.OnPaused(Action<T> callback) => OnPaused(callback);
+
+        public Playable<T> OnPaused(Action callback) => OnPaused(p => callback());
+
+        public Playable<T> OnPaused(Action<T> callback)
         {
             Paused += callback;
-            return (T)(Playable)this;
+            return this;
         }
 
-        public T OnCompleted(Action callback) => OnCompleted(p => callback());
+        IPlayable<T> IPlayable<T>.OnCompleted(Action callback) => OnCompleted(callback);
 
-        public T OnCompleted(Action<T> callback)
+        IPlayable<T> IPlayable<T>.OnCompleted(Action<T> callback) => OnCompleted(callback);
+
+        public Playable<T> OnCompleted(Action callback) => OnCompleted(p => callback());
+
+        public Playable<T> OnCompleted(Action<T> callback)
         {
             Completed += callback;
-            return (T)(Playable)this;
+            return this;
         }
         #endregion
 
-        public new T SetEase(Ease ease) => (T)base.SetEase(ease);
+        IPlayable<T> IPlayable<T>.SetOwner(Component component) => SetOwner(component);
 
-        public new T SetLoopCount(int loopsCount) => (T)base.SetLoopCount(loopsCount);
+        public new Playable<T> SetOwner(Component component) => (Playable<T>)base.SetOwner(component);
 
-        public new T SetLoopType(LoopType loopType) => (T)base.SetLoopType(loopType);
+        IPlayable<T> IPlayable<T>.SetOwner(GameObject gameObject) => SetOwner(gameObject);
 
-        public new T SetDirection(Direction direction) => (T)base.SetDirection(direction);
+        public new Playable<T> SetOwner(GameObject gameObject) => (Playable<T>)base.SetOwner(gameObject);
 
-        protected override IRepeater<Playable> CreateRepeater() => new Repeater<T>((T)(Playable)this);
+        IPlayable<T> IPlayable<T>.MakeUnowned() => MakeUnowned();
+
+        public new Playable<T> MakeUnowned() => (Playable<T>)base.MakeUnowned();
+
+        IPlayable<T> IPlayable<T>.SetName(string name) => SetName(name);
+
+        public new Playable<T> SetName(string name) => (Playable<T>)base.SetName(name);
+
+        IPlayable<T> IPlayable<T>.SetEase(Ease ease) => SetEase(ease);
+
+        public new Playable<T> SetEase(Ease ease) => (Playable<T>)base.SetEase(ease);
+
+        IPlayable<T> IPlayable<T>.SetLoopCount(int loopsCount) => SetLoopCount(loopsCount);
+
+        public new Playable<T> SetLoopCount(int loopsCount) => (Playable<T>)base.SetLoopCount(loopsCount);
+
+        IPlayable<T> IPlayable<T>.SetLoopType(LoopType loopType) => SetLoopType(loopType);
+
+        public new Playable<T> SetLoopType(LoopType loopType) => (Playable<T>)base.SetLoopType(loopType);
+
+        IPlayable<T> IPlayable<T>.SetDirection(Direction direction) => SetDirection(direction);
+
+        public new Playable<T> SetDirection(Direction direction) => (Playable<T>)base.SetDirection(direction);
 
         #region Rewinds
-        public new T RewindTo(float time, bool emitEvents = true) => RewindTo(time, 0, 1, emitEvents);
+        IPlayable<T> IPlayable<T>.RewindTo(float time, bool emitEvents) => RewindTo(time, emitEvents);
 
-        internal new T RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (T)base.RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+        public new Playable<T> RewindTo(float time, bool emitEvents = true) => RewindTo(time, 0, 1, emitEvents);
 
-        public new T RewindToStart(bool emitEvents = true) => RewindToStart(0, 1, emitEvents);
+        internal new Playable<T> RewindTo(float time, int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (Playable<T>)base.RewindTo(time, parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
 
-        internal new T RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (T)base.RewindToStart(parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+        IPlayable<T> IPlayable<T>.RewindToStart(bool emitEvents) => RewindToStart(emitEvents);
 
-        public new T RewindToEnd(bool emitEvents = true) => RewindToEnd(0, 1, emitEvents);
+        public new Playable<T> RewindToStart(bool emitEvents = true) => RewindToStart(0, 1, emitEvents);
 
-        internal new T RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (T)base.RewindToEnd(parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+        internal new Playable<T> RewindToStart(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (Playable<T>)base.RewindToStart(parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
+
+        IPlayable<T> IPlayable<T>.RewindToEnd(bool emitEvents) => RewindToEnd(emitEvents);
+
+        public new Playable<T> RewindToEnd(bool emitEvents = true) => RewindToEnd(0, 1, emitEvents);
+
+        internal new Playable<T> RewindToEnd(int parentContinueLoopIndex, int continueMaxLoopsCount, bool emitEvents) => (Playable<T>)base.RewindToEnd(parentContinueLoopIndex, continueMaxLoopsCount, emitEvents);
         #endregion
 
         #region Skips
-        public new T SkipTo(float time) => (T)base.SkipTo(time);
+        IPlayable<T> IPlayable<T>.SkipTo(float time) => SkipTo(time);
 
-        public new T SkipToStart() => (T)base.SkipToStart();
+        public new Playable<T> SkipTo(float time) => (Playable<T>)base.SkipTo(time);
 
-        public new T SkipToEnd() => (T)base.SkipToEnd();
+        IPlayable<T> IPlayable<T>.SkipToStart() => SkipToStart();
+
+        public new Playable<T> SkipToStart() => (Playable<T>)base.SkipToStart();
+
+        IPlayable<T> IPlayable<T>.SkipToEnd() => SkipToEnd();
+
+        public new Playable<T> SkipToEnd() => (Playable<T>)base.SkipToEnd();
         #endregion
 
         #region Playing
-        public new T SetTimeType(TimeType type) => (T)base.SetTimeType(type);
+        IPlayable<T> IPlayable<T>.SetTimeType(TimeType type) => SetTimeType(type);
 
-        public new T PlayForward(bool resetIfCompleted = true) => (T)base.PlayForward(resetIfCompleted);
+        public new Playable<T> SetTimeType(TimeType type) => (Playable<T>)base.SetTimeType(type);
 
-        public new T PlayBackward(bool resetIfCompleted = true) => (T)base.PlayBackward(resetIfCompleted);
+        IPlayable<T> IPlayable<T>.PlayForward(bool resetIfCompleted) => PlayForward(resetIfCompleted);
 
-        public new T Play(bool resetIfCompleted = true) => (T)base.Play(resetIfCompleted);
+        public new Playable<T> PlayForward(bool resetIfCompleted = true) => (Playable<T>)base.PlayForward(resetIfCompleted);
 
-        public new T Pause() => (T)base.Pause();
+        IPlayable<T> IPlayable<T>.PlayBackward(bool resetIfCompleted) => PlayBackward(resetIfCompleted);
 
-        public new T Reset() => (T)base.Reset();
+        public new Playable<T> PlayBackward(bool resetIfCompleted = true) => (Playable<T>)base.PlayBackward(resetIfCompleted);
+
+        IPlayable<T> IPlayable<T>.Play(bool resetIfCompleted) => Play(resetIfCompleted);
+
+        public new Playable<T> Play(bool resetIfCompleted = true) => (Playable<T>)base.Play(resetIfCompleted);
+
+        IPlayable<T> IPlayable<T>.Pause() => Pause();
+
+        public new Playable<T> Pause() => (Playable<T>)base.Pause();
+
+        IPlayable<T> IPlayable<T>.Reset() => Reset();
+
+        public new Playable<T> Reset() => (Playable<T>)base.Reset();
         #endregion
 
         #region Repeat
-        public new IRepeater<T> GetRepeater() => (IRepeater<T>)CreateRepeater();
+        protected new IRepeater<T> CreateRepeater() => new Repeater<T>((T)(IPlayable)this);
+
+        public new IRepeater<T> GetRepeater() => CreateRepeater();
 
         public new IRepeater<T> Repeat() => GetRepeater().PlayForward();
 

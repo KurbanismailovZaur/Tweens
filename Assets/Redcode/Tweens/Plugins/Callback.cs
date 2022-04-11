@@ -19,7 +19,11 @@ namespace Redcode.Tweens
         /// <param name="name">Name of the callback.</param>
         /// <param name="callback">Function which will be invoked when sequence playing.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="callback"/> is null.</exception>
-        public Callback(string name, Action callback) : base(null, name, 0f) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
+        public Callback(string name, Action callback) : base(0f)
+        {
+            Name = name;
+            _callback = callback ?? throw new ArgumentNullException(nameof(callback));
+        }
 
         protected override void BeforeStarting(Direction direction, int loop, int parentContinueLoopIndex, int continueMaxLoopsCount) => _startPhaseFlag = true;
 

@@ -435,50 +435,353 @@ namespace Redcode.Tweens
         /// <summary>
         /// Create sequence object.
         /// </summary>
-        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
         /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
-        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        public Sequence(Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this((string)null, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
 
-        /// <summary>
-        /// <inheritdoc cref="Sequence.Sequence(Ease, int, LoopType, LoopResetBehaviour, Direction)"/>
-        /// </summary>
-        /// <param name="name">Name of the sequence (usefull for finding nested sequences and for debugging).</param>
-        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
-        /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
-        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+        public Sequence(Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(null, null, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
+
         public Sequence(string name, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(null, name, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
 
-        /// <summary>
-        /// <inheritdoc cref="Sequence.Sequence(Ease, int, LoopType, LoopResetBehaviour, Direction)"/>
-        /// </summary>
-        /// <param name="owner">Game object to which this sequence will be attached.</param>
-        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
-        /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
-        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
         public Sequence(GameObject owner, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : this(owner, null, ease, loopsCount, loopType, loopResetBehaviour, direction) { }
 
+
         /// <summary>
-        /// <inheritdoc cref="Sequence.Sequence(Ease, int, LoopType, LoopResetBehaviour, Direction)"/>
+        /// Create sequence object.
         /// </summary>
-        /// <param name="owner"><inheritdoc cref="Sequence(GameObject, Ease, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='owner']"/></param>
-        /// <param name="name"><inheritdoc cref="Sequence(string, Ease, int, LoopType, LoopResetBehaviour, Direction)" path="/param[@name='name']"/></param>
-        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
-        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
-        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
+        /// <param name="owner">Owner of the sequence.</param>
+        /// <param name="name">Name of the sequence.</param>
+        /// <param name="ease"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='ease']"/></param>
+        /// <param name="loopsCount"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopsCount']"/></param>
+        /// <param name="loopType"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='loopType']"/></param>
         /// <param name="loopResetBehaviour"><inheritdoc cref="LoopResetBehaviour" path="/summary"/></param>
-        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(GameObject, string, float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
-        public Sequence(GameObject owner, string name, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : base(owner, name, 0f, ease, loopsCount, loopType, direction)
+        /// <param name="direction"><inheritdoc cref="Playable{T}.Playable(float, Ease, int, LoopType, Direction)" path="/param[@name='direction']"/></param>
+
+        public Sequence(GameObject owner, string name, Ease ease = null, int loopsCount = 1, LoopType loopType = LoopType.Reset, LoopResetBehaviour loopResetBehaviour = LoopResetBehaviour.Rewind, Direction direction = Direction.Forward) : base(0f, ease, loopsCount, loopType, direction)
         {
             Elements = _elements.AsReadOnly();
             LoopResetBehaviour = loopResetBehaviour;
+
+            SetOwner(owner);
+            SetName(name);
         }
+        #endregion
+
+        #region Overlaps
+        #region Subscribes
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseStarting</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseStarting(Action callback) => OnPhaseStarting((p, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseStarting(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseStarting(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseStarting(Action)"/></returns>
+        public new Sequence OnPhaseStarting(Action<Sequence, Direction> callback) => (Sequence)base.OnPhaseStarting(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseStarted</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseStarted(Action callback) => OnPhaseStarted((p, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseStarted(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseStarted(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseStarted(Action)"/></returns>
+        public new Sequence OnPhaseStarted(Action<Sequence, Direction> callback) => (Sequence)base.OnPhaseStarted(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopStarting</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseLoopStarting(Action callback) => OnPhaseLoopStarting((p, l, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseLoopStarting(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseLoopStarting(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseLoopStarting(Action)"/></returns>
+        public new Sequence OnPhaseLoopStarting(Action<Sequence, int, Direction> callback) => (Sequence)base.OnPhaseLoopStarting(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopStarted</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseLoopStarted(Action callback) => OnPhaseLoopStarted((p, l, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseLoopStarted(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseLoopStarted(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseLoopStarted(Action)"/></returns>
+        public new Sequence OnPhaseLoopStarted(Action<Sequence, int, Direction> callback) => (Sequence)base.OnPhaseLoopStarted(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopUpdating</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseLoopUpdating(Action callback) => OnPhaseLoopUpdating((p, l, lt, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseLoopUpdating(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseLoopUpdating(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseLoopUpdating(Action)"/></returns>
+        public new Sequence OnPhaseLoopUpdating(Action<Sequence, int, float, Direction> callback) => (Sequence)base.OnPhaseLoopUpdating(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopUpdated</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseLoopUpdated(Action callback) => OnPhaseLoopUpdated((p, l, lt, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseLoopUpdated(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseLoopUpdated(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseLoopUpdated(Action)"/></returns>
+        public new Sequence OnPhaseLoopUpdated(Action<Sequence, int, float, Direction> callback) => (Sequence)base.OnPhaseLoopUpdated(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseUpdating</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseUpdating(Action callback) => OnPhaseUpdating((p, t, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseUpdating(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseUpdating(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseUpdating(Action)"/></returns>
+        public new Sequence OnPhaseUpdating(Action<Sequence, float, Direction> callback) => (Sequence)base.OnPhaseUpdating(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseUpdated</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseUpdated(Action callback) => OnPhaseUpdated((p, t, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseUpdated(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseUpdated(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseUpdated(Action)"/></returns>
+        public new Sequence OnPhaseUpdated(Action<Sequence, float, Direction> callback) => (Sequence)base.OnPhaseUpdated(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopCompleting</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseLoopCompleting(Action callback) => OnPhaseLoopCompleting((p, l, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseLoopCompleting(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseLoopCompleting(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseLoopCompleting(Action)"/></returns>
+        public new Sequence OnPhaseLoopCompleting(Action<Sequence, int, Direction> callback) => (Sequence)base.OnPhaseLoopCompleting(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseLoopCompleted</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseLoopCompleted(Action callback) => OnPhaseLoopCompleted((p, l, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseLoopCompleted(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseLoopCompleted(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseLoopCompleted(Action)"/></returns>
+        public new Sequence OnPhaseLoopCompleted(Action<Sequence, int, Direction> callback) => (Sequence)base.OnPhaseLoopCompleted(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseCompleting</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseCompleting(Action callback) => OnPhaseCompleting((p, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseCompleting(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseCompleting(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseCompleting(Action)"/></returns>
+        public new Sequence OnPhaseCompleting(Action<Sequence, Direction> callback) => (Sequence)base.OnPhaseCompleting(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>PhaseCompleted</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPhaseCompleted(Action callback) => OnPhaseCompleted((p, d) => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPhaseCompleted(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPhaseCompleted(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPhaseCompleted(Action)"/></returns>
+        public new Sequence OnPhaseCompleted(Action<Sequence, Direction> callback) => (Sequence)base.OnPhaseCompleted(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>Reseted</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnReseted(Action callback) => OnReseted(p => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnReseted(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnReseted(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnReseted(Action)"/></returns>
+        public new Sequence OnReseted(Action<Sequence> callback) => (Sequence)base.OnReseted(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>Playing</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPlaying(Action callback) => OnPlaying(p => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPlaying(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPlaying(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPlaying(Action)"/></returns>
+        public new Sequence OnPlaying(Action<Sequence> callback) => (Sequence)base.OnPlaying(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>Paused</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnPaused(Action callback) => OnPaused(p => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnPaused(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnPaused(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnPaused(Action)"/></returns>
+        public new Sequence OnPaused(Action<Sequence> callback) => (Sequence)base.OnPaused(callback);
+
+        /// <summary>
+        /// Subscribe passed <paramref name="callback"/> to <c>Completed</c> event.
+        /// </summary>
+        /// <param name="callback">Callback to subscribe.</param>
+        /// <returns>The sequence.</returns>
+        public new Sequence OnCompleted(Action callback) => OnCompleted(p => callback());
+
+        /// <summary>
+        /// <inheritdoc cref="OnCompleted(Action)"/>
+        /// </summary>
+        /// <param name="callback"><inheritdoc cref="OnCompleted(Action)" path="/param[@name='callback']"/></param>
+        /// <returns><inheritdoc cref="OnCompleted(Action)"/></returns>
+        public new Sequence OnCompleted(Action<Sequence> callback) => (Sequence)base.OnCompleted(callback);
+        #endregion
+
+        #region Sets methods
+        /// <summary>
+        /// Sets owner for the sequence.
+        /// </summary>
+        /// <param name="component"><inheritdoc cref="IPlayable.SetOwner(Component)" path="/param[@name='component']"/></param>
+        /// <returns>The sequence.</returns>
+        public new Sequence SetOwner(Component component) => (Sequence)base.SetOwner(component);
+
+        /// <summary>
+        /// Sets owner to the sequence.
+        /// </summary>
+        /// <param name="gameObject"><inheritdoc cref="IPlayable.SetOwner(GameObject)" path="/param[@name='gameObject']"/></param>
+        /// <returns>The sequence.</returns>
+        public new Sequence SetOwner(GameObject gameObject) => (Sequence)base.SetOwner(gameObject);
+
+        /// <summary>
+        /// Make sequence unowned.
+        /// </summary>
+        /// <returns>The sequence.</returns>
+        public new Sequence MakeUnowned() => (Sequence)base.MakeUnowned();
+
+        /// <summary>
+        /// Sets name of the sequence.
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="IPlayable.SetName(string)"/></param>
+        /// <returns>The sequence.</returns>
+        public new Sequence SetName(string name) => (Sequence)base.SetName(name);
+
+        /// <summary>
+        /// <inheritdoc cref="IPlayable.SetEase(Ease)"/>
+        /// </summary>
+        /// <param name="ease"><inheritdoc cref="IPlayable.SetEase(Ease)"/></param>
+        /// <returns>The sequence.</returns>
+        public new Sequence SetEase(Ease ease) => (Sequence)base.SetEase(ease);
+
+        /// <summary>
+        /// Sets loops count.
+        /// </summary>
+        /// <param name="loopsCount"><inheritdoc cref="IPlayable.SetLoopCount(int)"/></param>
+        /// <returns>The sequence.</returns>
+        public new Sequence SetLoopCount(int loopsCount) => (Sequence)base.SetLoopCount(loopsCount);
+
+        /// <summary>
+        /// Sets loop type.
+        /// </summary>
+        /// <param name="loopType"><inheritdoc cref="IPlayable.SetLoopType(LoopType)"/></param>
+        /// <returns>The sequence.</returns>
+        public new Sequence SetLoopType(LoopType loopType) => (Sequence)base.SetLoopType(loopType);
+
+        /// <summary>
+        /// Set direction.
+        /// </summary>
+        /// <param name="direction"><inheritdoc cref="IPlayable.SetDirection(Direction)"/></param>
+        /// <returns>The sequence.</returns>
+        public new Sequence SetDirection(Direction direction) => (Sequence)base.SetDirection(direction);
+        #endregion
+
+        #region Rewinds
+        public new Sequence RewindTo(float time, bool emitEvents = true) => (Sequence)base.RewindTo(time, emitEvents);
+
+        public new Sequence RewindToStart(bool emitEvents = true) => (Sequence)base.RewindToStart(emitEvents);
+
+        public new Sequence RewindToEnd(bool emitEvents = true) => (Sequence)base.RewindToEnd(emitEvents);
+        #endregion
+
+        #region Skips
+        public new Sequence SkipTo(float time) => (Sequence)base.SkipTo(time);
+
+        public new Sequence SkipToStart() => (Sequence)base.SkipToStart();
+
+        public new Sequence SkipToEnd() => (Sequence)base.SkipToEnd();
+        #endregion
+
+        #region Playing
+        public new Sequence SetTimeType(TimeType type) => (Sequence)base.SetTimeType(type);
+
+        public new Sequence PlayForward(bool resetIfCompleted = true) => (Sequence)base.PlayForward(resetIfCompleted);
+
+        public new Sequence PlayBackward(bool resetIfCompleted = true) => (Sequence)base.PlayBackward(resetIfCompleted);
+
+        public new Sequence Play(bool resetIfCompleted = true) => (Sequence)base.Play(resetIfCompleted);
+
+        public new Sequence Pause() => (Sequence)base.Pause();
+
+        public new Sequence Reset() => (Sequence)base.Reset();
+        #endregion
         #endregion
 
         /// <summary>

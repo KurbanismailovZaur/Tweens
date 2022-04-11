@@ -12,6 +12,6 @@ namespace Redcode.Tweens
         /// </summary>
         /// <param name="name">Name of the interval.</param>
         /// <param name="duration">Duration of the interval.</param>
-        public Interval(string name, float duration) : base(null, name, duration) { }
+        public Interval(string name, float duration) : base(duration) => Name = name;
     }
 }

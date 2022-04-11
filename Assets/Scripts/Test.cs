@@ -18,20 +18,11 @@ namespace Tweens
         private Transform _target;
 
         private IEnumerator Start()
-        {
-            var tween = _target.DoPositionX(1f, 10f).Play();
-            
-            yield return new WaitForSeconds(2f);
-            tween.SetOwner(this);
-            print("THIS");
+        { 
+            yield return null;
 
-            yield return new WaitForSeconds(2f);
-            tween.SetOwner(_target);
-            print("TARGET");
-
-            yield return new WaitForSeconds(2f);
-            tween.MakeUnowned();
-            print("NULL");
+            var tween = Tween.Float(0f, 1f, _target.SetPositionX, 1f);
+            tween.SkipToEnd().PlayBackward();
         }
     }
 }
