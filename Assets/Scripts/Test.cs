@@ -1,18 +1,12 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using Redcode.Extensions;
-using Redcode.Moroutines;
-using Redcode.Moroutines.Extensions;
 using Redcode.Tweens;
-using Redcode.Tweens.Extensions;
-using Redcode.Tweens.Tweaks;
+using Redcode.Paths;
+using Redcode.Extensions;
 
 namespace Tweens
 {
-	public class Test : MonoBehaviour
+    public class Test : MonoBehaviour
 	{
         [SerializeField]
         private Transform _target;
@@ -20,9 +14,7 @@ namespace Tweens
         private IEnumerator Start()
         { 
             yield return null;
-
-            var tween = (IPlayable<ITween>)Tween.Float(0f, 1f, _target.SetPositionX, 1f);
-            
+            transform.DoJump(10f, Vector3.one, 1f).tween.Play();
         }
     }
 }
