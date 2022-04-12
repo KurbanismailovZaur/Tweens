@@ -235,7 +235,7 @@ namespace Redcode.Tweens
         /// <returns>The sequence.</returns>
         public static Sequence DoShakePosition(this Rigidbody rigidbody, int count = 10, float strenght = 1f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakePosition(rigidbody, new Vector3Int(count, count), strenght, duration, leftSmoothness, rightSmoothness);
+            return DoShakePosition(rigidbody, new Vector3Int(count, count, count), strenght, duration, leftSmoothness, rightSmoothness);
         }
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace Redcode.Tweens
         /// <returns>The sequence.</returns>
         public static Sequence DoShakePosition(this Rigidbody rigidbody, int count, Vector3 strenght, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakePosition(rigidbody, new Vector3Int(count, count), strenght, duration, leftSmoothness, rightSmoothness);
+            return DoShakePosition(rigidbody, new Vector3Int(count, count, count), strenght, duration, leftSmoothness, rightSmoothness);
         }
 
         /// <summary>
@@ -303,7 +303,7 @@ namespace Redcode.Tweens
         /// <returns>The sequence.</returns>
         public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, int count = 8, float angles = 45f, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeEulerAngles(rigidbody, new Vector3Int(count, count), angles, duration, leftSmoothness, rightSmoothness);
+            return DoShakeEulerAngles(rigidbody, new Vector3Int(count, count, count), angles, duration, leftSmoothness, rightSmoothness);
         }
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace Redcode.Tweens
         /// <returns>The sequence.</returns>
         public static Sequence DoShakeEulerAngles(this Rigidbody rigidbody, int count, Vector3 angles, float duration = 1f, float leftSmoothness = 0.05f, float rightSmoothness = 0.5f)
         {
-            return DoShakeEulerAngles(rigidbody, new Vector3Int(count, count), angles, duration, leftSmoothness, rightSmoothness);
+            return DoShakeEulerAngles(rigidbody, new Vector3Int(count, count, count), angles, duration, leftSmoothness, rightSmoothness);
         }
 
         /// <summary>
